@@ -12,6 +12,7 @@ plugins {
     id("android-library")
     kotlin("android")
     id("de.mannodermaus.android-junit5")
+    id("com.github.dcendents.android-maven")
 }
 
 
