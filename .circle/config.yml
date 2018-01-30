@@ -20,12 +20,9 @@ jobs:
       - run:
           name: Run Tests
           command: ./gradlew test
-      - run:
-          name: Checking Coverage
-          command: bash <(curl -s https://codecov.io/bash)
       - store_artifacts:
           path: build/reports
           destination: reports
       - store_test_results:
-          path: build/test-results
+          path: lib/build/test-results
 
