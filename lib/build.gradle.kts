@@ -9,7 +9,7 @@ import org.junit.platform.console.options.Details
 
 
 plugins {
-    id("com.android.library")
+    id("android-library")
     kotlin("android")
     id("de.mannodermaus.android-junit5")
 }
