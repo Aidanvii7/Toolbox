@@ -1,0 +1,16 @@
+language: android
+jdk: oraclejdk8
+
+android:
+  components:
+    - tools
+    - build-tools-26.0.2
+    - android-26
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - addon-google_apis-google-26
+
+script: 
+    - echo "Travis branch is $TRAVIS_BRANCH"
+    - echo "Travis branch is in pull request $TRAVIS_PULL+REQUEST"
+    - ./gradlew test
