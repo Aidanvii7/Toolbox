@@ -1,1 +1,4 @@
-include ':lib'
+include ':common-android'
+include ':delegates-observable-android'
+include ':delegates-observable-android-databinding'
+include ':android-databinding-extensions-core'
