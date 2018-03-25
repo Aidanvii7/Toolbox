@@ -1,5 +1,5 @@
-[![CircleCI](https://circleci.com/gh/aidanvii7/toolbox.svg?style=svg)](https://circleci.com/gh/aidanvii7/toolbox)
-[![](https://jitpack.io/v/aidanvii7/toolbox.svg)](https://jitpack.io/#aidanvii7/toolbox)
+[![CircleCI](https://circleci.com/gh/Aidanvii7/Toolbox.svg?style=svg)](https://circleci.com/gh/Aidanvii7/Toolbox)
+[![](https://jitpack.io/v/Aidanvii7/Toolbox.svg)](https://jitpack.io/#Aidanvii7/Toolbox)
 
 
 # Toolbox
