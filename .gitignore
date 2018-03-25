@@ -2,3 +2,4 @@
 /.gradle
 /.idea
 /buildSrc
+local.properties
