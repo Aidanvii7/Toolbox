@@ -14,7 +14,7 @@ Currently it provides the following functionality:
 
 Latest Toolbox version:
 ```gradle
-toolbox_version = 'v0.3.1-alpha'
+toolbox_version = 'v0.3.3-alpha'
 ```
 
  Add the JitPack repository to your build file: 
