@@ -30,23 +30,24 @@ Pick and choose the artifacts you need:
 
 ```gradle
 
-// The base library, currently there's only common typealiases and constants here. It's unlikely you would use this directly.
+// The base library, currently there's only common typealiases and constants here. 
+// It's unlikely you would use this directly.
 api "com.github.Aidanvii7.Toolbox:common:$toolbox_version"
 
-// Contains an alternative base implementation to [BaseObservable] from the data binding library ([NotifiableObservable]), 
-// that uses composition - so view-models can simply implement [NotifiableObserble] and use any base class (if any).
+// Contains an alternative base implementation to BaseObservable from the data binding library (NotifiableObservable), 
+// that uses composition - so view-models can simply implement NotifiableObservable and use any base class (if any).
 api "com.github.Aidanvii7.Toolbox:databinding:$toolbox_version"
 
-// Adds a convenience base class that implements [NotifiableObservable] and also extends [ViewModel] from Google's
-// Architecture components library.
+// Adds a convenience base class that implements NotifiableObservable and also 
+// extends ViewModel from Google's Architecture components library.
 api "com.github.Aidanvii7.Toolbox:databinding-arch-viewmodel:$toolbox_version"
 
-// Contains a set of property delegates, serving as an enhancement over the [ObservableProperty] class 
+// Contains a set of property delegates, serving as an enhancement over the ObservableProperty class 
 // that is shipped with the Kotlin standard library.
 // These delegates can be chained together in a functional way.
 api "com.github.Aidanvii7.Toolbox:delegates-observable:$toolbox_version"
 
-// Provides an [ObservableProperty] implementation that integrates with the android data binding library.
+// Provides an ObservableProperty implementation that integrates with the android data binding library.
 api "com.github.Aidanvii7.Toolbox:delegates-observable-databinding:$toolbox_version"
 
 ```
