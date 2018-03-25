@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.github.Aidanvii7'
+group='com.github.Aidanvii7.toolbox'
 
 apply from: "${project.rootDir}/versions.gradle"
 
