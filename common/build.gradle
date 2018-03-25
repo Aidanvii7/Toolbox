@@ -7,7 +7,6 @@ group='com.github.Aidanvii7.toolbox'
 
 apply from: "${project.rootDir}/versions.gradle"
 
-
 android {
     compileSdkVersion compile_sdk_version
 
