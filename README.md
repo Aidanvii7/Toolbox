@@ -91,14 +91,23 @@ var nullableString by observable<String?>(null)
         .doOnNext { stringLength -> /* do something with length */ }
 ```
 
-Please see the source code documentation for a description of each decorator.
-
+Here is a list of the current decorators:
+* [`EagerDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/EagerDecorator.kt)
+* [`DistinctUntilChangedDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/DistinctUntilChangedDecorator.kt)
+* [`FilterDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/FilterDecorator.kt)
+* [`FilterNotNullDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/FilterNotNullDecorator.kt)
+* [`MapDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/MapDecorator.kt)
+* [`SkipDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/SkipDecorator.kt)
+* [`DoOnNextDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/DoOnNextDecorator.kt)
+* [`OnFirstAccessDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/OnFirstAccessDecorator.kt)
 ## Observable property delegates with databinding
 The delegates-observable-databinding artifact provides a source observable implementation that integrates with data-binding.
 
 Two types of delegates exist, `bindable(..)` and `bindableEvent(..)`.
 * `bindable(..)` will only propagate values downstream and notify data binding if the value given is different from the previous value.
 * `bindableEvent(..)` will propagate values downstream and notify data binding even if the given value is the same as the previous value.
+
+Please see the [documentation](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-databinding/src/main/java/com/aidanvii/toolbox/databinding/BindableProperty.kt) of each for a deeper explanation and usage suggestions.
 
 Both of these delegates can only be used as member properties of [`NotifiableObservable`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/NotifiableObservable.kt) implementations, such as:
 
@@ -147,7 +156,6 @@ class MyApplication : Application() {
 }
 
 ```
-Please see the [documentation](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-databinding/src/main/java/com/aidanvii/toolbox/databinding/BindableProperty.kt) of each for a deeper explanation and usage suggestions.
 
 # Architecture component viewmodel integration
 The databinding-arch-viewmodel artifact simply provides a base class implementation similar to [`ObservableViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/ObservableViewModel.kt) which extends the [`ViewModel`](https://developer.android.com/topic/libraries/architecture/viewmodel.html) class from the architecture components library, called [`ObservableArchViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding-arch-viewmodel/src/main/java/com/aidanvii/toolbox/databinding/ObservableArchViewModel.kt).
