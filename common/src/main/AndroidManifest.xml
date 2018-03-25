@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.aidanvii.toolbox.common" />
+<manifest package="com.aidanvii.toolbox.common" />
