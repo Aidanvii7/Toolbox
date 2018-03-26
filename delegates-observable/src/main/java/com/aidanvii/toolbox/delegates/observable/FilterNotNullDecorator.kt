@@ -24,7 +24,7 @@ fun <ST, TT> ObservableProperty<ST, TT?>.filterNotNullWith(
 
 class FilterNotNullDecorator<ST, TT>(
         private val decorated: ObservableProperty<ST, TT?>,
-        private val predicate: (TT?) -> Boolean
+        private val predicate: (TT) -> Boolean
 ) : ObservableProperty<ST, TT> {
 
     init {

@@ -117,7 +117,8 @@ inline fun <V : View, I> V.onTrackedInstance(
         provideNewInstance: V.() -> I,
         onInstance: I.() -> Unit
 ) {
-    val instance = ListenerUtil.trackListener<I>(this, instanceResId) ?: provideNewInstance()
+    val instance = ListenerUtil.trackListener<I>(this, instanceResId)
+            ?: provideNewInstance()
     ListenerUtil.trackListener(this, instanceResId, instance)
     instance.onInstance()
 }

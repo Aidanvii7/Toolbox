@@ -28,8 +28,11 @@ android {
 
 dependencies {
 
-    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    api "com.android.support:support-annotations:$android_support_version"
+    api project(':delegates-observable')
+
+    api "io.reactivex.rxjava2:rxjava:$rxjava_version"
+
+    kapt "com.android.databinding:compiler:$android_gradle_version"
 
     testImplementation "de.jodamob.android:SuperReflect:$superreflect_version"
     testImplementation "junit:junit:$junit_version"

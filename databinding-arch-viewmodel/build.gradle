@@ -33,9 +33,6 @@ dependencies {
 
     api "android.arch.lifecycle:viewmodel:$android_arch_viewmodel_version"
 
-    api "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    api "com.android.support:support-annotations:$android_support_version"
-
     kapt "com.android.databinding:compiler:$android_gradle_version"
 
     testImplementation "de.jodamob.android:SuperReflect:$superreflect_version"

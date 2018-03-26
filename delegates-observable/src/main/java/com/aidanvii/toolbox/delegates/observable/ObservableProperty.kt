@@ -1,5 +1,6 @@
 package com.aidanvii.toolbox.delegates.observable
 
+import android.support.annotation.CallSuper
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -24,7 +25,7 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
     val sourceValue: ST
 
     /**
-     * The root/source of the [ObservableProperty] chaim.
+     * The root/source of the [ObservableProperty] chain.
      */
     val source: Source<ST>
 
@@ -41,6 +42,7 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
      *
      * When decorating, this should be forwarded to the decorated [ObservableProperty]
      */
+    @CallSuper
     fun onProvideDelegate(thisRef: Any?, property: KProperty<*>) {
     }
 

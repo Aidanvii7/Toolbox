@@ -1,6 +1,7 @@
 include ':common'
 include ':delegates-observable'
 include ':delegates-observable-databinding'
+include ':delegates-observable-rxjava'
 include ':databinding'
 include ':databinding-arch-viewmodel'
 include ':databinding-bindingadapters'
