@@ -14,7 +14,7 @@ Currently it provides the following functionality:
 
 Latest Toolbox version:
 ```gradle
-toolbox_version = 'v0.3.3-alpha'
+toolbox_version = 'v0.3.4-alpha'
 ```
 
  Add the JitPack repository to your build file: 
@@ -131,7 +131,7 @@ class ViewModel : NotifiableObservable by NotifiableObservable.delegate() {
 }
 ```
 
-A base class implementation exists for [`NotifiableObservable`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/NotifiableObservable.kt) exists to cut some of the boilerplate called [`ObservableViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/ObservableViewModel.kt):
+A base class exists for [`NotifiableObservable`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/NotifiableObservable.kt) which handles some of the boilerplate, called [`ObservableViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/ObservableViewModel.kt):
 ```kotlin
 class ViewModel : ObservableViewModel() {
     
