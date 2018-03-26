@@ -59,7 +59,7 @@ The delegates-observable artifact provides a set of property delegates that allo
 Each delegate chain must begin with a [`ObservableProperty.Source`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/ObservableProperty.kt) delegate, for example:
 
 ```kotlin
-val myProperty by observable("")
+var myObservableProperty by observable("")
 ```
 Where `observable(..)` provides a source observable (`ObservableProperty.Source` class).
 
