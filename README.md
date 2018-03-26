@@ -51,6 +51,9 @@ api "com.github.Aidanvii7.Toolbox:delegates-observable:$toolbox_version"
 // Provides an ObservableProperty implementation that integrates with the android data binding library.
 api "com.github.Aidanvii7.Toolbox:delegates-observable-databinding:$toolbox_version"
 
+// Provides a decorator for mapping ObservableProperty to RxObservableProperty
+api "com.github.Aidanvii7.Toolbox:delegates-observable-rxjava:$toolbox_version"
+
 ```
 
 ## Observable property delegates
