@@ -1,7 +1,22 @@
 include ':common'
+include ':common-test'
+
+include ':databinding'
+include ':databinding-test'
+include ':databinding-arch-viewmodel'
+include ':databinding-bindingadapters'
+
+include ':delegates-weak'
+
 include ':delegates-observable'
 include ':delegates-observable-databinding'
 include ':delegates-observable-rxjava'
-include ':databinding'
-include ':databinding-arch-viewmodel'
-include ':databinding-bindingadapters'
+
+include ':adapterviews-recyclerpager'
+include ':adapterviews-databinding'
+include ':adapterviews-databinding-test'
+include ':adapterviews-databinding-recyclerpager'
+include ':adapterviews-databinding-recyclerview'
+
+include ':rxjava-test'
+

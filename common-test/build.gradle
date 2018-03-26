@@ -1,0 +1,52 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.Aidanvii7.toolbox'
+
+apply from: "${project.rootDir}/versions.gradle"
+
+android {
+    compileSdkVersion compile_sdk_version
+
+    defaultConfig {
+
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+
+    api "de.jodamob.android:SuperReflect:$superreflect_version"
+    api "junit:junit:$junit_version"
+    api "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    api "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"
+    api "org.amshove.kluent:kluent:$kluent_version"
+    api "de.jodamob.android:SuperReflect:$superreflect_version"
+}
+
+repositories {
+    mavenCentral()
+}
+
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+
+    include("*.kt")
+}
+artifacts {
+    archives sourcesJar
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="list_binder" type="id" />
+    <item name="on_page_changed_listener" type="id" />
+</resources>

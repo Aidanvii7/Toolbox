@@ -10,6 +10,9 @@ ext {
     android_arch_viewmodel_version              = "1.1.1"
 
     rxjava_version                              = "2.1.12"
+    rxkotlin_version                            = "2.2.0"
+    rxandroid_version                           = "2.0.2"
+
     junit_version                               = "4.12"
     kluent_version                              = "1.33"
     kotlin_version                              = "1.2.30"
