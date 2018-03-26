@@ -7,8 +7,8 @@ Toolbox is a collection of libraries for Android.
 
 Currently it provides the following functionality:
 * [Observable property delegates](#observable-property-delegates)
-* [Observable property delegates with databinding](#observable-property-delegates-with-databinding)
-* [Architecture component viewmodel integration](#architecture-component-viewmodel-integration)
+* [Observable property delegates databinding integrtion](#observable-property-delegates-databinding-integration)
+* [Architecture Components ViewModel integration](#architecture-components-viewmodel-integration)
 
 # Setup
 
@@ -101,7 +101,7 @@ Here is a list of the current decorators:
 * [`SkipDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/SkipDecorator.kt)
 * [`DoOnNextDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/DoOnNextDecorator.kt)
 * [`OnFirstAccessDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/OnFirstAccessDecorator.kt)
-## Observable property delegates with databinding
+## Observable property delegates databinding integration
 The delegates-observable-databinding artifact provides a source observable implementation that integrates with data-binding.
 
 Two types of delegates exist, `bindable(..)` and `bindableEvent(..)`.
@@ -158,7 +158,7 @@ class MyApplication : Application() {
 
 ```
 
-# Architecture component viewmodel integration
+# Architecture Components ViewModel integration
 The databinding-arch-viewmodel artifact simply provides a base class implementation similar to [`ObservableViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/ObservableViewModel.kt) which extends the [`ViewModel`](https://developer.android.com/topic/libraries/architecture/viewmodel.html) class from the architecture components library, called [`ObservableArchViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding-arch-viewmodel/src/main/java/com/aidanvii/toolbox/databinding/ObservableArchViewModel.kt).
 
 # Alpha status
