@@ -63,7 +63,7 @@ var myObservableProperty by observable("")
 ```
 Where `observable(..)` provides a source observable (`ObservableProperty.Source` class).
 
-Once a source observable is created, a set of 'decorator' observables (`ObservableProperty` interface) can be chained in a functional way such as:
+Once a source observable is created, a set of 'decorator' observables (`ObservableProperty` interface implementations) can be chained in a functional way such as:
 
 ```kotlin
 var nonNullString by observable<String>("")
