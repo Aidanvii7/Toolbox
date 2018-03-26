@@ -7,7 +7,8 @@ Toolbox is a collection of libraries for Android.
 
 Currently it provides the following functionality:
 * [Observable property delegates](#observable-property-delegates)
-* [Observable property delegates databinding integrtion](#observable-property-delegates-databinding-integration)
+* [Observable property delegates databinding integration](#observable-property-delegates-databinding-integration)
+* [Observable property delegates RxJava integration](#observable-property-delegates-rxjava-integration)
 * [Architecture Components ViewModel integration](#architecture-components-viewmodel-integration)
 
 # Setup
@@ -157,6 +158,36 @@ class MyApplication : Application() {
 }
 
 ```
+
+## Observable property delegates RxJava integration
+The delegates-observable-rxjava artifact provides an observable decorator with the extension method`toRx()` that transforms a [`ObservableProperty`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/ObservableProperty.kt) to a [`RxObservableProperty`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxObservableProperty.kt). Decorators for [`ObservableProperty`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable/src/main/java/com/aidanvii/toolbox/delegates/observable/ObservableProperty.kt) are not compatible with [`RxObservableProperty`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxObservableProperty.kt), however similar implementations exist and use the same syntax such as:
+
+```kotlin
+var nonNullString by observable<String>("")
+        .eager() // propagate initial value downstream instead of waiting on subsequent assignments to property
+        .onFirstAccess { /* lazily do something the first time this property is accessed/read */ }
+	.toRx() // transforms ObservableProperty to RxObservableProperty
+	// the following decorator methods look the same, but return RxObservableProperty instead.
+        .filter { it.isNotEmpty() } // ignore empty strings
+        .doOnNext { /* do something with the initial value */ }
+        .skip(1) // ignore initial value
+        .distinctUntilChanged() // ignore subsequent values that are the same as the previous value
+        .doOnNext { /* do something with subsequent values */ }
+	.observeOn(Schedulers.computation()) // switch threads!
+        .map { it.length }
+        .doOnNext { stringLength -> /* do something with length */ }
+```
+
+Here is a list of the current decorators:
+* [`RxObserveOnDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxObserveOnDecorator.kt)
+* [`RxDistinctUntilChangedDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxDistinctUntilChangedDecorator.kt)
+* [`RxFilterDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxFilterDecorator.kt)
+* [`RxFilterNotNullDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxFilterNotNullDecorator.kt)
+* [`RxMapDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxMapDecorator.kt)
+* [`RxSkipDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxSkipDecorator.kt)
+* [`RxDoOnNextDecorator`](https://github.com/Aidanvii7/Toolbox/blob/master/delegates-observable-rxjava/src/main/java/com/aidanvii/toolbox/delegates/observable/rxjava/RxDoOnNextDecorator.kt)
+
+The main advantage of these extensions is the `observeOn(scheduler)` method, allowing thread switching in the stream.
 
 # Architecture Components ViewModel integration
 The databinding-arch-viewmodel artifact simply provides a base class implementation similar to [`ObservableViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding/src/main/java/com/aidanvii/toolbox/databinding/ObservableViewModel.kt) which extends the [`ViewModel`](https://developer.android.com/topic/libraries/architecture/viewmodel.html) class from the architecture components library, called [`ObservableArchViewModel`](https://github.com/Aidanvii7/Toolbox/blob/master/databinding-arch-viewmodel/src/main/java/com/aidanvii/toolbox/databinding/ObservableArchViewModel.kt).
