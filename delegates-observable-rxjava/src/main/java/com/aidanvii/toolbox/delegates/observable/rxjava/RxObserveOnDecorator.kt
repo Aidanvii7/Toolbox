@@ -8,8 +8,7 @@ import kotlin.jvm.Volatile
 import kotlin.reflect.KProperty
 
 /**
- * Returns an [RxObservableProperty] that skips the first [count] items emitted
- * by the receiver [RxObservableProperty] and emits the remainder
+ * Returns an [RxObservableProperty] that performs its emissions on the given [Scheduler]
  * @param ST the base type of the source observable ([RxObservableProperty.SourceTransformer]).
  * @param TT the type on which this [RxObservableProperty] operates.
  */
