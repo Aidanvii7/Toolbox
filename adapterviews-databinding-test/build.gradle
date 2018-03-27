@@ -34,6 +34,8 @@ dependencies {
 
     api project(':databinding-test')
     api project(':adapterviews-databinding')
+    // needed now to be able to mock ViewDataBinding....
+    api "android.arch.lifecycle:livedata:$android_arch_viewmodel_version"
 
     kapt "com.android.databinding:compiler:$android_gradle_version"
 }

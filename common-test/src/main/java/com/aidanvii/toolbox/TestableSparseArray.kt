@@ -62,13 +62,13 @@ class TestableSparseArray<E>(size: Int) : SparseArray<E>(size) {
 
     override fun removeAtRange(index: Int, size: Int) {
         val endIndex = index + size
-        for (curIndex in index..endIndex - 1) {
+        for (curIndex in index until endIndex) {
             map.remove(getKeyAt(curIndex))
         }
     }
 
     override fun put(key: Int, value: E) {
-        map.put(key, value)
+        map[key] = value
     }
 
     override fun size(): Int = map.size
@@ -78,7 +78,7 @@ class TestableSparseArray<E>(size: Int) : SparseArray<E>(size) {
     override fun valueAt(index: Int): E? = getValueAt(index)
 
     override fun setValueAt(index: Int, value: E) {
-        map.put(getKeyAt(index), value)
+        map[getKeyAt(index)] = value
     }
 
     override fun indexOfKey(key: Int): Int = getIndexForKey(key)
@@ -88,7 +88,7 @@ class TestableSparseArray<E>(size: Int) : SparseArray<E>(size) {
     override fun clear() = map.clear()
 
     override fun append(key: Int, value: E) {
-        map.put(key, value)
+        map[key] = value
     }
 }
 
@@ -117,7 +117,7 @@ class TestableSparseIntArray(size: Int) : SparseIntArray(size) {
     }
 
     override fun put(key: Int, value: Int) {
-        map.put(key, value)
+        map[key] = value
     }
 
     override fun size(): Int = map.size
@@ -133,6 +133,6 @@ class TestableSparseIntArray(size: Int) : SparseIntArray(size) {
     override fun clear() = map.clear()
 
     override fun append(key: Int, value: Int) {
-        map.put(key, value)
+        map[key] = value
     }
 }
