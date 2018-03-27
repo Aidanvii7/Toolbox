@@ -8,7 +8,7 @@ import com.aidanvii.toolbox.leakingThis
  * Intended to be used with the [bindable] property delegate for data-binding.
  */
 @Suppress(leakingThis)
-abstract class ObservableArchViewModel : NotifiableObservable by NotifiableObservable.delegate() {
+abstract class ObservableViewModel : NotifiableObservable by NotifiableObservable.delegate() {
     init {
         initDelegator(this)
     }
