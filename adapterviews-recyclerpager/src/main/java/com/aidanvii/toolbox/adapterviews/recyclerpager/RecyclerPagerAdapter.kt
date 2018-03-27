@@ -139,7 +139,7 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
      * @param adapterPosition the position in the adapter's data set to which the [ViewHolder] is being bound
      * i.e. moved from left to right in a single swipe.
      */
-    protected open fun onBindViewHolder(viewHolder: ViewHolder, adapterPosition: Int) {}
+    protected abstract fun onBindViewHolder(viewHolder: ViewHolder, adapterPosition: Int)
 
     /**
      * Called when the [RecyclerPagerAdapter] is unbinding a [ViewHolder] at the [adapterPosition]
