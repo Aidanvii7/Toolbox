@@ -19,3 +19,4 @@ include ':adapterviews-databinding-recyclerview'
 
 include ':rxjava-test'
 
+include ':paging'
