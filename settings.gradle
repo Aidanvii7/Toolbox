@@ -2,7 +2,6 @@ include ':common'
 include ':common-test'
 
 include ':databinding'
-include ':databinding-test'
 include ':databinding-arch-viewmodel'
 include ':databinding-bindingadapters'
 

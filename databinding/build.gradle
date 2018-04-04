@@ -33,7 +33,7 @@ dependencies {
 
     kapt "com.android.databinding:compiler:$android_gradle_version"
 
-    testImplementation project(':databinding-test')
+    testImplementation project(':common-test')
 }
 
 repositories {
