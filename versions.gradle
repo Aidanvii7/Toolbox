@@ -1,11 +1,11 @@
 ext {
     min_sdk_version                             = 19
-    target_sdk_version                          = 27
-    compile_sdk_version                         = 27
+    target_sdk_version                          = 26
+    compile_sdk_version                         = 26
     build_tools_version                         = "27.0.3"
 
     android_gradle_version                      = "3.1.0"
-    android_support_version                     = "27.1.0"
+    android_support_version                     = "26.1.0"
 
     android_arch_viewmodel_version              = "1.1.1"
 
