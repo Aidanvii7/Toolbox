@@ -80,11 +80,11 @@ inline fun <V : View, I> V.trackInstance(
 
 inline fun <V : View, I> V.trackValue(
         newValue: I?,
-        @IdRes instanceResId: Int,
+        @IdRes valueResId: Int,
         onDetached: V.(I) -> Unit = {},
         onAttached: V.(I) -> Unit = {}
 ) {
-    ListenerUtil.trackListener(this, instanceResId, newValue).let { oldValue ->
+    ListenerUtil.trackListener(this, valueResId, newValue).let { oldValue ->
         if (oldValue != newValue) {
             oldValue?.let { onDetached(it) }
             newValue?.let { onAttached(it) }
