@@ -98,14 +98,14 @@ inline fun <V : View, I> V.trackValue(
     }
 }
 
-fun <Value> View.getTrackedValue(@IdRes instanceResId: Int): Value? {
-    return ListenerUtil.trackListener<Value>(this, instanceResId, null)?.let {
-        ListenerUtil.trackListener<Value>(this, instanceResId, it)
+fun <Value> View.getTrackedValue(@IdRes valueResId: Int): Value? {
+    return ListenerUtil.trackListener<Value>(this, valueResId, null)?.also { currentValue ->
+        ListenerUtil.trackListener(this, valueResId, currentValue)
     }
 }
 
-fun <Value> View.setTrackedValue(@IdRes instanceResId: Int, value: Value?) {
-    ListenerUtil.trackListener<Value>(this, instanceResId, value)
+fun <Value> View.setTrackedValue(@IdRes valueResId: Int, value: Value) {
+    ListenerUtil.trackListener<Value>(this, valueResId, value)
 }
 
 inline fun <Value> View.onTrackedValue(
