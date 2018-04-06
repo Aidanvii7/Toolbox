@@ -45,6 +45,9 @@ object ListenerUtil : ListenerUtilDelegate {
  * It is a wrapper around [ListenerUtil.trackListener], with less specific naming, as the instance being tracked does not
  * necessarily need to be a listener.
  *
+ * Instances are tracked by referenctial equality rather than structural equality - that is,
+ * a new instance with the same structural equality but different referential equality will trigger an [onDetached] > [onAttached] cycle.
+ *
  * Example usage:
  * ```
  * @BindingAdapter("textWatcher")
@@ -78,6 +81,9 @@ inline fun <V : View, I> V.trackInstance(
     }
 }
 
+/**
+ * Like [trackInstance], though tracks objects based on structural equality.
+ */
 inline fun <V : View, I> V.trackValue(
         newValue: I?,
         @IdRes valueResId: Int,
