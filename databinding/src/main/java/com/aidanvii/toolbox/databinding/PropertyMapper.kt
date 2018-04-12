@@ -2,6 +2,7 @@ package com.aidanvii.toolbox.databinding
 
 import android.app.Application
 import kotlin.reflect.KProperty
+import com.android.databinding.library.baseAdapters.BR
 
 /**
  * Provides a hassle free way of mapping a [KProperty] to an id from a generated `BR` databinding classes.
@@ -21,6 +22,10 @@ object PropertyMapper {
 
     private var delegate: PropertyMapperDelegate = UnitialisedPropertyMapper
     private var locked: Boolean = false
+
+    init {
+        initBRClass(BR::class.java, locked = false)
+    }
 
     @Synchronized
     fun initBRClass(brClass: Class<*>, locked: Boolean = false) {

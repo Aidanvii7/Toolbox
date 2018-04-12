@@ -10,7 +10,7 @@ import org.junit.After
 import org.junit.Test
 import kotlin.reflect.KProperty
 
-class PropertyMapperTest() {
+class PropertyMapperTest {
 
     companion object {
         const val PROPERTY_1_NAME = "property1"
