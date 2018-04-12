@@ -12,7 +12,7 @@ interface ListenerUtilDelegate {
 
 internal class AndroidListenerUtilDelegate : ListenerUtilDelegate {
     override fun <T> trackListener(view: View, listenerResourceId: Int, listener: T?): T? =
-            FrameworkListenerUtil.trackListener(view, listener, listenerResourceId)
+        FrameworkListenerUtil.trackListener(view, listener, listenerResourceId)
 }
 
 object ListenerUtil : ListenerUtilDelegate {
@@ -21,7 +21,7 @@ object ListenerUtil : ListenerUtilDelegate {
     private var delegate: ListenerUtilDelegate = realDelegate
 
     override fun <T> trackListener(view: View, @IdRes listenerResourceId: Int, listener: T?): T? =
-            delegate.trackListener(view, listenerResourceId, listener)
+        delegate.trackListener(view, listenerResourceId, listener)
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     fun stubDelegate(stubDelegate: ListenerUtilDelegate) {
@@ -68,15 +68,15 @@ object ListenerUtil : ListenerUtilDelegate {
  * ```
  */
 inline fun <V : View, I> V.trackInstance(
-        newInstance: I?,
-        @IdRes instanceResId: Int,
-        onDetached: V.(I) -> Unit = {},
-        onAttached: V.(I) -> Unit = {}
+    newInstance: I?,
+    @IdRes instanceResId: Int,
+    onDetached: V.(I) -> Unit = {},
+    onAttached: V.(I) -> Unit = {}
 ) {
     ListenerUtil.trackListener(this, instanceResId, newInstance).let { oldInstance ->
         if (oldInstance !== newInstance) {
-            oldInstance?.let { onDetached(it) }
-            newInstance?.let { onAttached(it) }
+            oldInstance?.let { onDetached(oldInstance) }
+            newInstance?.let { onAttached(newInstance) }
         }
     }
 }
@@ -85,15 +85,37 @@ inline fun <V : View, I> V.trackInstance(
  * Like [trackInstance], though tracks objects based on structural equality.
  */
 inline fun <V : View, I> V.trackValue(
-        newValue: I?,
-        @IdRes valueResId: Int,
-        onNewValue: V.(I) -> Unit = {},
-        onOldValue: V.(I) -> Unit = {}
+    newValue: I?,
+    @IdRes valueResId: Int,
+    onNewValue: V.(I) -> Unit = {},
+    onOldValue: V.(I) -> Unit = {}
 ) {
     ListenerUtil.trackListener(this, valueResId, newValue).let { oldValue ->
         if (oldValue != newValue) {
-            oldValue?.let { onOldValue(it) }
-            newValue?.let { onNewValue(it) }
+            oldValue?.let { onOldValue(oldValue) }
+            newValue?.let { onNewValue(newValue) }
+        }
+    }
+}
+
+/**
+ * Stores the given [newEvent] value on the receiver [View] if [newEvent] is non-null.
+ *
+ * Unlike [trackInstance] and [trackValue], the [onNewEvent] function
+ * will always fire as long as the given [newEvent] is non-null.
+ *
+ * Also unlike [trackInstance] and [trackValue], the [newEvent] value is never unbound
+ * from the receiver [View] - this is so that data bound variables don't trigger
+ * the same event when rebound to the receiver [View] with the same value.
+ */
+inline fun <V : View, I> V.trackEvent(
+    newEvent: I?,
+    @IdRes eventResId: Int,
+    onNewEvent: V.(I) -> Unit = {}
+) {
+    if (newEvent != null) {
+        ListenerUtil.trackListener(this, eventResId, newEvent).let { _ ->
+            onNewEvent(newEvent)
         }
     }
 }
@@ -109,16 +131,16 @@ fun <Value> View.setTrackedValue(@IdRes valueResId: Int, value: Value) {
 }
 
 inline fun <Value> View.onTrackedValue(
-        @IdRes instanceResId: Int,
-        onNextValue: (Value) -> Unit
+    @IdRes instanceResId: Int,
+    onNextValue: (Value) -> Unit
 ) {
     onTrackedValue<Value>(null, instanceResId, onNextValue)
 }
 
 inline fun <Value> View.onTrackedValue(
-        newValue: Value?,
-        @IdRes instanceResId: Int,
-        onNextValue: (Value) -> Unit
+    newValue: Value?,
+    @IdRes instanceResId: Int,
+    onNextValue: (Value) -> Unit
 ) {
     ListenerUtil.trackListener(this, instanceResId, newValue).let { oldValue ->
         if (newValue == null) {
@@ -133,9 +155,9 @@ inline fun <Value> View.onTrackedValue(
 }
 
 inline fun <V : View, I> V.onTrackedInstance(
-        @IdRes instanceResId: Int,
-        provideNewInstance: V.() -> I,
-        onInstance: I.() -> Unit
+    @IdRes instanceResId: Int,
+    provideNewInstance: V.() -> I,
+    onInstance: I.() -> Unit
 ) {
     val instance = ListenerUtil.trackListener<I>(this, instanceResId)
             ?: provideNewInstance()
