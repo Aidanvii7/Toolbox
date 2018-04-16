@@ -6,31 +6,38 @@ import android.support.annotation.RestrictTo
 import android.view.View
 import android.databinding.adapters.ListenerUtil as FrameworkListenerUtil
 
-interface ListenerUtilDelegate {
-    fun <T> trackListener(view: View, @IdRes listenerResourceId: Int, listener: T? = null): T?
+interface ViewTagTrackerDelegate {
+    fun <T> trackObject(view: View, @IdRes objectResourceId: Int, `object`: T? = null): T?
+    fun <T> getObject(view: View, @IdRes objectResourceId: Int): T?
 }
 
-internal class AndroidListenerUtilDelegate : ListenerUtilDelegate {
-    override fun <T> trackListener(view: View, listenerResourceId: Int, listener: T?): T? =
-        FrameworkListenerUtil.trackListener(view, listener, listenerResourceId)
+internal class AndroidViewTagTrackerDelegate : ViewTagTrackerDelegate {
+    override fun <T> trackObject(view: View, objectResourceId: Int, `object`: T?): T? =
+        FrameworkListenerUtil.trackListener(view, `object`, objectResourceId)
+
+    override fun <T> getObject(view: View, objectResourceId: Int): T? =
+        FrameworkListenerUtil.getListener(view, objectResourceId)
 }
 
-object ListenerUtil : ListenerUtilDelegate {
+object ViewTagTracker : ViewTagTrackerDelegate {
 
-    private var realDelegate: ListenerUtilDelegate = AndroidListenerUtilDelegate()
-    private var delegate: ListenerUtilDelegate = realDelegate
+    private val androidDelegate = AndroidViewTagTrackerDelegate()
+    private var delegate: ViewTagTrackerDelegate = androidDelegate
 
-    override fun <T> trackListener(view: View, @IdRes listenerResourceId: Int, listener: T?): T? =
-        delegate.trackListener(view, listenerResourceId, listener)
+    override fun <T> trackObject(view: View, @IdRes objectResourceId: Int, `object`: T?): T? =
+        delegate.trackObject(view, objectResourceId, `object`)
+
+    override fun <T> getObject(view: View, objectResourceId: Int): T? =
+        delegate.getObject(view, objectResourceId)
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    fun stubDelegate(stubDelegate: ListenerUtilDelegate) {
+    fun stubDelegate(stubDelegate: ViewTagTrackerDelegate) {
         delegate = stubDelegate
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     fun unstubDelegate() {
-        delegate = realDelegate
+        delegate = androidDelegate
     }
 }
 
@@ -42,7 +49,7 @@ object ListenerUtil : ListenerUtilDelegate {
  * This is useful for add*Listener and remove*Listener methods,
  * where associated [BindingAdapter] methods must replace the previously added listener, or remove it.
  *
- * It is a wrapper around [ListenerUtil.trackListener], with less specific naming, as the instance being tracked does not
+ * It is a wrapper around [ViewTagTracker.trackObject], with less specific naming, as the instance being tracked does not
  * necessarily need to be a listener.
  *
  * Instances are tracked by referential equality rather than structural equality - that is,
@@ -62,7 +69,8 @@ object ListenerUtil : ListenerUtilDelegate {
  *              onDetached = {
  *                  // [it] is the previously added listener, called when non-null.
  *                  removeTextChangedListener(it)
- *              })
+ *              }
+ *     )
  * }
  *
  * ```
@@ -73,7 +81,7 @@ inline fun <V : View, I> V.trackInstance(
     onDetached: V.(I) -> Unit = {},
     onAttached: V.(I) -> Unit = {}
 ) {
-    ListenerUtil.trackListener(this, instanceResId, newInstance).let { oldInstance ->
+    ViewTagTracker.trackObject(this, instanceResId, newInstance).let { oldInstance ->
         if (oldInstance !== newInstance) {
             oldInstance?.let { onDetached(oldInstance) }
             newInstance?.let { onAttached(newInstance) }
@@ -90,7 +98,7 @@ inline fun <V : View, I> V.trackValue(
     onNewValue: V.(I) -> Unit = {},
     onOldValue: V.(I) -> Unit = {}
 ) {
-    ListenerUtil.trackListener(this, valueResId, newValue).let { oldValue ->
+    ViewTagTracker.trackObject(this, valueResId, newValue).let { oldValue ->
         if (oldValue != newValue) {
             oldValue?.let { onOldValue(oldValue) }
             newValue?.let { onNewValue(newValue) }
@@ -103,31 +111,25 @@ inline fun <V : View, I> V.trackValue(
  *
  * Unlike [trackInstance] and [trackValue], the [onNewEvent] function
  * will always fire as long as the given [newEvent] is non-null.
- *
- * Also unlike [trackInstance] and [trackValue], the [newEvent] value is never unbound
- * from the receiver [View] - this is so that data bound variables don't trigger
- * the same event when rebound to the receiver [View] with the same value.
  */
 inline fun <V : View, I> V.trackEvent(
     newEvent: I?,
     @IdRes eventResId: Int,
     onNewEvent: V.(I) -> Unit = {}
 ) {
-    if (newEvent != null) {
-        ListenerUtil.trackListener(this, eventResId, newEvent).let { _ ->
-            onNewEvent(newEvent)
-        }
+    ViewTagTracker.trackObject(this, eventResId, newEvent).let { _ ->
+        newEvent?.let { onNewEvent(newEvent) }
     }
 }
 
-fun <Value> View.getTrackedValue(@IdRes valueResId: Int): Value? {
-    return ListenerUtil.trackListener<Value>(this, valueResId, null)?.also { currentValue ->
-        ListenerUtil.trackListener(this, valueResId, currentValue)
-    }
-}
+fun <Value> View.getTrackedValue(@IdRes valueResId: Int): Value? =
+    ViewTagTracker.getObject<Value>(this, valueResId)
 
-fun <Value> View.setTrackedValue(@IdRes valueResId: Int, value: Value) {
-    ListenerUtil.trackListener<Value>(this, valueResId, value)
+fun <Value> View.setTrackedValue(
+    @IdRes valueResId: Int,
+    value: Value
+) {
+    ViewTagTracker.trackObject(this, valueResId, value)
 }
 
 inline fun <Value> View.onTrackedValue(
@@ -142,9 +144,9 @@ inline fun <Value> View.onTrackedValue(
     @IdRes instanceResId: Int,
     onNextValue: (Value) -> Unit
 ) {
-    ListenerUtil.trackListener(this, instanceResId, newValue).let { oldValue ->
+    ViewTagTracker.trackObject(this, instanceResId, newValue).let { oldValue ->
         if (newValue == null) {
-            ListenerUtil.trackListener(this, instanceResId, oldValue)
+            ViewTagTracker.trackObject(this, instanceResId, oldValue)
             if (oldValue != newValue) {
                 onNextValue(oldValue)
             }
@@ -159,8 +161,5 @@ inline fun <V : View, I> V.onTrackedInstance(
     provideNewInstance: V.() -> I,
     onInstance: I.() -> Unit
 ) {
-    val instance = ListenerUtil.trackListener<I>(this, instanceResId)
-            ?: provideNewInstance()
-    ListenerUtil.trackListener(this, instanceResId, instance)
-    instance.onInstance()
+    (ViewTagTracker.getObject<I>(this, instanceResId) ?: provideNewInstance()).onInstance()
 }
