@@ -10,7 +10,7 @@ class BindableEventTest {
     val mockBlock = mock<Consumer<Int>>()
 
     val givenValue = 1
-    val tested = BindableEvent(givenValue)
+    val tested = givenValue.toBindableEvent()
 
     @Test
     fun `processEvent is idempotent`() {

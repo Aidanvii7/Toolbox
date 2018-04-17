@@ -4,9 +4,10 @@ import android.databinding.BindingConversion
 import android.support.annotation.MainThread
 import android.support.annotation.RestrictTo
 
-data class BindableEvent<out T>(val value: T) {
-
-    private var processed = false
+data class BindableEvent<out T> internal constructor(
+    val value: T,
+    private var processed: Boolean
+) {
 
     @MainThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -19,4 +20,4 @@ inline fun <T, R> BindableEvent<T>.processEvent(block: (T) -> R) {
 }
 
 @BindingConversion
-fun <T> T.toBindableEvent() = BindableEvent(this)
+fun <T> T.toBindableEvent() = BindableEvent(this, false)
