@@ -36,8 +36,8 @@ internal fun <Item : BindableAdapterItem> RecyclerView._bind(
                     attachedBinder.adapter.runAfterUpdate = {
                         layoutManager?.onRestoreInstanceState(layoutManagerState)
                     }
-                    layoutManager = layoutManagerFactory(context)
                 }
+                layoutManager = layoutManagerFactory(context)
             }
         }
     )
