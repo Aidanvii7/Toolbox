@@ -8,50 +8,55 @@ import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.trackInstance
 
 @BindingAdapter(
-        "android:binder",
-        "android:items",
-        "android:onItemBoundAt", requireAll = false)
+    "android:binder",
+    "android:items",
+    "android:onItemBoundAt", requireAll = false
+)
 internal fun <Item : BindableAdapterItem> RecyclerView._bind(
-        binder: BindingRecyclerViewBinder<Item>?,
-        items: List<Item>?,
-        itemBoundListener: IntBindingConsumer?
+    binder: BindingRecyclerViewBinder<Item>?,
+    items: List<Item>?,
+    itemBoundListener: IntBindingConsumer?
 ) {
-    if (binder != null && items != null) {
-        binder.adapter.items = items
+    val localAdapter = binder?.adapter
+    if (localAdapter != null && items != null) {
+        localAdapter.items = items
     }
     trackInstance(
-            newInstance = binder,
-            instanceResId = R.id.list_binder,
-            onDetached = { detachedBinder ->
-                detachedBinder.layoutManagerState = layoutManager?.onSaveInstanceState()
-                detachedBinder.adapter.itemBoundListener = null
-            },
-            onAttached = { attachedBinder ->
-                itemBoundListener?.let { attachedBinder.adapter.itemBoundListener = it }
-                adapter = attachedBinder.adapter
-                attachedBinder.apply {
-                    layoutManagerState?.let { layoutManagerState ->
-                        attachedBinder.adapter.runAfterUpdate = { layoutManager?.onRestoreInstanceState(layoutManagerState) }
+        newInstance = binder,
+        instanceResId = R.id.list_binder,
+        onDetached = { detachedBinder ->
+            detachedBinder.layoutManagerState = layoutManager?.onSaveInstanceState()
+            detachedBinder.adapter.itemBoundListener = null
+        },
+        onAttached = { attachedBinder ->
+            itemBoundListener?.let { attachedBinder.adapter.itemBoundListener = it }
+            adapter = attachedBinder.adapter
+            attachedBinder.apply {
+                layoutManagerState?.let { layoutManagerState ->
+                    attachedBinder.adapter.runAfterUpdate = {
+                        layoutManager?.onRestoreInstanceState(layoutManagerState)
                     }
+                    layoutManager = layoutManagerFactory(context)
                 }
             }
+        }
     )
 }
 
 @BindingAdapter("android:layoutManager")
 internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
     trackInstance(
-            newInstance = layoutManager,
-            instanceResId = R.id.layout_manager,
-            onDetached = { this.layoutManager = null },
-            onAttached = { this.layoutManager = it })
+        newInstance = layoutManager,
+        instanceResId = R.id.layout_manager,
+        onDetached = { this.layoutManager = null },
+        onAttached = { this.layoutManager = it })
 }
 
 @BindingAdapter("android:itemDecoration")
 internal fun RecyclerView._bind(itemDecoration: RecyclerView.ItemDecoration?) {
     trackInstance(
-            newInstance = itemDecoration,
-            instanceResId = R.id.item_decoration,
-            onDetached = { this.removeItemDecoration(it) },
-            onAttached = { this.addItemDecoration(it) })
+        newInstance = itemDecoration,
+        instanceResId = R.id.item_decoration,
+        onDetached = { this.removeItemDecoration(it) },
+        onAttached = { this.addItemDecoration(it) })
 }

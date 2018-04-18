@@ -1,8 +1,10 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
+import android.content.Context
 import android.os.Parcelable
 import android.support.annotation.RestrictTo
 import android.support.v7.util.DiffUtil
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
@@ -51,6 +53,7 @@ import com.aidanvii.toolbox.delegates.weak.weakLazy
  *              areItemsTheSame = { oldItem, newItem -> oldItem.id == newItem.id },
  *              areContentsTheSame = { oldItem, newItem -> oldItem.content == oldItem.content },
  *              adapterNotificationEnabled = true,
+ *              layoutManagerFactory = { LinearLayoutManager(it) }
  *              adapterFactory = { MyCustomBindableAdapter(it) }
  *      )
  * }
@@ -76,11 +79,12 @@ import com.aidanvii.toolbox.delegates.weak.weakLazy
  * @param adapterFactory optional factory to provide a custom implementation of [BindingRecyclerViewAdapter], allowing you to override methods from [BindableAdapter]
  */
 class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
-        hasMultipleViewTypes: Boolean = true,
-        val adapterNotificationEnabled: Boolean = false,
-        areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
-        areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
-        val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) }
+    hasMultipleViewTypes: Boolean = true,
+    private val adapterNotificationEnabled: Boolean = false,
+    areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
+    areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
+    internal val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
+    private val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) }
 ) : ListBinder<Item>(
         hasMultipleViewTypes = hasMultipleViewTypes,
         areItemsTheSame = areItemsTheSame,
