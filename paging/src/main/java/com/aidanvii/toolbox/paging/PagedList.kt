@@ -21,7 +21,7 @@ private val onErrorStub: Consumer<Throwable> = { throw OnErrorNotImplementedExce
 /**
  * A [PagedList] is a form of list that lazily loads its data in chunks ([DataSource.Page]) from a [DataSource].
  *
- * Items can be retrieved with [get] or simply accessed via [accessElement] - both may trigger a call to [DataSource.loadPage].
+ * Items can be retrieved with [get] or simply accessed via [loadAround] - both may trigger a call to [DataSource.loadPage].
  *
  * To listen for changes, you may observe either [observableList], [observableListNonNull] or [observableChangePayload].
  *
@@ -35,14 +35,14 @@ private val onErrorStub: Consumer<Throwable> = { throw OnErrorNotImplementedExce
  *
  * 4th - Apply the calculated [DiffUtil.DiffResult] to the [RecyclerView.Adapter] (immediately after last step)
  *
- * 5th - Forward calls from the [RecyclerView.Adapter.onBindViewHolder] to [PagedList.accessElement] with the adapter position to trigger pagination calls to the provided [DataSource]
+ * 5th - Forward calls from the [RecyclerView.Adapter.onBindViewHolder] to [PagedList.loadAround] with the adapter position to trigger pagination calls to the provided [DataSource]
  *
  * @param dataSource The [DataSource] implementation that will provide the data.
  * @param pageSize The length of data that will determine the [DataSource.Page.Builder.pageSize]. May by [UNDEFINED] if unknown.
- * @param prefetchDistance Determines the range of elements to scan when [get] or [accessElement] is called. If elements in the scanned range are [ElementState.EMPTY] or [ElementState.DIRTY], [DataSource.loadPage] will be called at least once.
+ * @param prefetchDistance Determines the range of elements to scan when [get] or [loadAround] is called. If elements in the scanned range are [ElementState.EMPTY] or [ElementState.DIRTY], [DataSource.loadPage] will be called at least once.
  * @param loadInitialPages Optional [IntArray] of page indexes. Non-zero indexing (first page is 1).
  * @param publishChangesOnInit Determines whether any subscribers to [observableList], [observableListNonNull] or [observableChangePayload] will be notified upon subscription when no changes to the data have been made (the initial empty state).
- * @param synchroniseAccess Determines whether access to the internal data is synchronised for the case where [get] or [accessElement] may be called from different threads.
+ * @param synchroniseAccess Determines whether access to the internal data is synchronised for the case where [get] or [loadAround] may be called from different threads.
  * @param onError Errors when loading pages will be passed here. The default implementation will throw a [OnErrorNotImplementedException].
  * @param pageLoader The [PageLoader] that coordinates calls to the provided [DataSource].
  */
@@ -179,7 +179,7 @@ class PagedList<T : Any>(
     /**
      * An Observable List of the paged data. List elements may be null.
      */
-    val observableList get(): Observable<List<T?>> = changeSubject.distinctUntilChanged()
+    val observableList get(): Observable<List<T?>> = changeSubject.distinctUntilChanged().doOnDispose { dispose() }
 
     /**
      * Convenience version of [observableList] that provides non-null elements.
@@ -254,7 +254,7 @@ class PagedList<T : Any>(
      * @param index the element to 'access'
      * @param growIfNecessary optional param that will cause the list to grow to the correct size if [index] exceeds [size] - 1
      */
-    fun accessElement(@IntRange(from = 0) index: Int, growIfNecessary: Boolean = false) {
+    fun loadAround(@IntRange(from = 0) index: Int, growIfNecessary: Boolean = false) {
         elements.runSynchronised {
             if (growIfNecessary) {
                 growIfNecessary(index + 1)
@@ -266,11 +266,11 @@ class PagedList<T : Any>(
     }
 
     /**
-     * Similar to [accessElement] but works with pageNumber indexes as opposed to element indexes.
+     * Similar to [loadAround] but works with pageNumber indexes as opposed to element indexes.
      * @param pageNumber a non-zero based index for the pageNumber (the first pageNumber is not 0, it is 1)
      * @param growIfNecessary optional param that will cause the list to grow to the correct size if [pageNumber] exceeds [size] + [pageSize] - 1
      */
-    fun accessPage(pageNumber: Int, growIfNecessary: Boolean = false) {
+    fun loadAroundPage(pageNumber: Int, growIfNecessary: Boolean = false) {
         elements.runSynchronised {
             startingIndexOfPage(pageNumber).let { pageStartingIndex ->
                 if (growIfNecessary) {
@@ -287,11 +287,11 @@ class PagedList<T : Any>(
      * Retrieves the element at the given index which may be null,
      * or a default 'empty' element from [DataSource.emptyAt] from the provided [DataSource].
      *
-     * Also calls [accessElement].
+     * Also calls [loadAround].
      */
     fun get(index: Int): T? {
         return elements.runSynchronised {
-            accessElement(index, growIfNecessary = false)
+            loadAround(index, growIfNecessary = false)
             peek(index)
         }
     }
@@ -300,7 +300,7 @@ class PagedList<T : Any>(
      * Retrieves the element at the given index which may be null,
      * or a default 'empty' element from [DataSource.emptyAt] from the provided [DataSource].
      *
-     * Unlike [get], this will not call [accessElement], so no pagination calls will be triggered.
+     * Unlike [get], this will not call [loadAround], so no pagination calls will be triggered.
      */
     fun peek(index: Int): T? = elements.runSynchronised { get(index) }
 
@@ -447,7 +447,7 @@ class PagedList<T : Any>(
         dispose()
         this.lastAccessedIndex.let { lastAccessedIndex ->
             if (refreshElementsInRange) {
-                accessElement(lastAccessedIndex)
+                loadAround(lastAccessedIndex)
             }
         }
     }

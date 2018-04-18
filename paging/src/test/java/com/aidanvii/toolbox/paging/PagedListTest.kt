@@ -38,7 +38,7 @@ class PagedListTest {
     fun `accessing arbitrary index non-incrementally triggers loadPage for pages in range with prefetch zero`() {
         PagedList(dataSource, pageSize = 10).apply {
 
-            accessElement(15)
+            loadAround(15)
             dataSource.testScheduler.triggerActions()
 
             dataSource.testObserver.assertValueCount(1)
@@ -52,7 +52,7 @@ class PagedListTest {
     fun `accessing arbitrary index non-incrementally triggers loadPage for pages in range with prefetch non-zero`() {
         PagedList(dataSource, pageSize = 10, prefetchDistance = 6).apply {
 
-            accessElement(15)
+            loadAround(15)
             dataSource.testScheduler.triggerActions()
 
             dataSource.testObserver.assertValueCount(3)
@@ -74,9 +74,9 @@ class PagedListTest {
     @Test
     fun `does not call loadPage for pages that already have in-flight requests when element in page is accessed`() {
         PagedList(dataSource, pageSize = 10).apply {
-            accessElement(0)
+            loadAround(0)
 
-            accessElement(0)
+            loadAround(0)
 
             dataSource.testScheduler.triggerActions()
             dataSource.testObserver.assertValueCount(1)
@@ -86,10 +86,10 @@ class PagedListTest {
     @Test
     fun `does not call loadPage for pages that have are already loaded when get is called`() {
         PagedList(dataSource, pageSize = 10).apply {
-            accessElement(0)
+            loadAround(0)
             `complete in-flight requests`()
 
-            accessElement(0)
+            loadAround(0)
 
             dataSource.testScheduler.triggerActions()
             dataSource.testObserver.assertValueCount(0)
@@ -104,7 +104,7 @@ class PagedListTest {
                 get(randomIndex)
 
                 inOrder(this).run {
-                    verify(this@apply).accessElement(randomIndex, growIfNecessary = false)
+                    verify(this@apply).loadAround(randomIndex, growIfNecessary = false)
                     verify(this@apply).peek(randomIndex)
                     verifyNoMoreInteractions()
                 }
@@ -151,7 +151,7 @@ class PagedListTest {
     fun `list grows when element above maximum size is accessed`() {
         PagedList(dataSource, pageSize = 10).apply {
 
-            accessElement(122, growIfNecessary = true)
+            loadAround(122, growIfNecessary = true)
 
             size `should be equal to` 123
         }
@@ -162,7 +162,7 @@ class PagedListTest {
         dataSource.dataCount.onNext(0)
         PagedList(dataSource, pageSize = 10).apply {
 
-            accessElement(122, growIfNecessary = true)
+            loadAround(122, growIfNecessary = true)
 
             size `should be equal to` 123
         }
@@ -172,7 +172,7 @@ class PagedListTest {
     fun `list grows when page above maximum size is accessed`() {
         PagedList(dataSource, pageSize = 10).apply {
 
-            accessPage(11, growIfNecessary = true)
+            loadAroundPage(11, growIfNecessary = true)
 
             size `should be equal to` 110
         }
@@ -183,7 +183,7 @@ class PagedListTest {
         dataSource.dataCount.onNext(0)
         PagedList(dataSource, pageSize = 10).apply {
 
-            accessPage(11, growIfNecessary = true)
+            loadAroundPage(11, growIfNecessary = true)
 
             size `should be equal to` 110
         }
@@ -242,20 +242,20 @@ class PagedListTest {
     }
 
     @Test
-    fun `throws IndexOutOfBoundsException when accessElement invoked with out of bound element and growIfNecessary false`() {
+    fun `throws IndexOutOfBoundsException when loadAround invoked with out of bound element and growIfNecessary false`() {
         PagedList(dataSource, pageSize = 10).apply {
-            val accessElement = { accessElement(100, growIfNecessary = false) }
+            val loadAround = { loadAround(100, growIfNecessary = false) }
 
-            accessElement `should throw` IndexOutOfBoundsException::class
+            loadAround `should throw` IndexOutOfBoundsException::class
         }
     }
 
     @Test
-    fun `throws IndexOutOfBoundsException when accessPage invoked with out of bound page and growIfNecessary false`() {
+    fun `throws IndexOutOfBoundsException when loadAroundPage invoked with out of bound page and growIfNecessary false`() {
         PagedList(dataSource, pageSize = 10).apply {
-            val accessPage = { accessPage(11, growIfNecessary = false) }
+            val loadAroundPage = { loadAroundPage(11, growIfNecessary = false) }
 
-            accessPage `should throw` IndexOutOfBoundsException::class
+            loadAroundPage `should throw` IndexOutOfBoundsException::class
         }
     }
 
@@ -421,7 +421,7 @@ class PagedListTest {
         dataSource.dataCount.onNext(21)
         PagedList(dataSource, pageSize = 10).apply {
 
-            accessElement(20)
+            loadAround(20)
             dataSource.testScheduler.triggerActions()
 
             verifyPageRange(startPage = 1, endPage = 2, verify = VerifyMode.PEEK_EMPTY)
@@ -432,8 +432,8 @@ class PagedListTest {
     @Test
     fun `invalidateAsEmpty resets loaded elements to null with ElementState EMPTY`() {
         PagedList(dataSource, pageSize = 10, loadInitialPages = intArrayOf(1, 3, 5)).apply {
-            accessPage(7)
-            accessPage(9)
+            loadAroundPage(7)
+            loadAroundPage(9)
             dataSource.testScheduler.triggerActions()
             verifyPageRange(startPage = 1, verify = VerifyMode.PEEK_LOADED)
             verifyPageRange(startPage = 2, verify = VerifyMode.PEEK_EMPTY)
@@ -489,7 +489,7 @@ class PagedListTest {
             verifyPageRange(startPage = 10, verify = VerifyMode.PEEK_EMPTY)
             `complete in-flight requests`()
 
-            accessPage(5)
+            loadAroundPage(5)
             invalidateAsEmpty(refreshElementsInRange = true)
             dataSource.testScheduler.triggerActions()
 
@@ -535,7 +535,7 @@ class PagedListTest {
             verifyPageRange(startPage = 9, verify = VerifyMode.GET_LOADING)
             dataSource.testScheduler.triggerActions()
 
-            accessPage(5)
+            loadAroundPage(5)
             invalidateLoadedAsDirty(refreshElementsInRange = true)
 
             verifyPageRange(startPage = 1, verify = VerifyMode.PEEK_DIRTY)
