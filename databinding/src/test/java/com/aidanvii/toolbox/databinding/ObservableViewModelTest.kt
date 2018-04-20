@@ -9,23 +9,23 @@ class ObservableViewModelTest {
     val spiedTested = TestObservableViewModel().spied()
 
     @Test
-    fun `clear calls onCleared`() {
-        spiedTested.clear()
+    fun `dispose calls onCleared`() {
+        spiedTested.dispose()
 
-        verify(spiedTested).onCleared()
+        verify(spiedTested).onDisposed()
     }
 
     @Test
-    fun `clear is idempotent`() {
-        spiedTested.clear()
-        spiedTested.clear()
+    fun `dispose is idempotent`() {
+        spiedTested.dispose()
+        spiedTested.dispose()
 
-        verify(spiedTested).onCleared()
+        verify(spiedTested).onDisposed()
     }
 
     class TestObservableViewModel : ObservableViewModel() {
 
-        public override fun onCleared() {
+        public override fun onDisposed() {
 
         }
     }
