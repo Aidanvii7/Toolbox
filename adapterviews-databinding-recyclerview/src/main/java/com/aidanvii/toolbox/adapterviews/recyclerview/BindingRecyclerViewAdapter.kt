@@ -27,16 +27,17 @@ import io.reactivex.schedulers.Schedulers
  */
 @Suppress(leakingThis)
 open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
-        builder: Builder<Item>
-) : RecyclerView.Adapter<BindingRecyclerViewItemViewHolder<*, Item>>(), BindableAdapter<Item, BindingRecyclerViewItemViewHolder<*, Item>> {
+    builder: Builder<Item>
+) : RecyclerView.Adapter<BindingRecyclerViewItemViewHolder<*, Item>>(),
+    BindableAdapter<Item, BindingRecyclerViewItemViewHolder<*, Item>> {
 
     class Builder<Item : BindableAdapterItem>
     internal constructor(
-            internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerViewItemViewHolder<*, Item>>,
-            internal val areItemsTheSame: (old: Item, new: Item) -> Boolean,
-            internal val areContentsTheSame: (old: Item, new: Item) -> Boolean,
-            internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
-            internal val bindingInflater: BindingInflater
+        internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerViewItemViewHolder<*, Item>>,
+        internal val areItemsTheSame: (old: Item, new: Item) -> Boolean,
+        internal val areContentsTheSame: (old: Item, new: Item) -> Boolean,
+        internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
+        internal val bindingInflater: BindingInflater
     )
 
     private var nextPropertyChangePayload: AdapterNotifier.ChangePayload? = null
@@ -46,8 +47,9 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     override var items: List<Item>
         get() = _items
         set(newItems) {
-            disposable?.dispose()
-            disposable = Single.just(createDiffCallback(oldItems = _items, newItems = newItems))
+            if (newItems !== _items) {
+                disposable?.dispose()
+                disposable = Single.just(createDiffCallback(oldItems = _items, newItems = newItems))
                     .subscribeOn(Schedulers.computation())
                     .map { it.toChangePayload() }
                     .observeOn(AndroidSchedulers.mainThread())
@@ -61,6 +63,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
                             null
                         }
                     }
+            }
         }
 
     private val delegate = builder.delegate.also { it.bindableAdapter = this }
@@ -77,24 +80,40 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
 
     final override fun getItem(position: Int): Item = super.getItem(position)
 
-    final override fun getItemViewType(position: Int): Int = viewTypeHandler.getItemViewType(position)
+    final override fun getItemViewType(position: Int): Int =
+        viewTypeHandler.getItemViewType(position)
 
-    internal fun getItemPositionFromBindableItem(bindableItem: Any): Int? = items.findIndex { it.bindableItem === bindableItem }
+    internal fun getItemPositionFromBindableItem(bindableItem: Any): Int? =
+        items.findIndex { it.bindableItem === bindableItem }
 
-    final override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingRecyclerViewItemViewHolder<*, Item> =
-            delegate.onCreate(parent, viewType)
+    final override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): BindingRecyclerViewItemViewHolder<*, Item> =
+        delegate.onCreate(parent, viewType)
 
-    final override fun createWith(bindingResourceId: Int, viewDataBinding: ViewDataBinding): BindingRecyclerViewItemViewHolder<*, Item> =
-            BindingRecyclerViewItemViewHolder(
-                    bindingResourceId = bindingResourceId,
-                    viewDataBinding = viewDataBinding)
+    final override fun createWith(
+        bindingResourceId: Int,
+        viewDataBinding: ViewDataBinding
+    ): BindingRecyclerViewItemViewHolder<*, Item> =
+        BindingRecyclerViewItemViewHolder(
+            bindingResourceId = bindingResourceId,
+            viewDataBinding = viewDataBinding
+        )
 
-    final override fun onBindViewHolder(holder: BindingRecyclerViewItemViewHolder<*, Item>, position: Int, payloads: List<Any>) {
+    final override fun onBindViewHolder(
+        holder: BindingRecyclerViewItemViewHolder<*, Item>,
+        position: Int,
+        payloads: List<Any>
+    ) {
         nextPropertyChangePayload = getChangedProperties(payloads)
         onBindViewHolder(holder, position)
     }
 
-    final override fun onInterceptOnBind(viewHolder: BindingRecyclerViewItemViewHolder<*, Item>, adapterPosition: Int): Boolean {
+    final override fun onInterceptOnBind(
+        viewHolder: BindingRecyclerViewItemViewHolder<*, Item>,
+        adapterPosition: Int
+    ): Boolean {
         return nextPropertyChangePayload?.let {
             onPartialBindViewHolder(it)
             nextPropertyChangePayload = null
@@ -102,7 +121,10 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         } ?: false
     }
 
-    final override fun onBindViewHolder(holder: BindingRecyclerViewItemViewHolder<*, Item>, position: Int) {
+    final override fun onBindViewHolder(
+        holder: BindingRecyclerViewItemViewHolder<*, Item>,
+        position: Int
+    ) {
         delegate.onBind(holder, position)
     }
 
@@ -121,14 +143,14 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     }
 
     private fun getChangedProperties(payloads: List<Any>): AdapterNotifier.ChangePayload? =
-            // changed payload may contain a single AdapterNotifier.ChangePayload or a list of custom payloads.
-            // The AdapterNotifier.ChangePayload should contain the BR IDs that have changed.
-            payloads.getOrNull(0)?.let {
-                (it as? AdapterNotifier.ChangePayload) ?: throwCustomPayloadsNotSupported(it)
-            }
+    // changed payload may contain a single AdapterNotifier.ChangePayload or a list of custom payloads.
+    // The AdapterNotifier.ChangePayload should contain the BR IDs that have changed.
+        payloads.getOrNull(0)?.let {
+            (it as? AdapterNotifier.ChangePayload) ?: throwCustomPayloadsNotSupported(it)
+        }
 
     private fun throwCustomPayloadsNotSupported(unsupportedPayload: Any): Nothing =
-            throw UnsupportedOperationException("Custom payload of type: ${unsupportedPayload::class.java} not supported.")
+        throw UnsupportedOperationException("Custom payload of type: ${unsupportedPayload::class.java} not supported.")
 
     private fun onPartialBindViewHolder(changePayload: AdapterNotifier.ChangePayload) {
         changePayload.apply {
@@ -143,21 +165,22 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     @MainThread
     private fun createDiffCallback(oldItems: List<Item>, newItems: List<Item>): DiffCallback<Item> {
         return diffCallback(
-                oldItems = oldItems,
-                newItems = newItems,
-                areItemsTheSame = areItemsTheSame,
-                areContentsTheSame = areContentsTheSame)
+            oldItems = oldItems,
+            newItems = newItems,
+            areItemsTheSame = areItemsTheSame,
+            areContentsTheSame = areContentsTheSame
+        )
     }
 
     @WorkerThread
     private fun DiffCallback<Item>.toChangePayload() =
-            ChangePayload(
-                    allItems = newItems,
-                    diffResult = DiffUtil.calculateDiff(this)
-            )
+        ChangePayload(
+            allItems = newItems,
+            diffResult = DiffUtil.calculateDiff(this)
+        )
 
     private data class ChangePayload<out Item : BindableAdapterItem>(
-            val allItems: List<Item>,
-            val diffResult: DiffUtil.DiffResult
+        val allItems: List<Item>,
+        val diffResult: DiffUtil.DiffResult
     )
 }

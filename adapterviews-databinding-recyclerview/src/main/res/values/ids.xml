@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="list_binder" type="id" />
-    <item name="layout_manager" type="id" />
-    <item name="item_decoration" type="id" />
+    <id name="list_binder" />
+    <id name="layout_manager" />
+    <id name="item_decoration" />
+    <id name="list_items" />
 </resources>

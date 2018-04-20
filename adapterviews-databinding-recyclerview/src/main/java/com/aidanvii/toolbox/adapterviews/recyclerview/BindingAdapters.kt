@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.recyclerview.R
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
+import com.aidanvii.toolbox.databinding.getTrackedValue
 import com.aidanvii.toolbox.databinding.trackInstance
 
 @BindingAdapter(
@@ -18,9 +19,14 @@ internal fun <Item : BindableAdapterItem> RecyclerView._bind(
     itemBoundListener: IntBindingConsumer?
 ) {
     val localAdapter = binder?.adapter
-    if (localAdapter != null && items != null) {
-        localAdapter.items = items
-    }
+    setItemsOnAdapter(localAdapter, items)
+    rebind(binder, itemBoundListener)
+}
+
+private fun <Item : BindableAdapterItem> RecyclerView.rebind(
+    binder: BindingRecyclerViewBinder<Item>?,
+    itemBoundListener: IntBindingConsumer?
+) {
     trackInstance(
         newInstance = binder,
         instanceResId = R.id.list_binder,
@@ -29,18 +35,26 @@ internal fun <Item : BindableAdapterItem> RecyclerView._bind(
             detachedBinder.adapter.itemBoundListener = null
         },
         onAttached = { attachedBinder ->
-            itemBoundListener?.let { attachedBinder.adapter.itemBoundListener = it }
-            adapter = attachedBinder.adapter
-            attachedBinder.apply {
-                layoutManagerState?.let { layoutManagerState ->
-                    attachedBinder.adapter.runAfterUpdate = {
-                        layoutManager?.onRestoreInstanceState(layoutManagerState)
-                    }
-                }
-                layoutManager = layoutManagerFactory(context)
+            val localAdapter = attachedBinder.adapter
+            if (itemBoundListener != null) {
+                localAdapter.itemBoundListener = itemBoundListener
             }
+            adapter = localAdapter
+            localAdapter.runAfterUpdate = {
+                layoutManager?.onRestoreInstanceState(attachedBinder.layoutManagerState)
+            }
+            layoutManager = attachedBinder.layoutManagerFactory(context)
         }
     )
+}
+
+private fun <Item : BindableAdapterItem> setItemsOnAdapter(
+    adapter: BindingRecyclerViewAdapter<Item>?,
+    items: List<Item>?
+) {
+    if (adapter != null && items != null) {
+        adapter.items = items
+    }
 }
 
 @BindingAdapter("android:layoutManager")
