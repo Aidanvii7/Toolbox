@@ -22,8 +22,7 @@ class BindingAdaptersTest {
     @get:Rule
     val viewTagTrackerRule = ViewTagTrackerRule()
 
-    val givenItems1 = listOf(TestItem())
-    val givenItems2 = listOf(TestItem(), TestItem())
+    val givenItems = listOf(TestItem())
 
     val givenItemBoundListener = object : IntBindingConsumer {
         override fun invoke(value: Int) {
@@ -78,12 +77,12 @@ class BindingAdaptersTest {
 
         mockRecyclerView._bind(
             binder = givenSpyBinder1,
-            items = givenItems1,
+            items = givenItems,
             itemBoundListener = givenItemBoundListener
         )
 
         inOrder(mockRecyclerView, givenSpyBinder1, spyAdapter1, mockLayoutManager1) {
-            verifyItemsUpdated(spyAdapter1, givenItems1)
+            verifyItemsUpdated(spyAdapter1, givenItems)
             verifyBound(spyAdapter1, mockLayoutManager1)
             verifyNoMoreInteractions()
         }
@@ -93,20 +92,20 @@ class BindingAdaptersTest {
     fun `does not do anything when called with the same parameters again`() {
         mockRecyclerView._bind(
             binder = givenSpyBinder1,
-            items = givenItems1,
+            items = givenItems,
             itemBoundListener = givenItemBoundListener
         )
 
         mockRecyclerView._bind(
             binder = givenSpyBinder1,
-            items = givenItems1,
+            items = givenItems,
             itemBoundListener = givenItemBoundListener
         )
 
         inOrder(mockRecyclerView, givenSpyBinder1, spyAdapter1, mockLayoutManager1) {
-            verifyItemsUpdated(spyAdapter1, givenItems1)
+            verifyItemsUpdated(spyAdapter1, givenItems)
             verifyBound(spyAdapter1, mockLayoutManager1)
-            verifyItemsUpdated(spyAdapter1, givenItems1)
+            verifyItemsUpdated(spyAdapter1, givenItems)
             verifyNoMoreInteractions()
         }
     }
@@ -115,13 +114,13 @@ class BindingAdaptersTest {
     fun `when given new binder instance, old binder instance is cleaned up`() {
         mockRecyclerView._bind(
             binder = givenSpyBinder1,
-            items = givenItems1,
+            items = givenItems,
             itemBoundListener = givenItemBoundListener
         )
 
         mockRecyclerView._bind(
             binder = givenSpyBinder2,
-            items = givenItems1,
+            items = givenItems,
             itemBoundListener = givenItemBoundListener
         )
         inOrder(
@@ -133,9 +132,9 @@ class BindingAdaptersTest {
             mockLayoutManager1,
             mockLayoutManager2
         ) {
-            verifyItemsUpdated(spyAdapter1, givenItems1)
+            verifyItemsUpdated(spyAdapter1, givenItems)
             verifyBound(spyAdapter1, mockLayoutManager1)
-            verifyItemsUpdated(spyAdapter2, givenItems1)
+            verifyItemsUpdated(spyAdapter2, givenItems)
             verifyUnbound(givenSpyBinder1, spyAdapter1, mockLayoutManagerState1)
             verifyBound(spyAdapter2, mockLayoutManager2)
             verifyNoMoreInteractions()
@@ -168,7 +167,7 @@ class BindingAdaptersTest {
         verify(binder).adapter
         verify(adapter).itemBoundListener = null
     }
-    
+
     class TestItem() : BindableAdapterItem {
         override val layoutId: Int get() = 1
         override val bindingId: Int get() = 1
