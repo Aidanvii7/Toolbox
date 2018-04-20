@@ -22,7 +22,7 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
                 viewHolder.apply {
                     boundAdapterItem = adapterItem
                     if (!onInterceptOnBind(viewHolder, adapterPosition)) {
-                        val bindableItem = adapterItem.bindableItem
+                        val bindableItem = adapterItem.lazyBindableItem.value
                         try {
                             viewDataBinding.setVariable(bindingResourceId, bindableItem)
                         } catch (classCastException: ClassCastException) {

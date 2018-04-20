@@ -14,6 +14,7 @@ import com.nhaarman.mockito_kotlin.whenever
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.InOrder
+import java.util.concurrent.atomic.AtomicBoolean
 
 class BindingAdaptersTest {
 
@@ -169,6 +170,7 @@ class BindingAdaptersTest {
     }
 
     class TestItem() : BindableAdapterItem {
+        override val disposed = AtomicBoolean(false)
         override val layoutId: Int get() = 1
         override val bindingId: Int get() = 1
     }

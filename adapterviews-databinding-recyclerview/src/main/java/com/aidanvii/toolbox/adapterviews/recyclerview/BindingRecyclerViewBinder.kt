@@ -83,8 +83,10 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     private val adapterNotificationEnabled: Boolean = false,
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
-    internal val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
-    private val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) }
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) }
 ) : ListBinder<Item>(
         hasMultipleViewTypes = hasMultipleViewTypes,
         areItemsTheSame = areItemsTheSame,

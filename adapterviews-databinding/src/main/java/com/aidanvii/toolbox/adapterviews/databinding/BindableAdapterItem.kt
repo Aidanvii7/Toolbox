@@ -2,14 +2,17 @@ package com.aidanvii.toolbox.adapterviews.databinding
 
 import android.databinding.ViewDataBinding
 import android.support.annotation.LayoutRes
+import android.support.annotation.RestrictTo
+import com.aidanvii.toolbox.DisposableItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter.ViewHolder
+import kotlin.reflect.KProperty
 
 /**
  * Represents an item that can exist within a [BindingRecyclerViewAdapter] or [BindingRecyclerPagerAdapter].
  *
  * Provides basic information to these adapters to allow automatic layout inflation and binding.
  */
-interface BindableAdapterItem {
+interface BindableAdapterItem : DisposableItem {
 
     /**
      * The id of the data-binding enabled layout resource to inflate
@@ -27,7 +30,7 @@ interface BindableAdapterItem {
      * The data-bound variable that is associated with the BR id [bindingId] that is injected into the [ViewDataBinding]
      * via [ViewDataBinding.setVariable]
      */
-    val bindableItem: Any get() = this
+    val lazyBindableItem: Lazy<Any> get() = lazy(LazyThreadSafetyMode.NONE) { this@BindableAdapterItem }
 
     /**
      * Optional property that is used by [defaultAreItemsSame] function when calculating the [DiffResult] in [BindingRecyclerViewAdapter]
@@ -64,4 +67,16 @@ interface BindableAdapterItem {
      * Called when the [BindableAdapter] has finished un-binding a [ViewHolder] from the given [adapterPosition]
      */
     fun onUnBound(adapterPosition: Int) {}
+
+    override fun dispose() {
+        if (lazyBindableItem.isInitialized()) {
+            lazyBindableItem.value.let { bindableItem ->
+                if (bindableItem is DisposableItem) {
+                    if (bindableItem != this) {
+                        bindableItem.dispose()
+                    }
+                }
+            }
+        }
+    }
 }

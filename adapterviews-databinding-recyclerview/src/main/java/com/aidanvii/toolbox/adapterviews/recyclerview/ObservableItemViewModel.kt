@@ -1,12 +1,12 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.support.annotation.RestrictTo
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.aidanvii.toolbox.Provider
+import com.aidanvii.toolbox.DisposableItem
 import com.aidanvii.toolbox.databinding.NotifiableObservable
-import com.aidanvii.toolbox.databinding.PropertyMapper
+import com.aidanvii.toolbox.databinding.ObservableViewModel
 import com.aidanvii.toolbox.leakingThis
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * A convenience view-model class that implements [NotifiableObservable] and [AdapterNotifier].
@@ -19,39 +19,25 @@ import com.aidanvii.toolbox.leakingThis
  * allowing change animations to be triggered.
  */
 @Suppress(leakingThis)
-open class ObservableItemViewModel :
-        NotifiableObservable by Factory.delegateNotifiableObservable(),
-        AdapterNotifier by Factory.delegateAdapterNotifier() {
+abstract class ObservableItemViewModel(
+    delegateNotifiableObservable: NotifiableObservable = NotifiableObservable.delegate(),
+    delegateAdapterNotifier: AdapterNotifier = AdapterNotifier.delegate()
+) :
+    NotifiableObservable by NotifiableObservable.delegate(),
+    AdapterNotifier by AdapterNotifier.delegate(),
+    DisposableItem {
+
+    final override val disposed = AtomicBoolean(false)
 
     init {
-        initDelegator(this)
-        initAdapterNotifierDelegator(this)
+        delegateNotifiableObservable.initDelegator(this)
+        delegateAdapterNotifier.initAdapterNotifierDelegator(this)
     }
 
-    object Factory {
+    final override val isDisposed: Boolean
+        get() = super.isDisposed
 
-        private val defaultProvideNotifiableObservableDelegate: Provider<NotifiableObservable> = { NotifiableObservable.delegate() }
-        private var provideNotifiableObservableDelegate = defaultProvideNotifiableObservableDelegate
-
-        private val defaultProvideAdapterNotifierDelegate: Provider<AdapterNotifier> = { AdapterNotifier.delegate() }
-        private var provideAdapterNotifierDelegate = defaultProvideAdapterNotifierDelegate
-
-        internal fun delegateNotifiableObservable(): NotifiableObservable = provideNotifiableObservableDelegate()
-        internal fun delegateAdapterNotifier(): AdapterNotifier = provideAdapterNotifierDelegate()
-
-        @RestrictTo(RestrictTo.Scope.TESTS)
-        fun <T : ObservableItemViewModel> tested(
-                notifiableObservableDelegate: NotifiableObservable = delegateNotifiableObservable(),
-                adapterNotifierDelegate: AdapterNotifier = delegateAdapterNotifier(),
-                brClass: Class<*>,
-                provideTested: Provider<T>): T {
-            provideNotifiableObservableDelegate = { notifiableObservableDelegate }
-            provideAdapterNotifierDelegate = { adapterNotifierDelegate }
-            brClass.let { PropertyMapper.initBRClass(it, locked = false) }
-            return provideTested().also {
-                provideNotifiableObservableDelegate = defaultProvideNotifiableObservableDelegate
-                provideAdapterNotifierDelegate = defaultProvideAdapterNotifierDelegate
-            }
-        }
+    final override fun dispose() {
+        super.dispose()
     }
 }

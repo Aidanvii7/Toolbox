@@ -84,7 +84,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         viewTypeHandler.getItemViewType(position)
 
     internal fun getItemPositionFromBindableItem(bindableItem: Any): Int? =
-        items.findIndex { it.bindableItem === bindableItem }
+        items.findIndex { it.lazyBindableItem.value === bindableItem }
 
     final override fun onCreateViewHolder(
         parent: ViewGroup,

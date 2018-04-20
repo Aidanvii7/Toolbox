@@ -1,7 +1,9 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
+import com.aidanvii.toolbox.DisposableItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.boundInt
+import com.aidanvii.toolbox.spied
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
@@ -12,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 @RunWith(Parameterized::class)
 internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
@@ -47,7 +50,10 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
 
             itemsFromStart.forEach { testItem ->
                 testItem.adapterNotifierItem?.let {
-                    verify(it).unbindAdapter(mockAdapter)
+                    inOrder(testItem, it).apply {
+                        verify(testItem).dispose()
+                        verify(it).unbindAdapter(mockAdapter)
+                    }
                 }
             }
         }
@@ -61,7 +67,8 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
 
             itemsFromStart.forEach { testItem ->
                 testItem.adapterNotifierItem?.let {
-                    inOrder(it).apply {
+                    inOrder(testItem, it).apply {
+                        verify(testItem).dispose()
                         verify(it).unbindAdapter(mockAdapter)
                         verify(it).bindAdapter(mockAdapter)
                     }
@@ -71,19 +78,26 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
     }
 
     class Parameter(
-            val positionStart: Int,
-            val items: List<TestItem>
+        val positionStart: Int,
+        val items: List<TestItem>
     ) {
-        val itemsFromStart = items.subList(positionStart, items.size)
+        val itemsFromStart = items.subList(positionStart, items.size).also {
+            it.forEach { it.lazyBindableItem.value }
+        }
     }
 
     class TestItem(
-            hasAdapterNotifierItem: Boolean
-    ) : BindableAdapterItem {
+        hasAdapterNotifierItem: Boolean
+    ) : BindableAdapterItem, DisposableItem {
+
+        override val disposed = AtomicBoolean(false)
+
         override val bindingId: Int get() = 1
         override val layoutId: Int get() = 1
-        override val bindableItem: Any get() = adapterNotifierItem ?: this
 
+        override val lazyBindableItem = lazy(LazyThreadSafetyMode.NONE) {
+            adapterNotifierItem ?: this
+        }
         val adapterNotifierItem by lazy(LazyThreadSafetyMode.NONE) {
             if (hasAdapterNotifierItem) mock<AdapterNotifier>() else null
         }
@@ -98,8 +112,8 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
                 val itemMax = random.boundInt(5, 20)
                 val positionStart = random.boundInt(5, itemMax)
                 Parameter(
-                        positionStart = positionStart,
-                        items = (0..itemMax).map { TestItem(random.nextBoolean()) }
+                    positionStart = positionStart,
+                    items = (0..itemMax).map { TestItem(random.nextBoolean()).spied() }
                 )
             }
         }
