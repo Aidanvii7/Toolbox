@@ -1,10 +1,12 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
 import android.databinding.ViewDataBinding
+import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
 import android.support.annotation.RestrictTo
 import com.aidanvii.toolbox.DisposableItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter.ViewHolder
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.reflect.KProperty
 
 /**
@@ -68,6 +70,7 @@ interface BindableAdapterItem : DisposableItem {
      */
     fun onUnBound(adapterPosition: Int) {}
 
+    @CallSuper
     override fun dispose() {
         if (lazyBindableItem.isInitialized()) {
             lazyBindableItem.value.let { bindableItem ->
@@ -78,5 +81,9 @@ interface BindableAdapterItem : DisposableItem {
                 }
             }
         }
+    }
+
+    abstract class Base : BindableAdapterItem {
+        final override val disposed = AtomicBoolean(false)
     }
 }
