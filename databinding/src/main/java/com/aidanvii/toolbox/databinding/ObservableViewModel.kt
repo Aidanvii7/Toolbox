@@ -10,14 +10,12 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Intended to be used with the [bindable] property delegate for data-binding.
  */
 @Suppress(leakingThis)
-abstract class ObservableViewModel(
-    private val delegateNotifiableObservable: NotifiableObservable = NotifiableObservable.delegate()
-) : NotifiableObservable by delegateNotifiableObservable, DisposableItem {
+abstract class ObservableViewModel: NotifiableObservable by NotifiableObservable.delegate(), DisposableItem {
 
     final override val disposed = AtomicBoolean(false)
 
     init {
-        delegateNotifiableObservable.initDelegator(this)
+        initDelegator(this)
     }
 
     final override val isDisposed: Boolean

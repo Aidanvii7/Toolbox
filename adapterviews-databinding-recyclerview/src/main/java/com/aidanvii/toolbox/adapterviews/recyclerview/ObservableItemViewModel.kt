@@ -19,10 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * allowing change animations to be triggered.
  */
 @Suppress(leakingThis)
-abstract class ObservableItemViewModel(
-    delegateNotifiableObservable: NotifiableObservable = NotifiableObservable.delegate(),
-    delegateAdapterNotifier: AdapterNotifier = AdapterNotifier.delegate()
-) :
+abstract class ObservableItemViewModel :
     NotifiableObservable by NotifiableObservable.delegate(),
     AdapterNotifier by AdapterNotifier.delegate(),
     DisposableItem {
@@ -30,8 +27,8 @@ abstract class ObservableItemViewModel(
     final override val disposed = AtomicBoolean(false)
 
     init {
-        delegateNotifiableObservable.initDelegator(this)
-        delegateAdapterNotifier.initAdapterNotifierDelegator(this)
+        initDelegator(this)
+        initAdapterNotifierDelegator(this)
     }
 
     final override val isDisposed: Boolean
