@@ -72,6 +72,7 @@ interface BindableAdapterItem : DisposableItem {
 
     @CallSuper
     override fun dispose() {
+        super.dispose()
         if (lazyBindableItem.isInitialized()) {
             lazyBindableItem.value.let { bindableItem ->
                 if (bindableItem is DisposableItem) {
