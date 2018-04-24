@@ -5,6 +5,7 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.boundInt
 import com.aidanvii.toolbox.spied
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.eq
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
@@ -17,7 +18,7 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 @RunWith(Parameterized::class)
-internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
+internal class BindableAdapterItemDataObserverTest(val parameter: Parameter) {
 
     val mockAdapter = mock<BindingRecyclerViewAdapter<TestItem>>().apply {
         SuperReflect.on(this).set("_items", parameter.items)
@@ -26,7 +27,9 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
         whenever(tempPreviousItems).thenReturn(parameter.items)
     }
 
-    val tested = AdapterNotifierDataObserver(mockAdapter)
+    val mockPlugin = mock<BindableAdapterItemDataObserver.Plugin<TestItem>>()
+
+    val tested = BindableAdapterItemDataObserver(mockAdapter, mockPlugin)
 
     @Test
     fun `onItemRangeInserted`() {
@@ -34,10 +37,8 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
 
             tested.onItemRangeInserted(positionStart, itemsFromStart.size)
 
-            itemsFromStart.forEach { testItem ->
-                testItem.adapterNotifierItem?.let {
-                    verify(it).bindAdapter(mockAdapter)
-                }
+            itemsFromStart.forEachIndexed { index, testItem ->
+                verify(mockPlugin).onItemBound(testItem, mockAdapter, false)
             }
         }
     }
@@ -48,13 +49,8 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
 
             tested.onItemRangeRemoved(positionStart, itemsFromStart.size)
 
-            itemsFromStart.forEach { testItem ->
-                testItem.adapterNotifierItem?.let {
-                    inOrder(testItem, it).apply {
-                        verify(testItem).dispose()
-                        verify(it).unbindAdapter(mockAdapter)
-                    }
-                }
+            itemsFromStart.forEachIndexed { index, testItem ->
+                verify(mockPlugin).onItemUnBound(testItem, mockAdapter, false)
             }
         }
     }
@@ -65,13 +61,10 @@ internal class AdapterNotifierDataObserverTest(val parameter: Parameter) {
 
             tested.onItemRangeChanged(positionStart, itemsFromStart.size, null)
 
-            itemsFromStart.forEach { testItem ->
-                testItem.adapterNotifierItem?.let {
-                    inOrder(testItem, it).apply {
-                        verify(testItem).dispose()
-                        verify(it).unbindAdapter(mockAdapter)
-                        verify(it).bindAdapter(mockAdapter)
-                    }
+            itemsFromStart.forEachIndexed { index, testItem ->
+                inOrder(mockPlugin).apply {
+                    verify(mockPlugin).onItemUnBound(testItem, mockAdapter, true)
+                    verify(mockPlugin).onItemBound(testItem, mockAdapter, true)
                 }
             }
         }

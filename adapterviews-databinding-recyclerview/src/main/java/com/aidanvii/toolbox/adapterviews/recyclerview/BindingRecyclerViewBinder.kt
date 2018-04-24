@@ -88,41 +88,41 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     @RestrictTo(RestrictTo.Scope.TESTS)
     val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) }
 ) : ListBinder<Item>(
-        hasMultipleViewTypes = hasMultipleViewTypes,
-        areItemsTheSame = areItemsTheSame,
-        areContentsTheSame = areContentsTheSame
+    hasMultipleViewTypes = hasMultipleViewTypes,
+    areItemsTheSame = areItemsTheSame,
+    areContentsTheSame = areContentsTheSame
 ) {
 
     internal var layoutManagerState: Parcelable? = null
 
     internal val adapter: BindingRecyclerViewAdapter<Item> by weakLazy {
         adapterFactory(
-                BindingRecyclerViewAdapter.Builder(
-                        delegate = BindableAdapterDelegate(),
-                        areItemsTheSame = areItemsTheSame,
-                        areContentsTheSame = areContentsTheSame,
-                        viewTypeHandler = viewTypeHandler,
-                        bindingInflater = BindingInflater
-                )
+            BindingRecyclerViewAdapter.Builder(
+                delegate = BindableAdapterDelegate(),
+                areItemsTheSame = areItemsTheSame,
+                areContentsTheSame = areContentsTheSame,
+                viewTypeHandler = viewTypeHandler,
+                bindingInflater = BindingInflater
+            )
         ).apply {
-            if (adapterNotificationEnabled) {
-                registerAdapterDataObserver(AdapterNotifierDataObserver(this))
-            }
+            val dataObserverPlugins = mutableListOf<BindableAdapterItemDataObserver.Plugin<Item>>(DataObserverDisposalPlugin())
+            if (adapterNotificationEnabled) dataObserverPlugins.add(DataObserverAdapterNotifierPlugin())
+            registerAdapterDataObserver(BindableAdapterItemDataObserver(this, *dataObserverPlugins.toTypedArray()))
         }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     fun testAdapter(
-            viewTypeHandler: BindableAdapter.ViewTypeHandler<Item> = this.viewTypeHandler,
-            bindingInflater: BindingInflater = BindingInflater,
-            areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areItemsTheSame,
-            areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areContentsTheSame
+        viewTypeHandler: BindableAdapter.ViewTypeHandler<Item> = this.viewTypeHandler,
+        bindingInflater: BindingInflater = BindingInflater,
+        areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areItemsTheSame,
+        areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areContentsTheSame
     ) = BindingRecyclerViewAdapter.Builder(
-            delegate = BindableAdapterDelegate(),
-            viewTypeHandler = viewTypeHandler,
-            bindingInflater = bindingInflater,
-            areItemsTheSame = areItemsTheSame,
-            areContentsTheSame = areContentsTheSame
+        delegate = BindableAdapterDelegate(),
+        viewTypeHandler = viewTypeHandler,
+        bindingInflater = bindingInflater,
+        areItemsTheSame = areItemsTheSame,
+        areContentsTheSame = areContentsTheSame
     ).let { builder ->
         adapterFactory(builder)
     }
