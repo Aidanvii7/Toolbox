@@ -85,6 +85,6 @@ interface BindableAdapterItem : DisposableItem {
     }
 
     abstract class Base : BindableAdapterItem {
-        final override val disposed = AtomicBoolean(false)
+        final override val _disposed = AtomicBoolean(false)
     }
 }

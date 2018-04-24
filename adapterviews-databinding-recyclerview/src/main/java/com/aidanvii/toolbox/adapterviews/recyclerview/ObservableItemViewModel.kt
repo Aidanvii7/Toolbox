@@ -24,15 +24,15 @@ abstract class ObservableItemViewModel :
     AdapterNotifier by AdapterNotifier.delegate(),
     DisposableItem {
 
-    final override val disposed = AtomicBoolean(false)
+    final override val _disposed = AtomicBoolean(false)
 
     init {
         initDelegator(this)
         initAdapterNotifierDelegator(this)
     }
 
-    final override val isDisposed: Boolean
-        get() = super.isDisposed
+    final override val disposed: Boolean
+        get() = super.disposed
 
     final override fun dispose() {
         super.dispose()

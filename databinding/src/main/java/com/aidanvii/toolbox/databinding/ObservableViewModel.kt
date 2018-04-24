@@ -12,14 +12,14 @@ import java.util.concurrent.atomic.AtomicBoolean
 @Suppress(leakingThis)
 abstract class ObservableViewModel: NotifiableObservable by NotifiableObservable.delegate(), DisposableItem {
 
-    final override val disposed = AtomicBoolean(false)
+    final override val _disposed = AtomicBoolean(false)
 
     init {
         initDelegator(this)
     }
 
-    final override val isDisposed: Boolean
-        get() = super.isDisposed
+    final override val disposed: Boolean
+        get() = super.disposed
 
     final override fun dispose() {
         super.dispose()

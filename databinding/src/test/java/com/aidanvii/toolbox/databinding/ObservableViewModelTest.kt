@@ -23,10 +23,5 @@ class ObservableViewModelTest {
         verify(spiedTested).onDisposed()
     }
 
-    class TestObservableViewModel : ObservableViewModel() {
-
-        override fun onDisposed() {
-            print("")
-        }
-    }
+    class TestObservableViewModel : ObservableViewModel()
 }

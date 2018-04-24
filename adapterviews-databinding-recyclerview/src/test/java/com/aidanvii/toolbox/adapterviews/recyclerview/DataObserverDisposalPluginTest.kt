@@ -86,7 +86,7 @@ internal class DataObserverDisposalPluginTest {
 
     class TestItem : BindableAdapterItem, DisposableItem {
 
-        override val disposed = AtomicBoolean(false)
+        override val _disposed = AtomicBoolean(false)
 
         override val bindingId: Int get() = 1
         override val layoutId: Int get() = 1

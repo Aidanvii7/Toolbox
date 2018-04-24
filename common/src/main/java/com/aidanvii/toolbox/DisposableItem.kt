@@ -6,15 +6,15 @@ import java.util.concurrent.atomic.AtomicBoolean
 interface DisposableItem {
 
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
-    val disposed: AtomicBoolean
+    val _disposed: AtomicBoolean
 
-    val isDisposed: Boolean get() = disposed.get()
+    val disposed: Boolean get() = _disposed.get()
 
     /**
      * Dispose the [ObservableViewModel], this operation is idempotent
      */
     fun dispose() {
-        if (!disposed.getAndSet(true)) {
+        if (!_disposed.getAndSet(true)) {
             onDisposed()
         }
     }
