@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: "de.mannodermaus.android-junit5"
 
 group='com.github.Aidanvii7.toolbox'
 
@@ -45,6 +46,13 @@ dependencies {
     testImplementation project(':adapterviews-databinding-test')
     // TODO remove rxJava dependency, switch to coroutines
     testImplementation project(':rxjava-test')
+
+    // (Required) Writing and executing Unit Tests on the JUnit Platform.
+    testImplementation junit5.unitTests()
+
+    // (Optional) For running tests inside Android Studio 3
+    // Please refer to the "Android Studio Workarounds" section for more insight on this.
+    testCompileOnly junit5.unitTestsRuntime()
 }
 
 repositories {
