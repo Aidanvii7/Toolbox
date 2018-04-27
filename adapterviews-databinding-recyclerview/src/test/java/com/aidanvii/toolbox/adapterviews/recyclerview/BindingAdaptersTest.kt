@@ -84,7 +84,7 @@ class BindingAdaptersTest {
 
         inOrder(mockRecyclerView, givenSpyBinder1, spyAdapter1, mockLayoutManager1) {
             verifyItemsUpdated(spyAdapter1, givenItems)
-            verifyBound(spyAdapter1, mockLayoutManager1)
+            verifyBound(givenSpyBinder1, spyAdapter1, mockLayoutManager1)
             verifyNoMoreInteractions()
         }
     }
@@ -105,7 +105,7 @@ class BindingAdaptersTest {
 
         inOrder(mockRecyclerView, givenSpyBinder1, spyAdapter1, mockLayoutManager1) {
             verifyItemsUpdated(spyAdapter1, givenItems)
-            verifyBound(spyAdapter1, mockLayoutManager1)
+            verifyBound(givenSpyBinder1, spyAdapter1, mockLayoutManager1)
             verifyItemsUpdated(spyAdapter1, givenItems)
             verifyNoMoreInteractions()
         }
@@ -134,10 +134,10 @@ class BindingAdaptersTest {
             mockLayoutManager2
         ) {
             verifyItemsUpdated(spyAdapter1, givenItems)
-            verifyBound(spyAdapter1, mockLayoutManager1)
+            verifyBound(givenSpyBinder1, spyAdapter1, mockLayoutManager1)
             verifyItemsUpdated(spyAdapter2, givenItems)
             verifyUnbound(givenSpyBinder1, spyAdapter1, mockLayoutManagerState1)
-            verifyBound(spyAdapter2, mockLayoutManager2)
+            verifyBound(givenSpyBinder2, spyAdapter2, mockLayoutManager2)
             verifyNoMoreInteractions()
         }
     }
@@ -151,12 +151,14 @@ class BindingAdaptersTest {
     }
 
     private fun InOrder.verifyBound(
+        binder: BindingRecyclerViewBinder<TestItem>,
         adapter: BindingRecyclerViewAdapter<TestItem>,
         layoutManager: RecyclerView.LayoutManager
     ) {
         verify(adapter).itemBoundListener = givenItemBoundListener
         verify(mockRecyclerView).adapter = adapter
         verify(mockRecyclerView).layoutManager = layoutManager
+        verify(binder).recycledViewPoolWrapper
     }
 
     private fun InOrder.verifyUnbound(

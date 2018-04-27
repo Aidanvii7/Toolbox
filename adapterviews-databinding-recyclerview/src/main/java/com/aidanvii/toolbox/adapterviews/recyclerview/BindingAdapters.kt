@@ -44,6 +44,11 @@ private fun <Item : BindableAdapterItem> RecyclerView.rebind(
                 layoutManager?.onRestoreInstanceState(attachedBinder.layoutManagerState)
             }
             layoutManager = attachedBinder.layoutManagerFactory(context)
+            attachedBinder.recycledViewPoolWrapper?.invoke()?.let { pool ->
+                if (recycledViewPool !== pool) {
+                    recycledViewPool = pool
+                }
+            }
         }
     )
 }

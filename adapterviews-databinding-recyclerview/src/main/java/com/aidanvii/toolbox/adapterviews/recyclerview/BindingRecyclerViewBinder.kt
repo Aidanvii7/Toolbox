@@ -6,6 +6,7 @@ import android.support.annotation.RestrictTo
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import com.aidanvii.toolbox.Provider
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
@@ -83,10 +84,9 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     private val adapterNotificationEnabled: Boolean = false,
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
-    @RestrictTo(RestrictTo.Scope.TESTS)
     val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) }
+    val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) },
+    val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null
 ) : ListBinder<Item>(
     hasMultipleViewTypes = hasMultipleViewTypes,
     areItemsTheSame = areItemsTheSame,
