@@ -32,7 +32,7 @@ interface BindableAdapterItem : DisposableItem {
      * The data-bound variable that is associated with the BR id [bindingId] that is injected into the [ViewDataBinding]
      * via [ViewDataBinding.setVariable]
      */
-    val lazyBindableItem: Lazy<Any> get() = lazy(LazyThreadSafetyMode.NONE) { this@BindableAdapterItem }
+    val lazyBindableItem: Lazy<Any?> get() = lazy(LazyThreadSafetyMode.NONE) { this@BindableAdapterItem }
 
     /**
      * Optional property that is used by [defaultAreItemsSame] function when calculating the [DiffResult] in [BindingRecyclerViewAdapter]
