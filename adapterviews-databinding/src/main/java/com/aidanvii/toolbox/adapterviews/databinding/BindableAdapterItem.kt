@@ -26,7 +26,7 @@ interface BindableAdapterItem : DisposableItem {
      * The BR id associated with the data-bound variable [bindableItem] that is injected into the [ViewDataBinding]
      * via [ViewDataBinding.setVariable]
      */
-    val bindingId: Int
+    val bindingId: Int get() = BR.viewModel
 
     /**
      * The data-bound variable that is associated with the BR id [bindingId] that is injected into the [ViewDataBinding]
