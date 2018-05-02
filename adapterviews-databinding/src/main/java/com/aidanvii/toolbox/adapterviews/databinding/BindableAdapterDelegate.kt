@@ -26,7 +26,9 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
                         try {
                             viewDataBinding.setVariable(bindingResourceId, bindableItem)
                         } catch (classCastException: ClassCastException) {
-                            throwBindableItemWrongType(adapterItem, bindableItem, classCastException)
+                            bindableItem?.let {
+                                throwBindableItemWrongType(adapterItem, bindableItem, classCastException)
+                            }
                         }
                     }
                     onBindExtras(viewHolder, adapterPosition)
@@ -64,10 +66,10 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
     }
 
     private fun VH.throwBindableItemWrongType(adapterItem: Item, bindableItem: Any, cause: ClassCastException): Nothing =
-            throw IllegalArgumentException(
-                    "cannot set variable with type ${bindableItem::class.java.simpleName} on " +
-                            "${viewDataBinding::class.java.simpleName} with binding variable ID " +
-                            "provided by ${adapterItem::class.java.simpleName}.bindingId. " +
-                            "Is ${adapterItem::class.java.simpleName}.layoutId correct?", cause
-            )
+        throw IllegalArgumentException(
+            "cannot set variable with type ${bindableItem::class.java.simpleName} on " +
+                    "${viewDataBinding::class.java.simpleName} with binding variable ID " +
+                    "provided by ${adapterItem::class.java.simpleName}.bindingId. " +
+                    "Is ${adapterItem::class.java.simpleName}.layoutId correct?", cause
+        )
 }
