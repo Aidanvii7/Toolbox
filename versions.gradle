@@ -12,6 +12,7 @@ ext {
     rxjava_version                              = "2.1.12"
     rxkotlin_version                            = "2.2.0"
     rxandroid_version                           = "2.0.2"
+    rxrelay_version                             = "2.0.0"
 
     junit_version                               = "4.12"
     kluent_version                              = "1.33"
