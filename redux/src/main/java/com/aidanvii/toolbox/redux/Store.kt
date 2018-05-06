@@ -5,7 +5,6 @@ import com.aidanvii.toolbox.rxutils.disposable
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
-import tv.sporttotal.android.app.redux.Dispatcher
 import java.util.concurrent.atomic.AtomicBoolean
 
 class Store<Action, State>(

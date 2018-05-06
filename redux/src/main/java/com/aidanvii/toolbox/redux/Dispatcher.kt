@@ -1,4 +1,4 @@
-package tv.sporttotal.android.app.redux
+package com.aidanvii.toolbox.redux
 
 import io.reactivex.disposables.Disposable
 
