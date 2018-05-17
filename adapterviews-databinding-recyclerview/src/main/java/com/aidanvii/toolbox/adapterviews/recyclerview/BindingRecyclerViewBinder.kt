@@ -75,6 +75,7 @@ import com.aidanvii.toolbox.delegates.weak.weakLazy
  * ```
  * @param hasMultipleViewTypes if the [BindingRecyclerViewAdapter] will have [BindableAdapterItem] with different [BindableAdapterItem.layoutId]s, set to true. False otherwise (minor optimisation)
  * @param adapterNotificationEnabled if any [BindableAdapterItem.bindableItem] implements [AdapterNotifier], set to true
+ * @param autoDisposeEnabled if any ensures [BindableAdapterItem.dispose] is called when items are removed from the [BindingRecyclerViewAdapter].
  * @param areItemsTheSame same logic as [DiffUtil.Callback.areItemsTheSame]
  * @param areContentsTheSame same logic as [DiffUtil.Callback.areContentsTheSame]
  * @param adapterFactory optional factory to provide a custom implementation of [BindingRecyclerViewAdapter], allowing you to override methods from [BindableAdapter]
@@ -82,6 +83,7 @@ import com.aidanvii.toolbox.delegates.weak.weakLazy
 class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     hasMultipleViewTypes: Boolean = true,
     private val adapterNotificationEnabled: Boolean = false,
+    private val autoDisposeEnabled: Boolean = true,
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
     val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
@@ -105,7 +107,8 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
                 bindingInflater = BindingInflater
             )
         ).apply {
-            val dataObserverPlugins = mutableListOf<BindableAdapterItemDataObserver.Plugin<Item>>(DataObserverDisposalPlugin())
+            val dataObserverPlugins = mutableListOf<BindableAdapterItemDataObserver.Plugin<Item>>()
+            if (autoDisposeEnabled) dataObserverPlugins.add(DataObserverDisposalPlugin())
             if (adapterNotificationEnabled) dataObserverPlugins.add(DataObserverAdapterNotifierPlugin())
             registerAdapterDataObserver(BindableAdapterItemDataObserver(this, *dataObserverPlugins.toTypedArray()))
         }
