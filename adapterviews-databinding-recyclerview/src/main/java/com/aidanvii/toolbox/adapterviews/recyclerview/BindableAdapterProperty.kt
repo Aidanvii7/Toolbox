@@ -30,7 +30,7 @@ import kotlin.reflect.KProperty
  */
 fun <ObservableAdapterNotifier, T> ObservableAdapterNotifier.adapterBindable(
         initialValue: T,
-        fullRebind: Boolean = false
+        fullRebind: Boolean = true
 ) where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier =
         BindableAdapterProperty.Distinct(this, fullRebind, initialValue)
 
@@ -50,7 +50,7 @@ fun <ObservableAdapterNotifier, T> ObservableAdapterNotifier.adapterBindable(
  */
 fun <ObservableAdapterNotifier, T> ObservableAdapterNotifier.adapterBindableEvent(
         initialValue: T,
-        fullRebind: Boolean = false
+        fullRebind: Boolean = true
 ) where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier =
         BindableAdapterProperty.Distinct(this, fullRebind, initialValue)
 

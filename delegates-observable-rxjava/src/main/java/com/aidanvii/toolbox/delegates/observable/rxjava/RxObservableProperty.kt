@@ -4,12 +4,14 @@ import android.support.annotation.CallSuper
 import android.support.annotation.RestrictTo
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-fun <ST, TT> ObservableProperty<ST, TT>.toRx() = RxObservableProperty.SourceTransformer(this)
+fun <ST, TT> ObservableProperty<ST, TT>.toRx(compositeDisposable: CompositeDisposable? = null) =
+    RxObservableProperty.SourceTransformer(this, compositeDisposable)
 
 /**
  * Represents a [ReadWriteProperty] that can be observed of changes.
@@ -35,13 +37,14 @@ interface RxObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
     fun subscribe(observable: Observable<*>)
 
     data class ValueContainer<T>(
-            val property: KProperty<*>,
-            val oldValue: T?,
-            val newValue: T
+        val property: KProperty<*>,
+        val oldValue: T?,
+        val newValue: T
     )
 
     class SourceTransformer<ST, TT>(
-            private val decorated: ObservableProperty<ST, TT>
+        private val decorated: ObservableProperty<ST, TT>,
+        private val compositeDisposable: CompositeDisposable?
     ) : RxObservableProperty<ST, TT> {
 
         private val subject = BehaviorSubject.create<ValueContainer<TT>>()
@@ -49,6 +52,9 @@ interface RxObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
             set(value) {
                 field?.dispose()
                 field = value
+                if (value != null && compositeDisposable != null) {
+                    compositeDisposable.add(value)
+                }
             }
 
         init {
