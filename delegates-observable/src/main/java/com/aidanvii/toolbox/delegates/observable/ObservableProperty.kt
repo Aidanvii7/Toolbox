@@ -1,6 +1,8 @@
 package com.aidanvii.toolbox.delegates.observable
 
 import android.support.annotation.CallSuper
+import com.aidanvii.toolbox.Provider
+import com.aidanvii.toolbox.unchecked
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -8,7 +10,7 @@ import kotlin.reflect.KProperty
  * Returns a source [ObservableProperty] ([ObservableProperty.Source]) that emits items given to it.
  * @param ST the base type of this source observable ([ObservableProperty.Source]).
  */
-fun <ST> observable(initialValue: ST) = ObservableProperty.Source(initialValue)
+fun <ST> observable(initialValue: ST) = ObservableProperty.Source.Standard(initialValue)
 
 typealias AfterChange<T> = (property: KProperty<*>, oldValue: T?, newValue: T) -> Unit
 
@@ -46,18 +48,40 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
     fun onProvideDelegate(thisRef: Any?, property: KProperty<*>) {
     }
 
-    /**
-     * Implements the core logic of a [ObservableProperty].
-     *
-     * @param initialValue the initial value of the property.
-     */
-    open class Source<ST>(initialValue: ST) : ObservableProperty<ST, ST> {
+    abstract class Source<ST> : ObservableProperty<ST, ST> {
 
-        private var _sourceValue: ST = initialValue
+        /**
+         * Implements the core logic of a [ObservableProperty].
+         *
+         * @param initialValue the initial value of the property.
+         */
+        open class Standard<ST>(initialValue: ST) : Source<ST>() {
+            override var sourceValue = initialValue
+        }
+
+        @Suppress(unchecked)
+        open class Lazy<ST>(
+            private val initialValueProvider: Provider<ST>
+        ) : Source<ST>() {
+            private var _sourceValue: Any? = UNINITIALISED
+            override var sourceValue
+                get() = when (_sourceValue) {
+                    UNINITIALISED -> initialValueProvider().also { _sourceValue = it }
+                    else -> _sourceValue as ST
+                }
+                set(value) {
+                    _sourceValue = value
+                }
+
+            private companion object {
+                val UNINITIALISED = Any()
+            }
+        }
+
+        abstract override var sourceValue: ST
+
         private var _afterChangeObservers: MutableSet<AfterChange<ST>>? = null
         private var _onProvideDelegateObservers: MutableSet<AfterChange<ST>>? = null
-
-        override val sourceValue get() = _sourceValue
 
         override val afterChangeObservers: MutableSet<AfterChange<ST>>
             get() = synchronized(this) {
@@ -91,11 +115,11 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
         override fun getValue(thisRef: Any?, property: KProperty<*>) = sourceValue
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: ST) {
-            val oldValue = this.sourceValue
+            val oldValue = sourceValue
             if (!beforeChange(property, oldValue, value)) {
                 return
             }
-            this._sourceValue = value
+            sourceValue = value
             afterChange(property, oldValue, value)
             notifyObservers(property, oldValue, value)
         }

@@ -48,7 +48,7 @@ class BindableProperty<ST>(
         initialValue: ST,
         private val observable: NotifiableObservable,
         private val beforeChange: (oldValue: ST, newValue: ST) -> Boolean
-) : ObservableProperty.Source<ST>(initialValue) {
+) : ObservableProperty.Source.Standard<ST>(initialValue) {
 
     private var propertyId: Int = 0
 

@@ -59,7 +59,7 @@ sealed class BindableAdapterProperty<ObservableAdapterNotifier, T>(
         private val observableAdapterNotifier: ObservableAdapterNotifier,
         private val fullRebind: Boolean,
         initialValue: T
-) : ObservableProperty.Source<T>(initialValue)
+) : ObservableProperty.Source.Standard<T>(initialValue)
         where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier {
     private var propertyId: Int = 0
 
