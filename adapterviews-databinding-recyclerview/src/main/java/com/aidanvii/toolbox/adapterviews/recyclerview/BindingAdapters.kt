@@ -71,8 +71,8 @@ internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
         onAttached = { this.layoutManager = it })
 }
 
-@BindingAdapter("android:itemDecoration")
-internal fun RecyclerView._bind(itemDecoration: RecyclerView.ItemDecoration?) {
+@BindingAdapter("android:bindableItemDecoration")
+internal fun <Item : BindableAdapterItem> RecyclerView._bind(itemDecoration: BindableItemDecoration<Item>?) {
     trackInstance(
         newInstance = itemDecoration,
         instanceResId = R.id.item_decoration,
