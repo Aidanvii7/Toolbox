@@ -23,8 +23,13 @@ class BindableItemDecorationTest {
     val mockAdapter = mock<BindingRecyclerViewAdapter<BindableAdapterItem>>().apply {
         whenever(items).thenReturn(listOf(mockItem1, mockItem2))
     }
-    val mockChild1 = mock<View>()
-    val mockChild2 = mock<View>()
+    val mockLayoutParams = mock<RecyclerView.LayoutParams>()
+    val mockChild1 = mock<View>().apply {
+        whenever(layoutParams).thenReturn(mockLayoutParams)
+    }
+    val mockChild2 = mock<View>().apply {
+        whenever(layoutParams).thenReturn(mockLayoutParams)
+    }
     val mockRecyclerView = mock<RecyclerView>().apply {
         whenever(adapter).thenReturn(mockAdapter)
         whenever(childCount).thenReturn(2)
@@ -64,7 +69,7 @@ class BindableItemDecorationTest {
 
         @Test
         fun `forwards invocation to getItemOffsets with mockItem1`() {
-            verify(spyTested).getItemOffsets(mockItem1, mockOutRect, mockRecyclerViewState)
+            verify(spyTested).getItemOffsets(mockItem1, mockOutRect, mockLayoutParams, mockRecyclerViewState)
         }
     }
 
@@ -78,12 +83,18 @@ class BindableItemDecorationTest {
 
         @Test
         fun `forwards invocation to getItemOffsets with mockItem2`() {
-            verify(spyTested).getItemOffsets(mockItem2, mockOutRect, mockRecyclerViewState)
+            verify(spyTested).getItemOffsets(mockItem2, mockOutRect, mockLayoutParams, mockRecyclerViewState)
         }
     }
 
     class ExampleBindableItemDecoration : BindableItemDecoration<BindableAdapterItem>() {
         public override fun onDraw(adapterItem: BindableAdapterItem, canvas: Canvas, state: RecyclerView.State) {}
-        public override fun getItemOffsets(adapterItem: BindableAdapterItem, outRect: Rect, state: RecyclerView.State) {}
+        public override fun getItemOffsets(
+            adapterItem: BindableAdapterItem,
+            outRect: Rect,
+            layoutParams: RecyclerView.LayoutParams,
+            state: RecyclerView.State
+        ) {
+        }
     }
 }

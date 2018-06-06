@@ -11,7 +11,7 @@ import com.aidanvii.toolbox.unchecked
 
 abstract class BindableItemDecoration<AdapterItem : BindableAdapterItem> : RecyclerView.ItemDecoration() {
 
-    protected abstract fun getItemOffsets(adapterItem: AdapterItem, outRect: Rect, state: RecyclerView.State)
+    protected abstract fun getItemOffsets(adapterItem: AdapterItem, outRect: Rect, layoutParams: RecyclerView.LayoutParams, state: RecyclerView.State)
 
     protected abstract fun onDraw(adapterItem: AdapterItem, canvas: Canvas, state: RecyclerView.State)
 
@@ -32,6 +32,7 @@ abstract class BindableItemDecoration<AdapterItem : BindableAdapterItem> : Recyc
             getItemOffsets(
                 adapterItem = items[recyclerView.getChildAdapterPosition(view)],
                 outRect = outRect,
+                layoutParams = view.layoutParams as RecyclerView.LayoutParams,
                 state = state
             )
         }
