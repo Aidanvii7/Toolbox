@@ -7,7 +7,7 @@ inline fun <Item : Any> diffCallback(
     newItems: List<Item>,
     crossinline areItemsTheSame: ((old: Item, new: Item) -> Boolean),
     crossinline areContentsTheSame: ((old: Item, new: Item) -> Boolean),
-    crossinline getChangedProperties: ((old: Item, new: Item) -> Cha?)
+    crossinline getChangedProperties: ((old: Item, new: Item) -> IntArray?)
 ) = object : DiffCallback<Item>(oldItems, newItems) {
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean =
