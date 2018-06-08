@@ -11,4 +11,4 @@ val defaultAreItemsSame = { oldItem: BindableAdapterItem, newItem: BindableAdapt
 
 val defaultAreContentsSame = { oldItem: BindableAdapterItem, newItem: BindableAdapterItem -> oldItem == newItem }
 
-val defaultGetChangedProperties: (BindableAdapterItem, BindableAdapterItem) -> IntArray? = { _, _ -> null }
+val defaultGetChangedProperties: (Any, Any) -> IntArray? = { _, _ -> null }

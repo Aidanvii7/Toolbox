@@ -124,7 +124,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         val nextPropertyChanges = nextPropertyChanges
         return when {
             nextPropertyChangePayload != null -> true.also { onPartialBindViewHolder(nextPropertyChangePayload) }
-            nextPropertyChanges != null && observable != null -> true.also { onPartialBindViewHolder(observable, nextPropertyChanges) }
+            nextPropertyChanges != null && observable != null -> true.also { onPartialBindViewHolder(viewHolder, observable, nextPropertyChanges) }
             else -> false
         }.also {
             this.nextPropertyChangePayload = null
@@ -175,7 +175,12 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         }
     }
 
-    private fun onPartialBindViewHolder(observable: NotifiableObservable, changedProperties: IntArray) {
+    private fun onPartialBindViewHolder(
+        viewHolder: BindingRecyclerViewItemViewHolder<*, Item>,
+        observable: NotifiableObservable,
+        changedProperties: IntArray
+    ) {
+        viewHolder.apply { viewDataBinding.setVariable(bindingResourceId, observable) }
         for (changedProperty in changedProperties) {
             observable.notifyPropertyChanged(changedProperty)
         }
