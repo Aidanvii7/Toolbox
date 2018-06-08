@@ -1,5 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
+import android.databinding.Observable
 import android.databinding.ViewDataBinding
 import android.view.ViewGroup
 import com.aidanvii.toolbox.databinding.NotifiableObservable
@@ -22,8 +23,8 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
             getItem(adapterPosition).let { adapterItem ->
                 viewHolder.apply {
                     boundAdapterItem = adapterItem
-                    val bindableItem = adapterItem.lazyBindableItem.value as? NotifiableObservable
-                    if (!onInterceptOnBind(viewHolder, adapterPosition, bindableItem)) {
+                    val bindableItem = adapterItem.lazyBindableItem.value
+                    if (!onInterceptOnBind(viewHolder, adapterPosition, bindableItem as? NotifiableObservable)) {
                         try {
                             viewDataBinding.setVariable(bindingResourceId, bindableItem)
                         } catch (classCastException: ClassCastException) {
