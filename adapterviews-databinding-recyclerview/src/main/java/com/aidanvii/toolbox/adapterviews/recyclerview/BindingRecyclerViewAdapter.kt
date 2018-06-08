@@ -126,6 +126,9 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
             nextPropertyChangePayload != null -> true.also { onPartialBindViewHolder(nextPropertyChangePayload) }
             nextPropertyChanges != null && observable != null -> true.also { onPartialBindViewHolder(observable, nextPropertyChanges) }
             else -> false
+        }.also {
+            this.nextPropertyChangePayload = null
+            this.nextPropertyChanges = null
         }
     }
 
