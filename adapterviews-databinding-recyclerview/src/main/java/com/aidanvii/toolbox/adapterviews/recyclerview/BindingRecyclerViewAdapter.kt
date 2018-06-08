@@ -151,11 +151,11 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     }
 
     private fun getChangedProperties(payloads: List<Any>): Pair<AdapterNotifier.ChangePayload?, IntArray?>? =
-        payloads.getOrNull(0)?.let {
-            when (it) {
-                is AdapterNotifier.ChangePayload -> Pair(it, null)
-                is IntArray -> Pair(null, it)
-                else -> Pair(null, null)
+        payloads.getOrNull(0)?.let { payload ->
+            when (payload) {
+                is AdapterNotifier.ChangePayload -> Pair(payload, null)
+                is IntArray -> Pair(null, payload)
+                else -> throwCustomPayloadsNotSupported(payload)
             }
         }
 
