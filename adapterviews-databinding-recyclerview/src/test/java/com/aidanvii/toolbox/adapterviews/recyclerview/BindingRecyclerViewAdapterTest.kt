@@ -7,6 +7,7 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
 import com.aidanvii.toolbox.adapterviews.databinding.TestItem
+import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
 import com.aidanvii.toolbox.rxSchedulers
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.reset
@@ -55,13 +56,17 @@ internal class BindingRecyclerViewAdapterTest {
 
 
     val spyTested = spy(
-            BindingRecyclerViewAdapter(
-                    BindingRecyclerViewAdapter.Builder(
-                            delegate = mockDelegate,
-                            areItemsTheSame = spyAreItemsTheSame,
-                            areContentsTheSame = spyAreContentsTheSame,
-                            viewTypeHandler = mockViewTypeHandler,
-                            bindingInflater = mockBindingInflater))).apply { makeNotifyNotCrash() }
+        BindingRecyclerViewAdapter(
+            BindingRecyclerViewAdapter.Builder(
+                delegate = mockDelegate,
+                areItemsTheSame = spyAreItemsTheSame,
+                areContentsTheSame = spyAreContentsTheSame,
+                getChangedProperties = defaultGetChangedProperties,
+                viewTypeHandler = mockViewTypeHandler,
+                bindingInflater = mockBindingInflater
+            )
+        )
+    ).apply { makeNotifyNotCrash() }
 
     @get:Rule
     val schedulers = rxSchedulers { prepareMain().prepareComputation() }
@@ -108,7 +113,7 @@ internal class BindingRecyclerViewAdapterTest {
     fun `given onBindViewHolder is called with empty payloads, onInterceptOnBind returns false`() {
         spyTested.onBindViewHolder(mockViewHolder, ADAPTER_POSITION, emptyList())
 
-        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, adapterItem) `should be equal to` false
+        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, null) `should be equal to` false
     }
 
     @Test
@@ -116,8 +121,8 @@ internal class BindingRecyclerViewAdapterTest {
         val expectedChangePayload = AdapterNotifier.ChangePayload(mock(), intArrayOf(1, 2, 3, 4, 5))
         spyTested.onBindViewHolder(mockViewHolder, ADAPTER_POSITION, listOf(expectedChangePayload))
 
-        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, adapterItem) `should be equal to` true
-        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, adapterItem) `should be equal to` false
+        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, null) `should be equal to` true
+        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, null) `should be equal to` false
         expectedChangePayload.apply {
             inOrder(sender).apply {
                 verify(sender).adapterBindStart(spyTested)
@@ -145,10 +150,11 @@ internal class BindingRecyclerViewAdapterTest {
     @Test
     fun `set items with test data 1 notifies adapter correctly`() {
         val newItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 2, bindingId = 20))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 2, bindingId = 20)
+        )
 
         spyTested.items = newItems
 
@@ -158,16 +164,18 @@ internal class BindingRecyclerViewAdapterTest {
     @Test
     fun `set items with test data 2 notifies adapter correctly`() {
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 2, bindingId = 20))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 2, bindingId = 20)
+        )
         reset(spyTested)
 
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 2, bindingId = 20))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 2, bindingId = 20)
+        )
 
         verify(spyTested).notifyItemRangeRemoved(1, 1)
     }
@@ -175,20 +183,22 @@ internal class BindingRecyclerViewAdapterTest {
     @Test
     fun `set items with test data 3 notifies adapter correctly`() {
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10)
+        )
         reset(spyTested)
 
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 1, bindingId = 10),
-                TestItem(id = 5, viewType = 1, bindingId = 10),
-                TestItem(id = 6, viewType = 1, bindingId = 10))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 1, bindingId = 10),
+            TestItem(id = 5, viewType = 1, bindingId = 10),
+            TestItem(id = 6, viewType = 1, bindingId = 10)
+        )
 
         verify(spyTested).notifyItemRangeInserted(4, 3)
     }
@@ -196,20 +206,22 @@ internal class BindingRecyclerViewAdapterTest {
     @Test
     fun `set items with test data 4 notifies adapter correctly`() {
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 6, viewType = 1, bindingId = 10))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 6, viewType = 1, bindingId = 10)
+        )
         reset(spyTested)
 
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 1, bindingId = 10),
-                TestItem(id = 5, viewType = 1, bindingId = 10),
-                TestItem(id = 6, viewType = 1, bindingId = 10))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 1, bindingId = 10),
+            TestItem(id = 5, viewType = 1, bindingId = 10),
+            TestItem(id = 6, viewType = 1, bindingId = 10)
+        )
 
         verify(spyTested).notifyItemRangeInserted(3, 3)
     }
@@ -217,17 +229,19 @@ internal class BindingRecyclerViewAdapterTest {
     @Test
     fun `set items with test data 5 notifies adapter correctly`() {
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 2, bindingId = 20))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 2, bindingId = 20)
+        )
         reset(spyTested)
 
         spyTested.items = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 2, bindingId = 20))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 2, bindingId = 20)
+        )
 
         inOrder(spyTested).apply {
             verify(spyTested).notifyItemRangeInserted(2, 1)

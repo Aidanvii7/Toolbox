@@ -87,7 +87,7 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     private val autoDisposeEnabled: Boolean = true,
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
-    val getChangedProperties: (old: Item, new: Item) -> IntArray? = defaultGetChangedProperties,
+    val getChangedProperties: (oldItem: Item, newItem: Item) -> IntArray? = defaultGetChangedProperties,
     val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
     val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) },
     val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null
