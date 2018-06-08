@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes
 import android.support.annotation.RestrictTo
 import android.view.View
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
+import com.aidanvii.toolbox.databinding.NotifiableObservable
 
 /**
  * Represents A data-binding adapter that can automatically bind a list of type [BindableAdapterItem].
@@ -69,7 +70,7 @@ interface BindableAdapter<Item : BindableAdapterItem, VH : BindableAdapter.ViewH
      * The default will call [ViewDataBinding.setVariable] with the
      * [BindableAdapterItem.bindingId] as the variableId and [BindableAdapterItem.bindableItem] as the value.
      */
-    fun onInterceptOnBind(viewHolder: VH, adapterPosition: Int): Boolean = false
+        fun onInterceptOnBind(viewHolder: VH, adapterPosition: Int, observable: NotifiableObservable?): Boolean = false
 
     /**
      * Called when the [BindableAdapter] is binding a [ViewHolder] for the given [adapterPosition]

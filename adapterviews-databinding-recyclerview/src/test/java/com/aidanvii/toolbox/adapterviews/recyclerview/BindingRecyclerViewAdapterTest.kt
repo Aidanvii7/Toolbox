@@ -108,7 +108,7 @@ internal class BindingRecyclerViewAdapterTest {
     fun `given onBindViewHolder is called with empty payloads, onInterceptOnBind returns false`() {
         spyTested.onBindViewHolder(mockViewHolder, ADAPTER_POSITION, emptyList())
 
-        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION) `should be equal to` false
+        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, adapterItem) `should be equal to` false
     }
 
     @Test
@@ -116,8 +116,8 @@ internal class BindingRecyclerViewAdapterTest {
         val expectedChangePayload = AdapterNotifier.ChangePayload(mock(), intArrayOf(1, 2, 3, 4, 5))
         spyTested.onBindViewHolder(mockViewHolder, ADAPTER_POSITION, listOf(expectedChangePayload))
 
-        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION) `should be equal to` true
-        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION) `should be equal to` false
+        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, adapterItem) `should be equal to` true
+        spyTested.onInterceptOnBind(mockViewHolder, ADAPTER_POSITION, adapterItem) `should be equal to` false
         expectedChangePayload.apply {
             inOrder(sender).apply {
                 verify(sender).adapterBindStart(spyTested)

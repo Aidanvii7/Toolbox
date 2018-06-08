@@ -1,5 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
+import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
@@ -18,10 +19,12 @@ class DiffCallbackTest {
     @Test
     fun `areItemsTheSame is forwarded to given function with items from given item lists`() {
         val diffCallback = diffCallback(
-                oldItems = spyOldItems,
-                newItems = spyNewItems,
-                areItemsTheSame = spyAreItemsTheSame,
-                areContentsTheSame = spyAreContentsTheSame)
+            oldItems = spyOldItems,
+            newItems = spyNewItems,
+            areItemsTheSame = spyAreItemsTheSame,
+            areContentsTheSame = spyAreContentsTheSame,
+            getChangedProperties = defaultGetChangedProperties
+        )
 
         diffCallback.areItemsTheSame(0, 1).`should be true`()
 
@@ -37,10 +40,12 @@ class DiffCallbackTest {
     @Test
     fun `areContentsTheSame is forwarded to given function with items from given item lists`() {
         val diffCallback = diffCallback(
-                oldItems = spyOldItems,
-                newItems = spyNewItems,
-                areItemsTheSame = spyAreItemsTheSame,
-                areContentsTheSame = spyAreContentsTheSame)
+            oldItems = spyOldItems,
+            newItems = spyNewItems,
+            areItemsTheSame = spyAreItemsTheSame,
+            areContentsTheSame = spyAreContentsTheSame,
+            getChangedProperties = defaultGetChangedProperties
+        )
 
         diffCallback.areContentsTheSame(1, 0).`should be true`()
 
@@ -56,10 +61,12 @@ class DiffCallbackTest {
     @Test
     fun `oldListSize is forwarded to oldItems size`() {
         val diffCallback = diffCallback(
-                oldItems = spyOldItems,
-                newItems = spyNewItems,
-                areItemsTheSame = spyAreItemsTheSame,
-                areContentsTheSame = spyAreContentsTheSame)
+            oldItems = spyOldItems,
+            newItems = spyNewItems,
+            areItemsTheSame = spyAreItemsTheSame,
+            areContentsTheSame = spyAreContentsTheSame,
+            getChangedProperties = defaultGetChangedProperties
+        )
 
         diffCallback.oldListSize.`should be equal to`(2)
         verify(spyOldItems).size
@@ -68,10 +75,12 @@ class DiffCallbackTest {
     @Test
     fun `newListSize is forwarded to oldItems size`() {
         val diffCallback = diffCallback(
-                oldItems = spyOldItems,
-                newItems = spyNewItems,
-                areItemsTheSame = spyAreItemsTheSame,
-                areContentsTheSame = spyAreContentsTheSame)
+            oldItems = spyOldItems,
+            newItems = spyNewItems,
+            areItemsTheSame = spyAreItemsTheSame,
+            areContentsTheSame = spyAreContentsTheSame,
+            getChangedProperties = defaultGetChangedProperties
+        )
 
         diffCallback.newListSize.`should be equal to`(3)
         verify(spyNewItems).size

@@ -111,12 +111,12 @@ internal class BindableAdapterDelegateTest {
 
     @Test
     fun `onBind calls methods in correct order for test data 1 when onInterceptOnBind returns false`() {
-        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1)).thenReturn(false)
+        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1, null)).thenReturn(false)
         tested.onBind(mockViewHolder1, ADAPTER_POSITION_1)
         inOrder(mockBindableAdapter, mockViewHolder1, mockBinding1, mockItemBoundListener, spiedTestItem1).apply {
             verify(mockBindableAdapter).getItem(ADAPTER_POSITION_1)
             verify(mockViewHolder1).boundAdapterItem = spiedTestItem1
-            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1)
+            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1, null)
             verify(mockBinding1).setVariable(BINDING_ID_1, spiedTestItem1)
             verify(mockBindableAdapter).onBindExtras(mockViewHolder1, ADAPTER_POSITION_1)
             verify(spiedTestItem1).onBindExtras(mockBinding1, ADAPTER_POSITION_1)
@@ -129,12 +129,12 @@ internal class BindableAdapterDelegateTest {
 
     @Test
     fun `onBind calls methods in correct order for test data 2 when onInterceptOnBind returns false`() {
-        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2)).thenReturn(false)
+        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2, null)).thenReturn(false)
         tested.onBind(mockViewHolder2, ADAPTER_POSITION_2)
         inOrder(mockBindableAdapter, mockViewHolder2, mockBinding2, mockItemBoundListener, spiedTestItem2).apply {
             verify(mockBindableAdapter).getItem(ADAPTER_POSITION_2)
             verify(mockViewHolder2).boundAdapterItem = spiedTestItem2
-            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2)
+            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2, null)
             verify(mockBinding2).setVariable(BINDING_ID_2, spiedTestItem2)
             verify(mockBindableAdapter).onBindExtras(mockViewHolder2, ADAPTER_POSITION_2)
             verify(spiedTestItem2).onBindExtras(mockBinding2, ADAPTER_POSITION_2)
@@ -147,12 +147,12 @@ internal class BindableAdapterDelegateTest {
 
     @Test
     fun `onBind calls methods in correct order for test data 1 when onInterceptOnBind returns true`() {
-        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1)).thenReturn(true)
+        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1, null)).thenReturn(true)
         tested.onBind(mockViewHolder1, ADAPTER_POSITION_1)
         inOrder(mockBindableAdapter, mockViewHolder1, mockBinding1, mockItemBoundListener, spiedTestItem1).apply {
             verify(mockBindableAdapter).getItem(ADAPTER_POSITION_1)
             verify(mockViewHolder1).boundAdapterItem = spiedTestItem1
-            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1)
+            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder1, ADAPTER_POSITION_1, null)
             verify(mockBinding1, times(0)).setVariable(BINDING_ID_1, spiedTestItem1)
             verify(mockBindableAdapter).onBindExtras(mockViewHolder1, ADAPTER_POSITION_1)
             verify(spiedTestItem1).onBindExtras(mockBinding1, ADAPTER_POSITION_1)
@@ -165,12 +165,12 @@ internal class BindableAdapterDelegateTest {
 
     @Test
     fun `onBind calls methods in correct order for test data 2 when onInterceptOnBind returns true`() {
-        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2)).thenReturn(true)
+        whenever(mockBindableAdapter.onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2, null)).thenReturn(true)
         tested.onBind(mockViewHolder2, ADAPTER_POSITION_2)
         inOrder(mockBindableAdapter, mockViewHolder2, mockBinding2, mockItemBoundListener, spiedTestItem2).apply {
             verify(mockBindableAdapter).getItem(ADAPTER_POSITION_2)
             verify(mockViewHolder2).boundAdapterItem = spiedTestItem2
-            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2)
+            verify(mockBindableAdapter).onInterceptOnBind(mockViewHolder2, ADAPTER_POSITION_2, null)
             verify(mockBinding2, times(0)).setVariable(BINDING_ID_2, spiedTestItem2)
             verify(mockBindableAdapter).onBindExtras(mockViewHolder2, ADAPTER_POSITION_2)
             verify(spiedTestItem2).onBindExtras(mockBinding2, ADAPTER_POSITION_2)

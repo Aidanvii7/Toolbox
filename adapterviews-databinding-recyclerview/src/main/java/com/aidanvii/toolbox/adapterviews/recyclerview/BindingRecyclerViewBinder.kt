@@ -14,6 +14,7 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
 import com.aidanvii.toolbox.adapterviews.databinding.ListBinder
 import com.aidanvii.toolbox.adapterviews.databinding.defaultAreContentsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultAreItemsSame
+import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
 import com.aidanvii.toolbox.delegates.weak.weakLazy
 
 /**
@@ -86,6 +87,7 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     private val autoDisposeEnabled: Boolean = true,
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
+    val getChangedProperties: (old: Item, new: Item) -> IntArray? = defaultGetChangedProperties,
     val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
     val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) },
     val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null
@@ -103,6 +105,7 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
                 delegate = BindableAdapterDelegate(),
                 areItemsTheSame = areItemsTheSame,
                 areContentsTheSame = areContentsTheSame,
+                getChangedProperties = getChangedProperties,
                 viewTypeHandler = viewTypeHandler,
                 bindingInflater = BindingInflater
             )
@@ -119,13 +122,15 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
         viewTypeHandler: BindableAdapter.ViewTypeHandler<Item> = this.viewTypeHandler,
         bindingInflater: BindingInflater = BindingInflater,
         areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areItemsTheSame,
-        areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areContentsTheSame
+        areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areContentsTheSame,
+        getChangedProperties: (old: Item, new: Item) -> IntArray? = this.getChangedProperties
     ) = BindingRecyclerViewAdapter.Builder(
         delegate = BindableAdapterDelegate(),
         viewTypeHandler = viewTypeHandler,
         bindingInflater = bindingInflater,
+        areContentsTheSame = areContentsTheSame,
         areItemsTheSame = areItemsTheSame,
-        areContentsTheSame = areContentsTheSame
+        getChangedProperties = getChangedProperties
     ).let { builder ->
         adapterFactory(builder)
     }
