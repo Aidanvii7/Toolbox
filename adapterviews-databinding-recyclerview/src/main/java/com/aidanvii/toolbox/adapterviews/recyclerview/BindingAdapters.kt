@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.recyclerview.R
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
-import com.aidanvii.toolbox.databinding.getTrackedValue
 import com.aidanvii.toolbox.databinding.trackInstance
 
 @BindingAdapter(
@@ -33,6 +32,7 @@ private fun <Item : BindableAdapterItem> RecyclerView.rebind(
         onDetached = { detachedBinder ->
             detachedBinder.layoutManagerState = layoutManager?.onSaveInstanceState()
             detachedBinder.adapter.itemBoundListener = null
+            adapter = null
         },
         onAttached = { attachedBinder ->
             val localAdapter = attachedBinder.adapter
@@ -40,10 +40,9 @@ private fun <Item : BindableAdapterItem> RecyclerView.rebind(
                 localAdapter.itemBoundListener = itemBoundListener
             }
             adapter = localAdapter
-            localAdapter.runAfterUpdate = {
-                layoutManager?.onRestoreInstanceState(attachedBinder.layoutManagerState)
+            layoutManager = attachedBinder.layoutManagerFactory(context).apply {
+                onRestoreInstanceState(attachedBinder.layoutManagerState)
             }
-            layoutManager = attachedBinder.layoutManagerFactory(context)
             attachedBinder.recycledViewPoolWrapper?.invoke()?.let { pool ->
                 if (recycledViewPool !== pool) {
                     recycledViewPool = pool

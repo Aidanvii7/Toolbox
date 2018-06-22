@@ -6,7 +6,6 @@ import android.support.annotation.WorkerThread
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import com.aidanvii.toolbox.Action
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
@@ -51,22 +50,25 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     override var items: List<Item>
         get() = _items
         set(newItems) {
-            if (newItems !== _items) {
-                disposable?.dispose()
-                disposable = Single.just(createDiffCallback(oldItems = _items, newItems = newItems))
-                    .subscribeOn(Schedulers.computation())
-                    .map { it.toChangePayload() }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy {
-                        tempPreviousItems = _items
-                        _items = it.allItems
-                        it.diffResult.dispatchUpdatesTo(this)
-                        tempPreviousItems = null
-                        runAfterUpdate = runAfterUpdate?.let { afterDispatched ->
-                            afterDispatched.invoke()
-                            null
+            if (_items.isEmpty()) {
+                _items = newItems
+                if (newItems.isNotEmpty()) {
+                    notifyItemRangeInserted(0, newItems.size)
+                }
+            } else {
+                if (newItems !== _items) {
+                    disposable?.dispose()
+                    disposable = Single.just(createDiffCallback(oldItems = _items, newItems = newItems))
+                        .subscribeOn(Schedulers.computation())
+                        .map { it.toChangePayload() }
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeBy {
+                            tempPreviousItems = _items
+                            _items = it.allItems
+                            it.diffResult.dispatchUpdatesTo(this)
+                            tempPreviousItems = null
                         }
-                    }
+                }
             }
         }
 
@@ -75,7 +77,6 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private val areContentsTheSame = builder.areContentsTheSame
     private val getChangedProperties = builder.getChangedProperties
     internal var tempPreviousItems: List<Item>? = null
-    internal var runAfterUpdate: Action? = null
     internal var attachedRecyclerView: RecyclerView? = null
 
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
