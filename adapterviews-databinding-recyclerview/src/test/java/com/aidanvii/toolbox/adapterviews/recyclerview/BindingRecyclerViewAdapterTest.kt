@@ -1,6 +1,7 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import android.databinding.ViewDataBinding
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.makeNotifyNotCrash
 import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
@@ -31,7 +32,7 @@ internal class BindingRecyclerViewAdapterTest {
         val ADAPTER_POSITION = random.nextInt()
     }
 
-    val mockContainer = mock<ViewGroup>()
+    val mockContainer = mock<RecyclerView>()
 
     val mockBinding = mock<ViewDataBinding>().apply {
         whenever(root).thenReturn(mock())
@@ -54,7 +55,6 @@ internal class BindingRecyclerViewAdapterTest {
         whenever(onCreate(mockContainer, VIEW_TYPE)).thenReturn(mockViewHolder)
     }
 
-
     val spyTested = spy(
         BindingRecyclerViewAdapter(
             BindingRecyclerViewAdapter.Builder(
@@ -66,7 +66,10 @@ internal class BindingRecyclerViewAdapterTest {
                 bindingInflater = mockBindingInflater
             )
         )
-    ).apply { makeNotifyNotCrash() }
+    ).apply {
+        makeNotifyNotCrash()
+        onAttachedToRecyclerView(mockContainer)
+    }
 
     @get:Rule
     val schedulers = rxSchedulers { prepareMain().prepareComputation() }
@@ -137,14 +140,14 @@ internal class BindingRecyclerViewAdapterTest {
     fun `onBindViewHolder forwards to delegate onBind`() {
         spyTested.onBindViewHolder(mockViewHolder, ADAPTER_POSITION)
 
-        verify(mockDelegate).onBind(mockViewHolder, ADAPTER_POSITION)
+        verify(mockDelegate).onBind(mockViewHolder, ADAPTER_POSITION, mockContainer)
     }
 
     @Test
     fun `onViewRecycled forwards to delegate onUnbind`() {
         spyTested.onViewRecycled(mockViewHolder)
 
-        verify(mockDelegate).onUnbind(mockViewHolder, ADAPTER_POSITION)
+        verify(mockDelegate).onUnbind(mockViewHolder, ADAPTER_POSITION, mockContainer)
     }
 
     @Test

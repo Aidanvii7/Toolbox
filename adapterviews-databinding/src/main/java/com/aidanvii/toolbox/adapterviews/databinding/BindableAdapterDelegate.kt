@@ -18,7 +18,7 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
         }
     }
 
-    fun onBind(viewHolder: VH, adapterPosition: Int) {
+    fun onBind(viewHolder: VH, adapterPosition: Int, adapterView: ViewGroup?) {
         bindableAdapter.run {
             getItem(adapterPosition).let { adapterItem ->
                 viewHolder.apply {
@@ -34,7 +34,7 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
                         }
                     }
                     onBindExtras(viewHolder, adapterPosition)
-                    adapterItem.onBindExtras(viewHolder.viewDataBinding, adapterPosition)
+                    adapterItem.onBindExtras(viewHolder.viewDataBinding, adapterPosition, adapterView)
                     viewDataBinding.executePendingBindings()
                 }
                 onBound(viewHolder, adapterPosition)
@@ -44,13 +44,13 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
         }
     }
 
-    fun onUnbind(viewHolder: VH, adapterPosition: Int) {
+    fun onUnbind(viewHolder: VH, adapterPosition: Int, adapterView: ViewGroup?) {
         bindableAdapter.run {
             if (!onInterceptUnbind(viewHolder, adapterPosition)) {
                 viewHolder.viewDataBinding.setVariable(viewHolder.bindingResourceId, null)
             }
             onUnbindExtras(viewHolder, adapterPosition)
-            viewHolder.boundAdapterItem?.onUnbindExtras(viewHolder.viewDataBinding, adapterPosition)
+            viewHolder.boundAdapterItem?.onUnbindExtras(viewHolder.viewDataBinding, adapterPosition, adapterView)
             viewHolder.viewDataBinding.executePendingBindings()
             onUnbound(viewHolder, adapterPosition)
             viewHolder.boundAdapterItem?.onUnBound(adapterPosition)
@@ -61,7 +61,7 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
     fun onDestroy(viewHolder: VH, adapterPosition: Int) {
         bindableAdapter.run {
             if (viewHolder.boundAdapterItem != null) {
-                onUnbind(viewHolder, adapterPosition)
+                onUnbind(viewHolder, adapterPosition, null)
             }
             onDestroyed(viewHolder, adapterPosition)
         }

@@ -88,14 +88,14 @@ internal class BindingRecyclerPagerAdapterTest {
     fun `onBindViewHolder forwards to delegate onBind`() {
         SuperReflect.on(spyTested).call("onBindViewHolder", mockViewHolder, ADAPTER_POSITION)
 
-        verify(mockDelegate).onBind(mockViewHolder, ADAPTER_POSITION)
+        verify(mockDelegate).onBind(mockViewHolder, ADAPTER_POSITION, null)
     }
 
     @Test
     fun `onUnbindViewHolder forwards to delegate onUnbind`() {
         SuperReflect.on(spyTested).call("onUnbindViewHolder", mockViewHolder, ADAPTER_POSITION)
 
-        verify(mockDelegate).onUnbind(mockViewHolder, ADAPTER_POSITION)
+        verify(mockDelegate).onUnbind(mockViewHolder, ADAPTER_POSITION, null)
     }
 
     @Test

@@ -137,11 +137,11 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         holder: BindingRecyclerViewItemViewHolder<*, Item>,
         position: Int
     ) {
-        delegate.onBind(holder, position)
+        delegate.onBind(holder, position, attachedRecyclerView)
     }
 
     final override fun onViewRecycled(holder: BindingRecyclerViewItemViewHolder<*, Item>) {
-        delegate.onUnbind(holder, holder.adapterPosition)
+        delegate.onUnbind(holder, holder.adapterPosition, attachedRecyclerView)
     }
 
     final override fun getItemCount(): Int = items.count()

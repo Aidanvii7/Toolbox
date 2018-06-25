@@ -61,11 +61,11 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
     }
 
     final override fun onBindViewHolder(viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>, adapterPosition: Int) {
-        delegate.onBind(viewHolder, adapterPosition)
+        delegate.onBind(viewHolder, adapterPosition, null)
     }
 
     final override fun onUnbindViewHolder(viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>, adapterPosition: Int) {
-        delegate.onUnbind(viewHolder, adapterPosition)
+        delegate.onUnbind(viewHolder, adapterPosition, null)
     }
 
     final override fun onDestroyViewHolder(viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>, adapterPosition: Int) {

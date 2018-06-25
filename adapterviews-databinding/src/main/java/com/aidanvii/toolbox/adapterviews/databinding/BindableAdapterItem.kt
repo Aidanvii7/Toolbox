@@ -4,6 +4,7 @@ import android.databinding.ViewDataBinding
 import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
 import android.support.annotation.RestrictTo
+import android.view.ViewGroup
 import com.aidanvii.toolbox.DisposableItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter.ViewHolder
 import java.util.concurrent.atomic.AtomicBoolean
@@ -50,7 +51,7 @@ interface BindableAdapterItem : DisposableItem {
      * Regardless of what [onInterceptOnBind] returns, this will always be called.
      * This gives you the opportunity to bind extra data bound variables for this [BindableAdapterItem].
      */
-    fun onBindExtras(viewDataBinding: ViewDataBinding, adapterPosition: Int) {}
+    fun onBindExtras(viewDataBinding: ViewDataBinding, adapterPosition: Int, adapterView: ViewGroup?) {}
 
     /**
      * Called when the [BindableAdapter] has finished binding a [ViewHolder] for the given [adapterPosition]
@@ -63,7 +64,7 @@ interface BindableAdapterItem : DisposableItem {
      * Regardless of what [onInterceptOnBind] returns, this will always be called.
      * This gives you the opportunity to un-bind extra data bound variables for this [BindableAdapterItem].
      */
-    fun onUnbindExtras(viewDataBinding: ViewDataBinding, adapterPosition: Int) {}
+    fun onUnbindExtras(viewDataBinding: ViewDataBinding, adapterPosition: Int, adapterView: ViewGroup?) {}
 
     /**
      * Called when the [BindableAdapter] has finished un-binding a [ViewHolder] from the given [adapterPosition]
