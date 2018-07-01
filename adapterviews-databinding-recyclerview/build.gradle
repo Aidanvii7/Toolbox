@@ -34,7 +34,7 @@ dependencies {
     api project(':delegates-observable-databinding')
     api project(':delegates-weak')
 
-    api "com.android.support:recyclerview-v7:$android_support_version"
+    api "${android_import_namespace}.support:recyclerview-v7:$android_support_version"
 
     // TODO remove rxJava dependency, switch to coroutines
     api "io.reactivex.rxjava2:rxjava:$rxjava_version"
