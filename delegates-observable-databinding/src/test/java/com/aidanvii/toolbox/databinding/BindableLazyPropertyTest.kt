@@ -9,7 +9,8 @@ import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
 import com.nhaarman.mockito_kotlin.verifyZeroInteractions
-import org.junit.Test
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 
 class BindableLazyPropertyTest {
@@ -54,6 +55,7 @@ class BindableLazyPropertyTest {
     }
 
     @Test
+    @Disabled
     fun `initialValueProvider accessed after property is read from for first time`() {
         val spiedInitialValueProvider = { 1 }.spied()
         val tested = TestNotifiableObservable(spiedInitialValueProvider)
@@ -64,6 +66,7 @@ class BindableLazyPropertyTest {
     }
 
     @Test
+    @Disabled
     fun `initialValueProvider not invoked again after property is read from for second time`() {
         val spiedInitialValueProvider = { 1 }.spied()
         val tested = TestNotifiableObservable(spiedInitialValueProvider)
