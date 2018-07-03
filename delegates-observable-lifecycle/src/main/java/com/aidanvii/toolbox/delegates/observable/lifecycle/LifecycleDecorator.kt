@@ -1,4 +1,4 @@
-package com.aidanvii.toolbox.databinding
+package com.aidanvii.toolbox.delegates.observable.lifecycle
 
 import android.arch.lifecycle.DefaultLifecycleObserver
 import android.arch.lifecycle.Lifecycle
@@ -7,14 +7,14 @@ import com.aidanvii.toolbox.delegates.observable.AfterChange
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty
 
 abstract class LifecycleDecorator<ST, TT>(
-    lifecycleOwner: LifecycleOwner,
-    private val decorated: ObservableProperty<ST, TT>
+    private val decorated: ObservableProperty<ST, TT>,
+    lifecycle: Lifecycle
 ) : ObservableProperty<ST, TT> by decorated, DefaultLifecycleObserver {
 
     protected var latestValue: TT? = null
 
     init {
-        lifecycleOwner.lifecycle.addObserver(this)
+        lifecycle.addObserver(this)
         decorated.afterChangeObservers += { property, oldValue, newValue ->
             latestValue = newValue
             afterChangeObservers.forEach { it(property, oldValue, newValue) }

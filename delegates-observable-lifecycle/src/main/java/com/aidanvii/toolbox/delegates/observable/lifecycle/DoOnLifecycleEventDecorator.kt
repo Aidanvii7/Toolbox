@@ -1,28 +1,27 @@
-package com.aidanvii.toolbox.databinding
+package com.aidanvii.toolbox.delegates.observable.lifecycle
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty
-import com.aidanvii.toolbox.delegates.observable.doOnNext
 import kotlin.reflect.KProperty
 
 fun <ST, TT> ObservableProperty<ST, TT>.doOnLifecycleEvent(
     lifecycleEvent: Lifecycle.Event,
-    lifecycleOwner: LifecycleOwner,
+    lifecycle: Lifecycle,
     doOnLifecycleEvent: (value: TT) -> Unit
 ) = DoOnLifecycleEventDecorator(
-    lifecycleEvent = lifecycleEvent,
-    lifecycleOwner = lifecycleOwner,
     decorated = this,
+    lifecycleEvent = lifecycleEvent,
+    lifecycle = lifecycle,
     doOnLifecycleEvent = doOnLifecycleEvent
 )
 
 class DoOnLifecycleEventDecorator<ST, TT>(
-    private val lifecycleEvent: Lifecycle.Event,
-    lifecycleOwner: LifecycleOwner,
     decorated: ObservableProperty<ST, TT>,
+    private val lifecycleEvent: Lifecycle.Event,
+    lifecycle: Lifecycle,
     private val doOnLifecycleEvent: (value: TT) -> Unit
-) : LifecycleDecorator<ST, TT>(lifecycleOwner, decorated) {
+) : LifecycleDecorator<ST, TT>(decorated, lifecycle) {
 
     override fun onLifeCycleEvent(state: Lifecycle.State, event: Lifecycle.Event) {
         latestValue?.let { latestValue ->
