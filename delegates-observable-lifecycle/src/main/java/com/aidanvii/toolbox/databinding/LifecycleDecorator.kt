@@ -45,7 +45,7 @@ abstract class LifecycleDecorator<ST, TT>(
 
     override fun onStop(owner: LifecycleOwner) = onLifeCycleEvent(
         state = owner.lifecycle.currentState,
-        event = Lifecycle.Event.ON_START
+        event = Lifecycle.Event.ON_STOP
     )
 
     override fun onDestroy(owner: LifecycleOwner) = onLifeCycleEvent(
