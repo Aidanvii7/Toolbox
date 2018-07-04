@@ -1,8 +1,8 @@
 package com.aidanvii.toolbox.delegates.observable.lifecycle
 
-import android.arch.lifecycle.DefaultLifecycleObserver
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
+import com.aidanvii.toolbox.arch.lifecycle.DefaultLifecycleObserver
 import com.aidanvii.toolbox.delegates.observable.AfterChange
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty
 

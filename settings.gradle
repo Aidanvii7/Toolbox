@@ -23,5 +23,6 @@ include ':rxutils'
 include ':paging'
 include ':redux'
 
-include ':lifecycle'
+include ':arch-lifecycle'
+include ':arch-viewmodel-factory'
 include ':delegates-observable-lifecycle'

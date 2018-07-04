@@ -29,8 +29,10 @@ android {
 
 dependencies {
 
-    api project(':delegates-observable')
-    api project(':arch-lifecycle')
+    api project(':common')
+
+    api "android.arch.lifecycle:extensions:$android_arch_viewmodel_version"
+    api "android.arch.lifecycle:viewmodel:$android_arch_viewmodel_version"
 
     testImplementation project(':common-test')
 
