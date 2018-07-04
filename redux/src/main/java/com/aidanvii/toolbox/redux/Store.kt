@@ -1,72 +1,24 @@
 package com.aidanvii.toolbox.redux
 
 import com.aidanvii.toolbox.rxutils.RxSchedulers
-import com.aidanvii.toolbox.rxutils.disposable
 import com.jakewharton.rxrelay2.BehaviorRelay
-import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
-import java.util.concurrent.atomic.AtomicBoolean
 
-class Store<Action, State>(
-    rxSchedulers: RxSchedulers,
-    private val reducer: Reducer<Action, State>,
-    @Volatile private var state: State,
-    startActions: List<Action> = emptyList()
-) : Dispatcher<Action> {
+interface Store<Action, State> {
 
-    private val disposed = AtomicBoolean(false)
-    private var reducerRelayDisposable by disposable()
+    val stateObservable: Observable<State>
 
-    private val stateLock = Any()
-    private val stateRelay = BehaviorRelay.createDefault(state)
-    private val actionStateRelay = BehaviorRelay.createDefault(ActionStatePair<Action, State>(null, state))
-    private val stateReducerRelay = PublishRelay.create<Action>().apply {
-        this.observeOn(rxSchedulers.single)
-        reducerRelayDisposable = this.subscribe { action -> reduce(action) }
-    }
+    val actionsObservable: Observable<List<Action>>
 
-    init {
-        startActions.forEach { dispatch(it) }
-    }
+    val hasStateObservers: Boolean
 
-    private fun reduce(action: Action) {
-        synchronized(stateLock) {
-            reducer.reduce(state, action).let { newState ->
-                if (newState != null && newState != state) {
-                    state = newState
-                    newState
-                } else null
-            }
-        }?.let { newState ->
-            stateRelay.accept(newState)
-            actionStateRelay.accept(ActionStatePair(action, newState))
-        }
-    }
+    val hasActionStateObservers: Boolean
 
-    val stateObservable: Observable<State> get() = stateRelay
+    fun dispatch(action: Action)
 
-    val actionStateObservable: Observable<ActionStatePair<Action, State>> get() = actionStateRelay
+    fun dispatch(vararg actions: Action)
 
-    val hasStateObservers: Boolean get() = stateRelay.hasObservers()
-
-    val hasActionStateObservers: Boolean get() = actionStateRelay.hasObservers()
-
-    override fun isDisposed() = disposed.get()
-
-    override fun dispose() {
-        if (!disposed.getAndSet(true)) {
-            reducerRelayDisposable = null
-        }
-    }
-
-    override fun dispatch(action: Action) {
-        stateReducerRelay.accept(action)
-    }
-
-    class ActionStatePair<out Action, out State>(
-        val action: Action?,
-        val state: State
-    )
+    fun dispatch(actions: List<Action>)
 
     interface Reducer<in Action, State> {
 
@@ -76,5 +28,63 @@ class Store<Action, State>(
          * if the [Reducer] is not interested in the [action], it should return null to indicate no changes.
          */
         fun reduce(state: State, action: Action): State?
+    }
+
+    class Base<Action, State>(
+        rxSchedulers: RxSchedulers,
+        private val reducer: Reducer<Action, State>,
+        @Volatile private var state: State,
+        startActions: List<Action> = emptyList()
+    ) : Store<Action, State> {
+
+        private val stateLock = Any()
+        private val stateRelay = BehaviorRelay.createDefault(state)
+        private val actionsRelay = BehaviorRelay.create<List<Action>>()
+        private val stateReducerRelay = BehaviorRelay.create<List<Action>>().apply {
+            observeOn(rxSchedulers.single).subscribe { actions -> reduce(actions) }
+        }
+
+        init {
+            dispatch(startActions)
+        }
+
+        private fun reduce(actions: List<Action>) {
+            synchronized(stateLock) {
+                actions.foldRight(initial = this.state) { action, intermediateState ->
+                    reducer.reduce(intermediateState, action) ?: intermediateState
+                }.let { newState -> getUpdatedStateIfChanged(newState) }
+            }.let { newState ->
+                newState?.let { stateRelay.accept(newState) }
+                actionsRelay.accept(actions)
+            }
+        }
+
+        private fun getUpdatedStateIfChanged(newState: State?): State? =
+            if (newState != this.state && newState != null) {
+                this.state = newState
+                newState
+            } else null
+
+        override val stateObservable: Observable<State> get() = stateRelay
+
+        override val actionsObservable: Observable<List<Action>> get() = actionsRelay
+
+        override val hasStateObservers: Boolean get() = stateRelay.hasObservers()
+
+        override val hasActionStateObservers: Boolean get() = actionsRelay.hasObservers()
+
+        override fun dispatch(action: Action) {
+            stateReducerRelay.accept(listOf(action))
+        }
+
+        override fun dispatch(vararg actions: Action) {
+            stateReducerRelay.accept(actions.toList())
+        }
+
+        override fun dispatch(actions: List<Action>) {
+            if (actions.isNotEmpty()) {
+                stateReducerRelay.accept(actions)
+            }
+        }
     }
 }
