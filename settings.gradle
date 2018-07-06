@@ -6,6 +6,7 @@ include ':databinding-arch-viewmodel'
 include ':databinding-bindingadapters'
 
 include ':delegates-weak'
+include ':delegates-coroutines-job'
 
 include ':delegates-observable'
 include ':delegates-observable-databinding'

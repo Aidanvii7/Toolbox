@@ -6,11 +6,11 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.makeNotifyNotCrash
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
-import com.aidanvii.toolbox.rxSchedulers
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
+import kotlinx.coroutines.experimental.Unconfined
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.InOrder
@@ -18,8 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 class BindingAdaptersTest {
 
-    @get:Rule
-    val schedulers = rxSchedulers { prepareMain().prepareComputation() }
     @get:Rule
     val viewTagTrackerRule = ViewTagTrackerRule()
 
@@ -51,7 +49,9 @@ class BindingAdaptersTest {
                     spyAdapter1.makeNotifyNotCrash()
                 }
             },
-            layoutManagerFactory = { mockLayoutManager1 }
+            layoutManagerFactory = { mockLayoutManager1 },
+            uiContext = Unconfined,
+            workerContext = Unconfined
         )
     )
 
@@ -63,7 +63,9 @@ class BindingAdaptersTest {
                     spyAdapter2.makeNotifyNotCrash()
                 }
             },
-            layoutManagerFactory = { mockLayoutManager2 }
+            layoutManagerFactory = { mockLayoutManager2 },
+            uiContext = Unconfined,
+            workerContext = Unconfined
         )
     )
 

@@ -16,6 +16,9 @@ import com.aidanvii.toolbox.adapterviews.databinding.defaultAreContentsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultAreItemsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
 import com.aidanvii.toolbox.delegates.weak.weakLazy
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlin.coroutines.experimental.CoroutineContext
 
 /**
  * Intermediate class used to configure the [BindingRecyclerViewAdapter]
@@ -90,7 +93,9 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     val getChangedProperties: (oldItem: Item, newItem: Item) -> IntArray? = defaultGetChangedProperties,
     val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
     val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) },
-    val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null
+    val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null,
+    private val uiContext: CoroutineContext = UI,
+    private val workerContext: CoroutineContext = CommonPool
 ) : ListBinder<Item>(
     hasMultipleViewTypes = hasMultipleViewTypes,
     areItemsTheSame = areItemsTheSame,
@@ -107,7 +112,9 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
                 areContentsTheSame = areContentsTheSame,
                 getChangedProperties = getChangedProperties,
                 viewTypeHandler = viewTypeHandler,
-                bindingInflater = BindingInflater
+                bindingInflater = BindingInflater,
+                uiContext = uiContext,
+                workerContext = workerContext
             )
         ).apply {
             val dataObserverPlugins = mutableListOf<BindableAdapterItemDataObserver.Plugin<Item>>()
@@ -115,23 +122,5 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
             if (adapterNotificationEnabled) dataObserverPlugins.add(DataObserverAdapterNotifierPlugin())
             registerAdapterDataObserver(BindableAdapterItemDataObserver(this, *dataObserverPlugins.toTypedArray()))
         }
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    fun testAdapter(
-        viewTypeHandler: BindableAdapter.ViewTypeHandler<Item> = this.viewTypeHandler,
-        bindingInflater: BindingInflater = BindingInflater,
-        areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areItemsTheSame,
-        areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = this.areContentsTheSame,
-        getChangedProperties: (old: Item, new: Item) -> IntArray? = this.getChangedProperties
-    ) = BindingRecyclerViewAdapter.Builder(
-        delegate = BindableAdapterDelegate(),
-        viewTypeHandler = viewTypeHandler,
-        bindingInflater = bindingInflater,
-        areContentsTheSame = areContentsTheSame,
-        areItemsTheSame = areItemsTheSame,
-        getChangedProperties = getChangedProperties
-    ).let { builder ->
-        adapterFactory(builder)
     }
 }

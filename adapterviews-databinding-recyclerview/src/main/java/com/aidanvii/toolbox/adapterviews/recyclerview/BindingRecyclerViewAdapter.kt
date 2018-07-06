@@ -12,13 +12,14 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.NotifiableObservable
+import com.aidanvii.toolbox.delegates.weak.job
 import com.aidanvii.toolbox.findIndex
 import com.aidanvii.toolbox.leakingThis
-import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import kotlin.coroutines.experimental.CoroutineContext
 
 /**
  * Implementation of [RecyclerView.Adapter] and [BindableAdapter] that can automatically bind a list of type [BindableAdapterItem].
@@ -38,13 +39,15 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         internal val areContentsTheSame: (old: Item, new: Item) -> Boolean,
         internal val getChangedProperties: (old: Item, new: Item) -> IntArray?,
         internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
-        internal val bindingInflater: BindingInflater
+        internal val bindingInflater: BindingInflater,
+        internal val uiContext: CoroutineContext,
+        internal val workerContext: CoroutineContext
     )
 
     private var nextPropertyChangePayload: AdapterNotifier.ChangePayload? = null
     private var nextPropertyChanges: IntArray? = null
 
-    private var disposable: Disposable? = null
+    private var diffJob by job(null)
 
     private var _items = emptyList<Item>()
     override var items: List<Item>
@@ -57,17 +60,19 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
                 }
             } else {
                 if (newItems !== _items) {
-                    disposable?.dispose()
-                    disposable = Single.just(createDiffCallback(oldItems = _items, newItems = newItems))
-                        .subscribeOn(Schedulers.computation())
-                        .map { it.toChangePayload() }
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeBy {
+                    diffJob = launch(uiContext) {
+                        async(workerContext) {
+                            createDiffCallback(
+                                oldItems = _items,
+                                newItems = newItems
+                            ).toChangePayload()
+                        }.await().let {
                             tempPreviousItems = _items
                             _items = it.allItems
-                            it.diffResult.dispatchUpdatesTo(this)
+                            it.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
                             tempPreviousItems = null
                         }
+                    }
                 }
             }
         }
@@ -76,9 +81,11 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private val areItemsTheSame = builder.areItemsTheSame
     private val areContentsTheSame = builder.areContentsTheSame
     private val getChangedProperties = builder.getChangedProperties
+    private val uiContext = builder.uiContext
+    private val workerContext = builder.workerContext
     internal var tempPreviousItems: List<Item>? = null
-    internal var attachedRecyclerView: RecyclerView? = null
 
+    internal var attachedRecyclerView: RecyclerView? = null
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
@@ -124,8 +131,18 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         val nextPropertyChangePayload = nextPropertyChangePayload
         val nextPropertyChanges = nextPropertyChanges
         return when {
-            nextPropertyChangePayload != null -> true.also { onPartialBindViewHolder(nextPropertyChangePayload) }
-            nextPropertyChanges != null && observable != null -> true.also { onPartialBindViewHolder(viewHolder, observable, nextPropertyChanges) }
+            nextPropertyChangePayload != null -> true.also {
+                onPartialBindViewHolder(
+                    nextPropertyChangePayload
+                )
+            }
+            nextPropertyChanges != null && observable != null -> true.also {
+                onPartialBindViewHolder(
+                    viewHolder,
+                    observable,
+                    nextPropertyChanges
+                )
+            }
             else -> false
         }.also {
             this.nextPropertyChangePayload = null

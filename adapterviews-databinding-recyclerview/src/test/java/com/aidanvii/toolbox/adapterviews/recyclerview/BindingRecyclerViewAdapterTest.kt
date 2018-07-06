@@ -9,17 +9,16 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
 import com.aidanvii.toolbox.adapterviews.databinding.TestItem
 import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
-import com.aidanvii.toolbox.rxSchedulers
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.reset
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
+import kotlinx.coroutines.experimental.Unconfined
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should throw`
 import org.amshove.kluent.mock
-import org.junit.Rule
 import org.junit.Test
 import java.util.*
 
@@ -63,16 +62,15 @@ internal class BindingRecyclerViewAdapterTest {
                 areContentsTheSame = spyAreContentsTheSame,
                 getChangedProperties = defaultGetChangedProperties,
                 viewTypeHandler = mockViewTypeHandler,
-                bindingInflater = mockBindingInflater
+                bindingInflater = mockBindingInflater,
+                uiContext = Unconfined,
+                workerContext = Unconfined
             )
         )
     ).apply {
         makeNotifyNotCrash()
         onAttachedToRecyclerView(mockContainer)
     }
-
-    @get:Rule
-    val schedulers = rxSchedulers { prepareMain().prepareComputation() }
 
     @Test
     fun `getItemViewType is forwarded to ViewTypeHandler`() {

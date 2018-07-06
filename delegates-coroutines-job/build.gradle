@@ -25,23 +25,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    dataBinding.enabled = true
 }
 
 dependencies {
 
-    api project(':adapterviews-databinding')
-    api project(':delegates-observable-databinding')
-    api project(':delegates-weak')
-    api project(':delegates-coroutines-job')
-
-    api "${android_import_namespace}.support:recyclerview-v7:$android_support_version"
+    api project(':common')
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    kapt "com.android.databinding:compiler:$android_gradle_version"
-
-    testImplementation project(':adapterviews-databinding-test')
+    testImplementation project(':common-test')
 
     // (Required) Writing and executing Unit Tests on the JUnit Platform.
     testImplementation junit5.unitTests()
@@ -64,10 +56,4 @@ task sourcesJar(type: Jar) {
 }
 artifacts {
     archives sourcesJar
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
 }
