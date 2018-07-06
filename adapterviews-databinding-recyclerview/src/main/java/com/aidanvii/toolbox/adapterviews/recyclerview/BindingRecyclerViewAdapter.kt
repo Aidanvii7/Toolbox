@@ -47,6 +47,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private var nextPropertyChangePayload: AdapterNotifier.ChangePayload? = null
     private var nextPropertyChanges: IntArray? = null
 
+    private var uiJob by job(null)
     private var diffJob by job(null)
 
     private var _items = emptyList<Item>()
@@ -60,17 +61,19 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
                 }
             } else {
                 if (newItems !== _items) {
-                    diffJob = launch(uiContext) {
-                        async(workerContext) {
+                    uiJob = launch(uiContext) {
+                        diffJob = async(workerContext) {
                             createDiffCallback(
                                 oldItems = _items,
                                 newItems = newItems
                             ).toChangePayload()
-                        }.await().let {
-                            tempPreviousItems = _items
-                            _items = it.allItems
-                            it.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
-                            tempPreviousItems = null
+                        }.also { deferredChangePayload ->
+                            deferredChangePayload.await().let { changePayload ->
+                                tempPreviousItems = _items
+                                _items = changePayload.allItems
+                                changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
+                                tempPreviousItems = null
+                            }
                         }
                     }
                 }
