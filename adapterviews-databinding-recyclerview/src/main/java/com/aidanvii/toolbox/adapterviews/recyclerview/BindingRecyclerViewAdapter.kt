@@ -12,11 +12,9 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.NotifiableObservable
-import com.aidanvii.toolbox.delegates.weak.job
+import com.aidanvii.toolbox.delegates.coroutines.job.cancelOnReassign
 import com.aidanvii.toolbox.findIndex
 import com.aidanvii.toolbox.leakingThis
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlin.coroutines.experimental.CoroutineContext
@@ -47,8 +45,8 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private var nextPropertyChangePayload: AdapterNotifier.ChangePayload? = null
     private var nextPropertyChanges: IntArray? = null
 
-    private var uiJob by job(null)
-    private var diffJob by job(null)
+    private var uiJob by cancelOnReassign(null)
+    private var diffJob by cancelOnReassign(null)
 
     private var _items = emptyList<Item>()
     override var items: List<Item>
