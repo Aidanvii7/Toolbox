@@ -15,7 +15,7 @@ fun cancelOnReassign(job: Job? = null) = CancelOnReassignProperty(job)
  * When a new [Job] is assigned, [setValue] will call [Job.cancel] on the previous [Job] if non-null.
  * @param job the new [Job]
  */
-class CancelOnReassignProperty(private var job: Job?) : ReadWriteProperty<Any?, Job?> {
+class CancelOnReassignProperty(@Volatile private var job: Job?) : ReadWriteProperty<Any?, Job?> {
     override fun getValue(thisRef: Any?, property: KProperty<*>): Job? = job
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: Job?) {
         job?.cancel()

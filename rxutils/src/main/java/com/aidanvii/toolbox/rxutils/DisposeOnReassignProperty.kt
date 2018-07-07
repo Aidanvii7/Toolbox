@@ -17,7 +17,7 @@ fun disposeOnReassign(disposable: Disposable? = null): DisposeOnReassignProperty
  * When a new [Disposable] is assigned, [setValue] will call [Disposable.dispose] on the previous [Disposable] if non-null.
  * @param disposable the new [Disposable]
  */
-class DisposeOnReassignProperty(private var disposable: Disposable?) :
+class DisposeOnReassignProperty(@Volatile private var disposable: Disposable?) :
     ReadWriteProperty<Any?, Disposable?> {
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: Disposable?) {
