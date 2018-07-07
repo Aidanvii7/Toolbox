@@ -8,14 +8,14 @@ import com.nhaarman.mockito_kotlin.verifyZeroInteractions
 import io.reactivex.disposables.Disposable
 import org.junit.jupiter.api.Test
 
-class DisposablePropertyTest {
+class DisposeOnReassignPropertyTest {
 
     val mockDisposable1 = mock<Disposable>()
     val mockDisposable2 = mock<Disposable>()
 
     @Test
     fun `does nothing to internal disposable on re-assignment when current disposable is null`() {
-        var disposable by disposable(null)
+        var disposable by disposeOnReassign(null)
 
         disposable = mockDisposable1
 
@@ -24,7 +24,7 @@ class DisposablePropertyTest {
 
     @Test
     fun `disposes internal disposable on re-assignment with non-null value when internal disposable is non-null`() {
-        var disposable by disposable(mockDisposable1)
+        var disposable by disposeOnReassign(mockDisposable1)
 
         disposable = mockDisposable2
 
@@ -34,7 +34,7 @@ class DisposablePropertyTest {
 
     @Test
     fun `disposes internal disposable on re-assignment with null value when internal disposable is non-null`() {
-        var disposable by disposable(mockDisposable1)
+        var disposable by disposeOnReassign(mockDisposable1)
 
         disposable = null
 

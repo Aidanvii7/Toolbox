@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.redux
 
 import com.aidanvii.toolbox.rxutils.RxSchedulers
-import com.aidanvii.toolbox.rxutils.disposable
+import com.aidanvii.toolbox.rxutils.disposeOnReassign
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 import java.util.concurrent.atomic.AtomicBoolean
@@ -12,7 +12,7 @@ abstract class SideEffects<Action : Any, State>(
     protected val rxSchedulers: RxSchedulers
 ) : Disposable {
 
-    private var storeDisposable by disposable()
+    private var storeDisposable by disposeOnReassign()
     private val initialised = AtomicBoolean(false)
     private val disposed = AtomicBoolean(false)
 
