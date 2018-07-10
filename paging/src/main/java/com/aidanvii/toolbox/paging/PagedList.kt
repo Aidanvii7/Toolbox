@@ -47,14 +47,14 @@ private val onErrorStub: Consumer<Throwable> = { throw OnErrorNotImplementedExce
  * @param pageLoader The [PageLoader] that coordinates calls to the provided [DataSource].
  */
 class PagedList<T : Any>(
-        dataSource: DataSource<T>,
-        pageSize: Int = UNDEFINED,
-        val prefetchDistance: Int = 0,
-        loadInitialPages: IntArray? = null,
-        publishChangesOnInit: Boolean = true,
-        synchroniseAccess: Boolean = false,
-        private val onError: Consumer<Throwable> = onErrorStub,
-        private val pageLoader: PageLoader<T> = PageLoader.Default()
+    dataSource: DataSource<T>,
+    pageSize: Int = UNDEFINED,
+    val prefetchDistance: Int = 0,
+    loadInitialPages: IntArray? = null,
+    publishChangesOnInit: Boolean = true,
+    synchroniseAccess: Boolean = false,
+    private val onError: Consumer<Throwable> = onErrorStub,
+    private val pageLoader: PageLoader<T> = PageLoader.Default()
 ) : Disposable by pageLoader {
 
     companion object {
@@ -146,9 +146,9 @@ class PagedList<T : Any>(
      * @param addedItems a snapshot of the items that have been added to the [PagedList] based on the last modification to the [PagedList]
      */
     data class ChangePayload<out T>(
-            val allItems: List<T> = emptyList(),
-            val removedItems: Set<T> = emptySet(),
-            val addedItems: Set<T> = emptySet()
+        val allItems: List<T> = emptyList(),
+        val removedItems: Set<T> = emptySet(),
+        val addedItems: Set<T> = emptySet()
     )
 
     private var lastAccessedIndex = UNDEFINED
@@ -196,16 +196,16 @@ class PagedList<T : Any>(
      */
     val observableChangePayload
         get(): Observable<ChangePayload<T>> = observableList
-                .map { it.filterNotNull() }
-                .scan(ChangePayload<T>()) { lastPayload, newItems ->
-                    ChangePayload(
-                            allItems = newItems,
-                            removedItems = lastPayload.allItems subtract newItems,
-                            addedItems = newItems subtract lastPayload.allItems
-                    )
-                }
+            .map { it.filterNotNull() }
+            .scan(ChangePayload<T>()) { lastPayload, newItems ->
+                ChangePayload(
+                    allItems = newItems,
+                    removedItems = lastPayload.allItems subtract newItems,
+                    addedItems = newItems subtract lastPayload.allItems
+                )
+            }
 
-    val lastIndex = elements.runSynchronised { lastIndex }
+    val lastIndex: Int get() = elements.runSynchronised { lastIndex }
 
     /**
      * Gets a snapshot in the form of a standard [List] of the current elements.
@@ -221,9 +221,9 @@ class PagedList<T : Any>(
      * @param refreshElementsInRange optional param that will force pages within the given range to refresh.
      */
     fun invalidateAsEmpty(
-            startIndex: Int = 0,
-            endIndex: Int = lastIndex,
-            refreshElementsInRange: Boolean = false
+        startIndex: Int = 0,
+        endIndex: Int = lastIndex,
+        refreshElementsInRange: Boolean = false
     ) {
         invalidate(refreshElementsInRange) {
             elements.invalidateAsEmpty(startIndex, endIndex)
@@ -238,9 +238,9 @@ class PagedList<T : Any>(
      * @param refreshElementsInRange optional param that will force pages within the given range to refresh.
      */
     fun invalidateLoadedAsDirty(
-            startIndex: Int = 0,
-            endIndex: Int = lastIndex,
-            refreshElementsInRange: Boolean = false
+        startIndex: Int = 0,
+        endIndex: Int = lastIndex,
+        refreshElementsInRange: Boolean = false
     ) {
         invalidate(refreshElementsInRange) {
             elements.invalidateLoadedAsDirty(startIndex, endIndex)
@@ -276,7 +276,11 @@ class PagedList<T : Any>(
                 if (growIfNecessary) {
                     elements.growIfNecessary(pageStartingIndex + pageSize)
                 } else if (!elements.indexInBounds(startingIndexOfPage(pageNumber))) {
-                    throw IndexOutOfBoundsException("pageNumber: $pageNumber is out of bounds. max pageNumber is ${currentPageForIndex(pageStartingIndex)}")
+                    throw IndexOutOfBoundsException(
+                        "pageNumber: $pageNumber is out of bounds. max pageNumber is ${currentPageForIndex(
+                            pageStartingIndex
+                        )}"
+                    )
                 }
                 access(pageStartingIndex)
             }
@@ -327,10 +331,11 @@ class PagedList<T : Any>(
         }
         lastLoadedPageNumber = pageNumber
         return pageLoader.loadPage(
-                pageBuilder = DataSource.Page.Builder(pageNumber, if (pageSizeUndefined) UNDEFINED else pageSize),
-                onDisposeOrErrorOrComplete = { resetPageToEmpty(pageNumber) },
-                onError = onError,
-                onSuccess = this::populatePage)
+            pageBuilder = DataSource.Page.Builder(pageNumber, if (pageSizeUndefined) UNDEFINED else pageSize),
+            onDisposeOrErrorOrComplete = { resetPageToEmpty(pageNumber) },
+            onError = onError,
+            onSuccess = this::populatePage
+        )
     }
 
     private fun access(index: Int) {
@@ -362,20 +367,22 @@ class PagedList<T : Any>(
     private fun accessIsDecrementallySequential(index: Int) = (lastAccessedIndex != UNDEFINED) && lastAccessedIndex == index + 1
 
     private fun getIncrementallySequentialPageIfNecessary(index: Int): Int =
-            clamped(index + prefetchDistance).let {
-                if (sequentialAccessCrossesPageBoundary(
-                        indexWithPrefetchOffset = it,
-                        previousIndexWithPrefetchOffset = clamped(lastAccessedIndex + prefetchDistance)
-                )) it else UNDEFINED
-            }
+        clamped(index + prefetchDistance).let {
+            if (sequentialAccessCrossesPageBoundary(
+                    indexWithPrefetchOffset = it,
+                    previousIndexWithPrefetchOffset = clamped(lastAccessedIndex + prefetchDistance)
+                )
+            ) it else UNDEFINED
+        }
 
     private fun getDecrementallySequentialPageIfNecessary(index: Int): Int =
-            clamped(index - prefetchDistance).let {
-                if (sequentialAccessCrossesPageBoundary(
-                        indexWithPrefetchOffset = it,
-                        previousIndexWithPrefetchOffset = clamped(lastAccessedIndex - prefetchDistance)
-                )) it else UNDEFINED
-            }
+        clamped(index - prefetchDistance).let {
+            if (sequentialAccessCrossesPageBoundary(
+                    indexWithPrefetchOffset = it,
+                    previousIndexWithPrefetchOffset = clamped(lastAccessedIndex - prefetchDistance)
+                )
+            ) it else UNDEFINED
+        }
 
     private fun indexToPageNumberList(index: Int) = if (index != UNDEFINED) {
         currentPageForIndex(index).let { pageNumber ->
@@ -384,8 +391,8 @@ class PagedList<T : Any>(
     } else intArrayOf()
 
     private fun sequentialAccessCrossesPageBoundary(
-            indexWithPrefetchOffset: Int,
-            previousIndexWithPrefetchOffset: Int
+        indexWithPrefetchOffset: Int,
+        previousIndexWithPrefetchOffset: Int
     ) = currentPageForIndex(indexWithPrefetchOffset) != currentPageForIndex(previousIndexWithPrefetchOffset)
 
     private fun getPages(fromPage: Int, toPage: Int): IntArray {
