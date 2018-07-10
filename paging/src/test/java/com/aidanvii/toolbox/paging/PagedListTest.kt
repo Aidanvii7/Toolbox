@@ -266,7 +266,7 @@ class PagedListTest {
     fun `changes receives list of correct size of empty elements when no initial pages are loaded`() {
         PagedList(dataSource, pageSize = 10).apply {
             val testObserver = TestObserver<List<Item?>>()
-            observableList.subscribe(testObserver)
+            distinctObservableList.subscribe(testObserver)
 
             `complete in-flight requests`()
 
@@ -282,7 +282,7 @@ class PagedListTest {
     fun `change observer receives list of correct size and elements when some initial pages are loaded`() {
         PagedList(dataSource, pageSize = 10, loadInitialPages = intArrayOf(1, 2)).apply {
             val testObserver = TestObserver<List<Item?>>()
-            observableList.subscribe(testObserver)
+            distinctObservableList.subscribe(testObserver)
 
             `complete in-flight requests`()
 

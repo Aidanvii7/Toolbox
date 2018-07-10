@@ -23,11 +23,11 @@ private val onErrorStub: Consumer<Throwable> = { throw OnErrorNotImplementedExce
  *
  * Items can be retrieved with [get] or simply accessed via [loadAround] - both may trigger a call to [DataSource.loadPage].
  *
- * To listen for changes, you may observe either [observableList], [observableListNonNull] or [observableChangePayload].
+ * To listen for changes, you may observe either [distinctObservableList], [observableListNonNull] or [observableChangePayload].
  *
  * Typical usage would be to:
  *
- * 1st - Subscribe to either [observableList], [observableListNonNull] or [observableChangePayload]
+ * 1st - Subscribe to either [distinctObservableList], [observableListNonNull] or [observableChangePayload]
  *
  * 2nd - Use [DiffUtil.calculateDiff] on a background thread to determined the changes
  *
@@ -41,7 +41,7 @@ private val onErrorStub: Consumer<Throwable> = { throw OnErrorNotImplementedExce
  * @param pageSize The length of data that will determine the [DataSource.Page.Builder.pageSize]. May by [UNDEFINED] if unknown.
  * @param prefetchDistance Determines the range of elements to scan when [get] or [loadAround] is called. If elements in the scanned range are [ElementState.EMPTY] or [ElementState.DIRTY], [DataSource.loadPage] will be called at least once.
  * @param loadInitialPages Optional [IntArray] of page indexes. Non-zero indexing (first page is 1).
- * @param publishChangesOnInit Determines whether any subscribers to [observableList], [observableListNonNull] or [observableChangePayload] will be notified upon subscription when no changes to the data have been made (the initial empty state).
+ * @param publishChangesOnInit Determines whether any subscribers to [distinctObservableList], [observableListNonNull] or [observableChangePayload] will be notified upon subscription when no changes to the data have been made (the initial empty state).
  * @param synchroniseAccess Determines whether access to the internal data is synchronised for the case where [get] or [loadAround] may be called from different threads.
  * @param onError Errors when loading pages will be passed here. The default implementation will throw a [OnErrorNotImplementedException].
  * @param pageLoader The [PageLoader] that coordinates calls to the provided [DataSource].
@@ -177,25 +177,30 @@ class PagedList<T : Any>(
     val size get() = elements.runSynchronised { elements.size }
 
     /**
-     * An Observable List of the paged data. List elements may be null.
+     * A distinct Observable List of the paged data. List elements may be null.
      */
-    val observableList get(): Observable<List<T?>> = changeSubject.distinctUntilChanged().doOnDispose { dispose() }
+    val distinctObservableList get(): Observable<List<T?>> = changeSubject.distinctUntilChanged().doOnDispose { dispose() }
 
     /**
-     * Convenience version of [observableList] that provides non-null elements.
+     * An Observable List of the paged data. List elements may be null.
+     */
+    val observableList get(): Observable<List<T?>> = changeSubject.doOnDispose { dispose() }
+
+    /**
+     * Convenience version of [distinctObservableList] that provides non-null elements.
      *
      * This only works if the provided [DataSource] always returns non-null values for [DataSource.emptyAt],
      * otherwise an [KotlinNullPointerException] will be thrown.
      */
-    val observableListNonNull get(): Observable<List<T>> = observableList.map { it.map { it!! } }
+    val observableListNonNull get(): Observable<List<T>> = distinctObservableList.map { it.map { it!! } }
 
     /**
-     * Version of [observableList] that provides data in the form of a [ChangePayload].
+     * Version of [distinctObservableList] that provides data in the form of a [ChangePayload].
      *
      * As null elements are filtered, it is recommended that the provided [DataSource] always return a non-null value for [DataSource.emptyAt]
      */
     val observableChangePayload
-        get(): Observable<ChangePayload<T>> = observableList
+        get(): Observable<ChangePayload<T>> = distinctObservableList
             .map { it.filterNotNull() }
             .scan(ChangePayload<T>()) { lastPayload, newItems ->
                 ChangePayload(
