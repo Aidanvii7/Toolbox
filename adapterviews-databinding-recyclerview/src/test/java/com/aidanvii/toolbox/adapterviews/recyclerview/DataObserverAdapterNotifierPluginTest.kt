@@ -26,9 +26,10 @@ internal class DataObserverAdapterNotifierPluginTest {
                 tested.onItemBound(testItem, mock(), false)
             }
 
+            // TODO only bind if lazy is initialised and is an AdapterNotifier
             @Test
-            fun `no adapter is bound and lazyBindableItem is not initialised`() {
-                verify(testItem.adapterNotifierItem, never()).bindAdapter(any())
+            fun `adapter is bound and lazyBindableItem is initialised`() {
+                verify(testItem.adapterNotifierItem).bindAdapter(any())
             }
         }
 
@@ -39,8 +40,9 @@ internal class DataObserverAdapterNotifierPluginTest {
                 tested.onItemUnBound(testItem, mock(), false)
             }
 
+            // TODO only unbind if lazy is initialised and is an AdapterNotifier
             @Test
-            fun `no adapter is unbound and lazyBindableItem is not initialised`() {
+            fun `adapter is unbound and lazyBindableItem is initialised`() {
                 verify(testItem.adapterNotifierItem, never()).unbindAdapter(any())
             }
         }
