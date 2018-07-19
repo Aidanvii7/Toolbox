@@ -29,10 +29,10 @@ import kotlin.reflect.KProperty
  * by [RecyclerView.ItemAnimator.canReuseUpdatedViewHolder].
  */
 fun <ObservableAdapterNotifier, T> ObservableAdapterNotifier.adapterBindable(
-        initialValue: T,
-        fullRebind: Boolean = true
+    initialValue: T,
+    fullRebind: Boolean = true
 ) where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier =
-        BindableAdapterProperty.Distinct(this, fullRebind, initialValue)
+    BindableAdapterProperty.Distinct(this, fullRebind, initialValue)
 
 /**
  * Like [adapterBindable], but will trigger property change events even when the same value has been assigned, i.e. a value object with structural equality to the existing value object.
@@ -49,16 +49,16 @@ fun <ObservableAdapterNotifier, T> ObservableAdapterNotifier.adapterBindable(
  * Regardless of whether [triggerAnimation] is assigned the same value, the binding adapter should fire.
  */
 fun <ObservableAdapterNotifier, T> ObservableAdapterNotifier.adapterBindableEvent(
-        initialValue: T,
-        fullRebind: Boolean = true
+    initialValue: T,
+    fullRebind: Boolean = true
 ) where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier =
-        BindableAdapterProperty.Distinct(this, fullRebind, initialValue)
+    BindableAdapterProperty.Distinct(this, fullRebind, initialValue)
 
 
 sealed class BindableAdapterProperty<ObservableAdapterNotifier, T>(
-        private val observableAdapterNotifier: ObservableAdapterNotifier,
-        private val fullRebind: Boolean,
-        initialValue: T
+    private val observableAdapterNotifier: ObservableAdapterNotifier,
+    private val fullRebind: Boolean,
+    initialValue: T
 ) : ObservableProperty.Source.Standard<T>(initialValue)
         where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier {
     private var propertyId: Int = 0
@@ -73,9 +73,9 @@ sealed class BindableAdapterProperty<ObservableAdapterNotifier, T>(
     }
 
     class Distinct<ObservableAdapterNotifier, T>(
-            observable: ObservableAdapterNotifier,
-            fullRebind: Boolean,
-            initialValue: T
+        observable: ObservableAdapterNotifier,
+        fullRebind: Boolean,
+        initialValue: T
     ) : BindableAdapterProperty<ObservableAdapterNotifier, T>(observable, fullRebind, initialValue)
             where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier {
         override fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T) = oldValue != newValue
@@ -83,9 +83,9 @@ sealed class BindableAdapterProperty<ObservableAdapterNotifier, T>(
 
     @Suppress(unused)
     class NonDistinct<ObservableAdapterNotifier, T>(
-            observable: ObservableAdapterNotifier,
-            fullRebind: Boolean,
-            initialValue: T
+        observable: ObservableAdapterNotifier,
+        fullRebind: Boolean,
+        initialValue: T
     ) : BindableAdapterProperty<ObservableAdapterNotifier, T>(observable, fullRebind, initialValue)
             where ObservableAdapterNotifier : NotifiableObservable, ObservableAdapterNotifier : AdapterNotifier
 

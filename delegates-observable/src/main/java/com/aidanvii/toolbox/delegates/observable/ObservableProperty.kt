@@ -97,6 +97,8 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
                 }
             }
 
+        var assignmentInterceptor: ((ST) -> ST)? = null
+
         override val source: Source<ST> get() = this
         /**
          *  The callback which is called before a change to the property value is attempted.
@@ -116,12 +118,13 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
 
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: ST) {
             val oldValue = sourceValue
-            if (!beforeChange(property, oldValue, value)) {
+            val interceptedValue = assignmentInterceptor?.let { it(value) } ?: value
+            if (!beforeChange(property, oldValue, interceptedValue)) {
                 return
             }
-            sourceValue = value
-            afterChange(property, oldValue, value)
-            notifyObservers(property, oldValue, value)
+            sourceValue = interceptedValue
+            afterChange(property, oldValue, interceptedValue)
+            notifyObservers(property, oldValue, interceptedValue)
         }
 
         override fun onProvideDelegate(thisRef: Any?, property: KProperty<*>) {

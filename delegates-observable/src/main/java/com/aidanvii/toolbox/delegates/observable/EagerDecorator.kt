@@ -7,13 +7,18 @@ import kotlin.reflect.KProperty
  * to propagate it's initial item downstream.
  * @param ST the base type of the source observable ([ObservableProperty.Source]).
  */
-fun <ST> ObservableProperty.Source<ST>.eager() = EagerDecorator(this)
+fun <ST> ObservableProperty.Source<ST>.eager(assignmentInterceptor: ((ST) -> ST)? = null) = EagerDecorator(this, assignmentInterceptor)
 
 class EagerDecorator<ST>(
-        private val decorated: ObservableProperty.Source<ST>
+    private val decorated: ObservableProperty.Source<ST>,
+    assignmentInterceptor: ((ST) -> ST)?
 ) : ObservableProperty<ST, ST> by decorated {
 
     init {
+        assignmentInterceptor?.let {
+            decorated.assignmentInterceptor = assignmentInterceptor
+            decorated.sourceValue = assignmentInterceptor.invoke(decorated.sourceValue)
+        }
         decorated.onProvideDelegateObservers += { property, oldValue, newValue ->
             decorated.notifyObservers(property, oldValue, newValue)
         }
