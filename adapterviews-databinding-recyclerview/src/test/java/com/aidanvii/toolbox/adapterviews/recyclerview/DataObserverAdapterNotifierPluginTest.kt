@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.util.concurrent.atomic.AtomicBoolean
@@ -40,8 +41,8 @@ internal class DataObserverAdapterNotifierPluginTest {
                 tested.onItemUnBound(testItem, mock(), false)
             }
 
-            // TODO only unbind if lazy is initialised and is an AdapterNotifier
             @Test
+            @Disabled("TODO only unbind if lazy is initialised and is an AdapterNotifier")
             fun `adapter is unbound and lazyBindableItem is initialised`() {
                 verify(testItem.adapterNotifierItem, never()).unbindAdapter(any())
             }
