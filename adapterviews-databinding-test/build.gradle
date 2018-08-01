@@ -6,7 +6,7 @@ apply plugin: "de.mannodermaus.android-junit5"
 
 group='com.github.Aidanvii7.toolbox'
 
-apply from: "${project.rootDir}/versions.gradle"
+apply from: "../versions.gradle"
 
 android {
     compileSdkVersion compile_sdk_version
@@ -33,8 +33,8 @@ android {
 
 dependencies {
 
-    api project(':common-test')
-    api project(':adapterviews-databinding')
+    api project(':Toolbox:common-test')
+    api project(':Toolbox:adapterviews-databinding')
     // needed now to be able to mock ViewDataBinding....
     api "android.arch.lifecycle:livedata:$android_arch_viewmodel_version"
 
