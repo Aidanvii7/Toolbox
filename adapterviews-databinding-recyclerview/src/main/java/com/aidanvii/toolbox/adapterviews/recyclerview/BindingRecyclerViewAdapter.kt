@@ -18,6 +18,7 @@ import com.aidanvii.toolbox.leakingThis
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlin.coroutines.experimental.CoroutineContext
+import kotlin.coroutines.experimental.coroutineContext
 
 /**
  * Implementation of [RecyclerView.Adapter] and [BindableAdapter] that can automatically bind a list of type [BindableAdapterItem].
@@ -38,6 +39,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         internal val getChangedProperties: (old: Item, new: Item) -> IntArray?,
         internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
         internal val bindingInflater: BindingInflater,
+        internal val itemBoundObservers: List<ItemBoundObserver<Item>>,
         internal val uiContext: CoroutineContext,
         internal val workerContext: CoroutineContext
     )
@@ -45,38 +47,45 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private var nextPropertyChangePayload: AdapterNotifier.ChangePayload? = null
     private var nextPropertyChanges: IntArray? = null
 
-    private var uiJob by cancelOnReassign(null)
-    private var diffJob by cancelOnReassign(null)
+    private var diffingJob by cancelOnReassign(null)
 
     private var _items = emptyList<Item>()
     override var items: List<Item>
         get() = _items
         set(newItems) {
-            if (_items.isEmpty()) {
-                _items = newItems
-                if (newItems.isNotEmpty()) {
-                    notifyItemRangeInserted(0, newItems.size)
-                }
-            } else {
-                if (newItems !== _items) {
-                    uiJob = launch(uiContext) {
-                        diffJob = async(workerContext) {
-                            createDiffCallback(
-                                oldItems = _items,
-                                newItems = newItems
-                            ).toChangePayload()
-                        }.also { deferredChangePayload ->
-                            deferredChangePayload.await().let { changePayload ->
-                                tempPreviousItems = _items
-                                _items = changePayload.allItems
-                                changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
-                                tempPreviousItems = null
-                            }
-                        }
-                    }
+            when {
+                _items.isEmpty() && newItems.isNotEmpty() -> addAllImmediately(newItems)
+                newItems.isEmpty() -> removeAllImmediately(newItems)
+                newItems !== _items -> resolveDiffAsynchronously(newItems)
+            }
+        }
+
+    private fun addAllImmediately(newItems: List<Item>) {
+        _items = newItems
+        notifyItemRangeInserted(0, newItems.size)
+    }
+
+    private fun removeAllImmediately(newItems: List<Item>) {
+        val oldItemsSize = _items.size
+        _items = newItems
+        notifyItemRangeRemoved(0, oldItemsSize)
+    }
+
+    private fun resolveDiffAsynchronously(newItems: List<Item>) {
+        diffingJob = launch(uiContext) {
+            async(coroutineContext + workerContext) {
+                createDiffCallback(
+                    oldItems = _items,
+                    newItems = newItems
+                ).toChangePayload()
+            }.also { deferredChangePayload ->
+                deferredChangePayload.await().let { changePayload ->
+                    _items = changePayload.allItems
+                    changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
                 }
             }
         }
+    }
 
     private val delegate = builder.delegate.also { it.bindableAdapter = this }
     private val areItemsTheSame = builder.areItemsTheSame
@@ -84,14 +93,14 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private val getChangedProperties = builder.getChangedProperties
     private val uiContext = builder.uiContext
     private val workerContext = builder.workerContext
-    internal var tempPreviousItems: List<Item>? = null
+    private val itemBoundObservers = builder.itemBoundObservers
 
     internal var attachedRecyclerView: RecyclerView? = null
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
 
-    final override fun getItem(position: Int): Item = super.getItem(position)
+    final override fun getItem(position: Int) = super.getItem(position)
 
     final override fun getItemViewType(position: Int): Int =
         viewTypeHandler.getItemViewType(position)
@@ -111,7 +120,8 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     ): BindingRecyclerViewItemViewHolder<*, Item> =
         BindingRecyclerViewItemViewHolder(
             bindingResourceId = bindingResourceId,
-            viewDataBinding = viewDataBinding
+            viewDataBinding = viewDataBinding,
+            itemBoundObservers = itemBoundObservers
         )
 
     final override fun onBindViewHolder(
@@ -155,14 +165,19 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         holder: BindingRecyclerViewItemViewHolder<*, Item>,
         position: Int
     ) {
+        holder.currentAdapter = this
         delegate.onBind(holder, position, attachedRecyclerView)
     }
 
     final override fun onViewRecycled(holder: BindingRecyclerViewItemViewHolder<*, Item>) {
         delegate.onUnbind(holder, holder.adapterPosition, attachedRecyclerView)
+        holder.currentAdapter = null
     }
 
     final override fun getItemCount(): Int = items.count()
+
+    internal fun contains(item: Item): Boolean =
+        _items.any { areItemsTheSame(it, item) && areContentsTheSame(it, item) }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         attachedRecyclerView = recyclerView
@@ -206,15 +221,14 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     }
 
     @MainThread
-    private fun createDiffCallback(oldItems: List<Item>, newItems: List<Item>): DiffCallback<Item> {
-        return diffCallback(
+    private fun createDiffCallback(oldItems: List<Item>, newItems: List<Item>): DiffCallback<Item> =
+        diffCallback(
             oldItems = oldItems,
             newItems = newItems,
             areItemsTheSame = areItemsTheSame,
             areContentsTheSame = areContentsTheSame,
             getChangedProperties = getChangedProperties
         )
-    }
 
     @WorkerThread
     private fun DiffCallback<Item>.toChangePayload() =

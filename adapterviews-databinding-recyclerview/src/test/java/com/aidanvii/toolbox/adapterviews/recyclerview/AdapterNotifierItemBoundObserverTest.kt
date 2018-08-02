@@ -6,14 +6,13 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.util.concurrent.atomic.AtomicBoolean
 
-internal class DataObserverAdapterNotifierPluginTest {
+internal class AdapterNotifierItemBoundObserverTest {
 
-    val tested = DataObserverAdapterNotifierPlugin<TestItem>()
+    val tested = AdapterNotifierItemBoundObserver<TestItem>()
 
     @Nested
     inner class `when lazyBindableItem is not initialised` {
@@ -24,7 +23,7 @@ internal class DataObserverAdapterNotifierPluginTest {
         inner class `when onItemBound is called` {
 
             init {
-                tested.onItemBound(testItem, mock(), false)
+                tested.onItemBound(testItem, mock())
             }
 
             // TODO only bind if lazy is initialised and is an AdapterNotifier
@@ -38,11 +37,10 @@ internal class DataObserverAdapterNotifierPluginTest {
         inner class `when onItemUnBound is called` {
 
             init {
-                tested.onItemUnBound(testItem, mock(), false)
+                tested.onItemUnBound(testItem, mock())
             }
 
             @Test
-            @Disabled("TODO only unbind if lazy is initialised and is an AdapterNotifier")
             fun `adapter is unbound and lazyBindableItem is initialised`() {
                 verify(testItem.adapterNotifierItem, never()).unbindAdapter(any())
             }
@@ -60,7 +58,7 @@ internal class DataObserverAdapterNotifierPluginTest {
         inner class `when onItemBound is called` {
 
             init {
-                tested.onItemBound(testItem, mock(), false)
+                tested.onItemBound(testItem, mock())
             }
 
             @Test
@@ -73,7 +71,7 @@ internal class DataObserverAdapterNotifierPluginTest {
         inner class `when onItemUnBound is called` {
 
             init {
-                tested.onItemUnBound(testItem, mock(), false)
+                tested.onItemUnBound(testItem, mock())
             }
 
             @Test

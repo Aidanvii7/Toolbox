@@ -3,7 +3,6 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 import android.databinding.ViewDataBinding
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.makeNotifyNotCrash
-import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
@@ -20,7 +19,7 @@ import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should throw`
 import org.amshove.kluent.mock
 import org.junit.Test
-import java.util.*
+import java.util.Random
 
 internal class BindingRecyclerViewAdapterTest {
 
@@ -63,6 +62,7 @@ internal class BindingRecyclerViewAdapterTest {
                 getChangedProperties = defaultGetChangedProperties,
                 viewTypeHandler = mockViewTypeHandler,
                 bindingInflater = mockBindingInflater,
+                itemBoundObservers = emptyList(),
                 uiContext = Unconfined,
                 workerContext = Unconfined
             )

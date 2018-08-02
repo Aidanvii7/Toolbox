@@ -1,21 +1,16 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
 import android.databinding.ViewDataBinding
-import android.support.annotation.CallSuper
 import android.support.annotation.LayoutRes
-import android.support.annotation.RestrictTo
 import android.view.ViewGroup
-import com.aidanvii.toolbox.DisposableItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter.ViewHolder
-import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.reflect.KProperty
 
 /**
  * Represents an item that can exist within a [BindingRecyclerViewAdapter] or [BindingRecyclerPagerAdapter].
  *
  * Provides basic information to these adapters to allow automatic layout inflation and binding.
  */
-interface BindableAdapterItem : DisposableItem {
+interface BindableAdapterItem {
 
     /**
      * The id of the data-binding enabled layout resource to inflate
@@ -70,22 +65,4 @@ interface BindableAdapterItem : DisposableItem {
      * Called when the [BindableAdapter] has finished un-binding a [ViewHolder] from the given [adapterPosition]
      */
     fun onUnBound(adapterPosition: Int) {}
-
-    @CallSuper
-    override fun dispose() {
-        super.dispose()
-        if (lazyBindableItem.isInitialized()) {
-            lazyBindableItem.value.let { bindableItem ->
-                if (bindableItem is DisposableItem) {
-                    if (bindableItem != this) {
-                        bindableItem.dispose()
-                    }
-                }
-            }
-        }
-    }
-
-    abstract class Base : BindableAdapterItem {
-        final override val _disposed = AtomicBoolean(false)
-    }
 }

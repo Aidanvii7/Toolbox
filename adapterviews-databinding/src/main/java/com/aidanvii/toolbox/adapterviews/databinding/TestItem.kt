@@ -9,6 +9,5 @@ data class TestItem(
         val viewType: Int,
         override val bindingId: Int
 ) : BindableAdapterItem {
-    override val _disposed = AtomicBoolean(false)
     override val layoutId: Int get() = viewType
 }

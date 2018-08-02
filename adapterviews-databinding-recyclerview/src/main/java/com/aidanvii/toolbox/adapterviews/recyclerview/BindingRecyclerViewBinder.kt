@@ -2,11 +2,9 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import android.content.Context
 import android.os.Parcelable
-import android.support.annotation.RestrictTo
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import com.aidanvii.toolbox.Provider
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
@@ -79,7 +77,6 @@ import kotlin.coroutines.experimental.CoroutineContext
  * ```
  * @param hasMultipleViewTypes if the [BindingRecyclerViewAdapter] will have [BindableAdapterItem] with different [BindableAdapterItem.layoutId]s, set to true. False otherwise (minor optimisation)
  * @param adapterNotificationEnabled if any [BindableAdapterItem.bindableItem] implements [AdapterNotifier], set to true
- * @param autoDisposeEnabled if any ensures [BindableAdapterItem.dispose] is called when items are removed from the [BindingRecyclerViewAdapter].
  * @param areItemsTheSame same logic as [DiffUtil.Callback.areItemsTheSame]
  * @param areContentsTheSame same logic as [DiffUtil.Callback.areContentsTheSame]
  * @param adapterFactory optional factory to provide a custom implementation of [BindingRecyclerViewAdapter], allowing you to override methods from [BindableAdapter]
@@ -87,7 +84,6 @@ import kotlin.coroutines.experimental.CoroutineContext
 class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     hasMultipleViewTypes: Boolean = true,
     private val adapterNotificationEnabled: Boolean = false,
-    private val autoDisposeEnabled: Boolean = true,
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
     val getChangedProperties: (oldItem: Item, newItem: Item) -> IntArray? = defaultGetChangedProperties,
@@ -114,13 +110,11 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
                 viewTypeHandler = viewTypeHandler,
                 bindingInflater = BindingInflater,
                 uiContext = uiContext,
-                workerContext = workerContext
+                workerContext = workerContext,
+                itemBoundObservers = mutableListOf<ItemBoundObserver<Item>>().apply {
+                    if (adapterNotificationEnabled) add(AdapterNotifierItemBoundObserver())
+                }
             )
-        ).apply {
-            val dataObserverPlugins = mutableListOf<BindableAdapterItemDataObserver.Plugin<Item>>()
-            if (autoDisposeEnabled) dataObserverPlugins.add(DataObserverDisposalPlugin())
-            if (adapterNotificationEnabled) dataObserverPlugins.add(DataObserverAdapterNotifierPlugin())
-            registerAdapterDataObserver(BindableAdapterItemDataObserver(this, *dataObserverPlugins.toTypedArray()))
-        }
+        )
     }
 }

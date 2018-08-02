@@ -20,7 +20,8 @@ inline fun <Item : Any> diffCallback(
         getChangedProperties(oldItems[oldItemPosition], newItems[newItemPosition])
 }
 
-abstract class DiffCallback<out Item>(
+
+abstract class DiffCallback<Item>(
     val oldItems: List<Item>,
     val newItems: List<Item>
 ) : DiffUtil.Callback() {

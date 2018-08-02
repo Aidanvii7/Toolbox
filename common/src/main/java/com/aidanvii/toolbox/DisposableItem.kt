@@ -1,6 +1,7 @@
 package com.aidanvii.toolbox
 
 import android.support.annotation.RestrictTo
+import android.util.Log
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface DisposableItem {
@@ -26,5 +27,6 @@ interface DisposableItem {
      * Instead override it if needed and call [disposed], ensuring idempotent behavior.
      */
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    fun onDisposed() {}
+    fun onDisposed() {
+    }
 }
