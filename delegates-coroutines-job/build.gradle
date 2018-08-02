@@ -6,7 +6,7 @@ apply plugin: "de.mannodermaus.android-junit5"
 
 group='com.github.Aidanvii7.toolbox'
 
-apply from: "${project.rootDir}/versions.gradle"
+apply from: "../versions.gradle"
 
 android {
     compileSdkVersion compile_sdk_version
@@ -29,11 +29,11 @@ android {
 
 dependencies {
 
-    api project(':common')
+    api project(':Toolbox:common')
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    testImplementation project(':common-test')
+    testImplementation project(':Toolbox:common-test')
 
     // (Required) Writing and executing Unit Tests on the JUnit Platform.
     testImplementation junit5.unitTests()
