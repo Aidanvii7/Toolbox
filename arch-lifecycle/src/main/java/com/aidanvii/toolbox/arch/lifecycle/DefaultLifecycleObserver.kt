@@ -11,11 +11,8 @@ interface DefaultLifecycleObserver : OpenLifecycleObserver {
     override fun onStop(owner: LifecycleOwner) {}
     override fun onDestroy(owner: LifecycleOwner) {}
 
-    object WithRemoveOnDestroy : () -> DefaultLifecycleObserver {
-        override fun invoke() = object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                owner.lifecycle.removeObserver(this)
-            }
-        }
+    fun removeFrom(owner: LifecycleOwner) {
+        owner.lifecycle.removeObserver(this)
     }
 }
+
