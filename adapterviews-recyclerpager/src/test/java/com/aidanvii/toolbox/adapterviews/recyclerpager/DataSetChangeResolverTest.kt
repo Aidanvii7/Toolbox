@@ -1,9 +1,6 @@
-package com.vmn.playplex.adapterviews.recyclerpager
+package com.aidanvii.toolbox.adapterviews.recyclerpager
 
 import android.support.v4.view.PagerAdapter
-import com.aidanvii.toolbox.adapterviews.recyclerpager.DataSetChangeResolver
-import com.aidanvii.toolbox.adapterviews.recyclerpager.PageItem
-import com.aidanvii.toolbox.adapterviews.recyclerpager.RecyclerPagerAdapter
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -122,7 +119,8 @@ internal class DataSetChangeResolverTest(val param: Parameter) {
     data class Item(val id: Int)
 
     class ItemChangeResolver(
-            val param: Parameter)
+            val param: Parameter
+    )
         : RecyclerPagerAdapter.OnDataSetChangedCallback<Item> {
         override fun getNewAdapterPositionOfItem(item: Item) = param.newItems.indexOf(item)
         override fun getOldItemAt(oldAdapterPosition: Int) = param.oldItems[oldAdapterPosition]

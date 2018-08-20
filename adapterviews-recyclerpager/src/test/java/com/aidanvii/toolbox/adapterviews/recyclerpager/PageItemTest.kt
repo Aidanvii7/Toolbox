@@ -2,7 +2,6 @@ package com.aidanvii.toolbox.adapterviews.recyclerpager
 
 import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.verifyNoMoreInteractions
-import com.vmn.playplex.adapterviews.recyclerpager.DataSetChangeResolverTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock

@@ -44,10 +44,8 @@ class ViewModelFactory private constructor(
     }
 
     @Suppress(unchecked)
-    override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
-        return classFactoryMap[viewModelClass]?.create() as? T
-                ?: throwNoFactoryInstalled(viewModelClass)
-    }
+    override fun <T : ViewModel> create(viewModelClass: Class<T>): T =
+        classFactoryMap[viewModelClass]?.create() as? T ?: throwNoFactoryInstalled(viewModelClass)
 
     private fun throwNoFactoryInstalled(viewModelClass: Class<*>): Nothing =
         throw UnsupportedOperationException("No view-model factory installed for class: $viewModelClass")

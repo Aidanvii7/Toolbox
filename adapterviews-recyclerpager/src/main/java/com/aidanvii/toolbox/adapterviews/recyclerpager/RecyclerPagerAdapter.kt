@@ -19,7 +19,7 @@ import com.aidanvii.toolbox.unchecked
  * @param itemPoolContainer Contains the [ItemPool] in which the [ViewHolder]s will be stored. This may be shared across multiple [RecyclerPagerAdapter]s.
  */
 abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.ViewHolder>(
-        itemPoolContainer: ItemPoolContainer<ViewHolder> = ItemPoolContainer()
+    itemPoolContainer: ItemPoolContainer<ViewHolder> = ItemPoolContainer()
 ) : PagerAdapter() {
 
     private val viewHolderWrapperPool = itemPoolContainer.itemPool
@@ -65,6 +65,7 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
          * Return the position of the given item in the new data-set, or negative number if absent.
          */
         fun getNewAdapterPositionOfItem(item: Item): Int
+
         fun getOldItemAt(oldAdapterPosition: Int): Item
         fun getNewItemAt(newAdapterPosition: Int): Item
         fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean = oldItem == newItem
@@ -73,7 +74,7 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     /**
      * A [ViewHolder] is a recyclable [View] container.
      *
-     * Implementations should implement this or subclass [BasePageViewHolder] (for Java impls).
+     * Implementations should implement this or subclass [BasePageViewHolder] (for Java implementations).
      *
      * Instances of [ViewHolder] implementations should be provided by [onCreateViewHolder] in
      * custom [RecyclerPagerAdapter] implementations.
@@ -122,7 +123,11 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
      * *
      * @see getItemViewType
      */
-    protected abstract fun onCreateViewHolder(viewType: Int, position: Int, container: ViewGroup): ViewHolder
+    protected abstract fun onCreateViewHolder(
+        viewType: Int,
+        position: Int,
+        container: ViewGroup
+    ): ViewHolder
 
     /**
      * Called when the [RecyclerPagerAdapter] wants to recycle a [ViewHolder].
@@ -166,7 +171,12 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     /**
      * Called when a [ViewHolder] is centered within the [ViewPager]
      */
-    protected open fun setPrimaryViewHolder(container: ViewGroup, position: Int, viewHolder: ViewHolder) {}
+    protected open fun setPrimaryViewHolder(
+        container: ViewGroup,
+        position: Int,
+        viewHolder: ViewHolder
+    ) {
+    }
 
     /**
      * This should be called by the application if the data backing this adapter has changed and associated views should update.
@@ -180,25 +190,26 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     }
 
     @Deprecated(
-            message = """
+        message = """
                 Use `notifyDataSetChanged(callback: OnDataSetChangedCallback<Item>)` instead,
                 this will allow incremental changes to the ViewPager.
                 """,
-            replaceWith = ReplaceWith("""
+        replaceWith = ReplaceWith(
+            """
                 notifyDataSetChanged(object : OnDataSetChangedCallback<T> {
                     override fun getNewAdapterPositionOfItem(item: T) = newData.indexOf(item)
                     override fun getOldItemAt(oldAdapterPosition: Int) = oldData[oldAdapterPosition]
                     override fun getNewItemAt(newAdapterPosition: Int) = newData[newAdapterPosition]
                 })
-            """),
-            level = DeprecationLevel.ERROR
+            """
+        ),
+        level = DeprecationLevel.ERROR
     )
     final override fun notifyDataSetChanged() {
         throw UnsupportedOperationException("Instead use `notifyDataSetChanged(callback: OnDataSetChangedCallback<Item>)`")
     }
 
-    fun getViewHolderAtPosition(position: Int): ViewHolder? =
-            activeViewHolders.get(position)?.viewHolder
+    fun getViewHolderAtPosition(position: Int): ViewHolder? = activeViewHolders.get(position)?.viewHolder
 
     fun getSizeForType(viewType: Int): Int = viewHolderWrapperPool.getSizeForType(viewType)
 
@@ -208,9 +219,9 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     final override fun instantiateItem(container: ViewGroup, adapterPosition: Int): Any {
         commitChangesOnFinish(true)
         return PageItem(
-                adapter = this,
-                viewType = getItemViewType(adapterPosition),
-                adapterPosition = adapterPosition
+            adapter = this,
+            viewType = getItemViewType(adapterPosition),
+            adapterPosition = adapterPosition
         ).also { pageItem ->
             pageItem.viewTransaction = ViewTransaction.ADD
             stagedForViewTransaction.add(pageItem)
@@ -219,7 +230,11 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    final override fun destroyItem(container: ViewGroup, adapterPosition: Int, uncastPageItem: Any) {
+    final override fun destroyItem(
+        container: ViewGroup,
+        adapterPosition: Int,
+        uncastPageItem: Any
+    ) {
         commitChangesOnFinish(true)
         val pageItem = asPageItem(uncastPageItem)
         val viewHolderWrapper = pageItem.viewHolderWrapper
@@ -236,7 +251,7 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun isViewFromObject(view: View, uncastPageItem: Any): Boolean =
-            asPageItem(uncastPageItem).viewHolderWrapper.viewHolder.view === view
+        asPageItem(uncastPageItem).viewHolderWrapper.viewHolder.view === view
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun finishUpdate(container: ViewGroup) {
@@ -247,14 +262,9 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    final override fun getItemPosition(uncastPageItem: Any): Int {
-        if (dataSetChangeResolver == null) {
-            return PagerAdapter.POSITION_NONE
-        } else {
-            val pageItem = asPageItem(uncastPageItem)
-            return dataSetChangeResolver!!.resolvePageItemPosition(pageItem)
-        }
-    }
+    final override fun getItemPosition(uncastPageItem: Any): Int =
+        dataSetChangeResolver?.run { resolvePageItemPosition(asPageItem(uncastPageItem)) }
+                ?: PagerAdapter.POSITION_NONE
 
     @Suppress(unchecked)
     @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -348,12 +358,14 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     }
 
     private fun createOrGetRecycledViewHolderForType(
-            pageItem: PageItem<ViewHolder>,
-            container: ViewGroup
-    ): ViewHolderWrapper<ViewHolder> {
-        return viewHolderWrapperPool.popItem(pageItem.viewType) {
-            val viewHolder = onCreateViewHolder(pageItem.viewType, pageItem.adapterPosition, container)
-            ViewHolderWrapper(viewHolder, pageItem.viewType)
-        }
-    }
+        pageItem: PageItem<ViewHolder>,
+        container: ViewGroup
+    ): ViewHolderWrapper<ViewHolder> = viewHolderWrapperPool.popItem(
+        itemType = pageItem.viewType,
+        provideDefault = {
+            ViewHolderWrapper(
+                viewHolder = onCreateViewHolder(pageItem.viewType, pageItem.adapterPosition, container),
+                itemType = pageItem.viewType
+            )
+        })
 }

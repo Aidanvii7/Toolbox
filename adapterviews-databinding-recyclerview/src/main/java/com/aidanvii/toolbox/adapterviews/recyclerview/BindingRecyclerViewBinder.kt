@@ -2,6 +2,7 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import android.content.Context
 import android.os.Parcelable
+import android.support.annotation.RestrictTo
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -14,6 +15,7 @@ import com.aidanvii.toolbox.adapterviews.databinding.defaultAreContentsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultAreItemsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
 import com.aidanvii.toolbox.delegates.weak.weakLazy
+import com.aidanvii.toolbox.unchecked
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlin.coroutines.experimental.CoroutineContext
@@ -117,4 +119,8 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
             )
         )
     }
+
+    @Suppress(unchecked)
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    fun <Adapter : BindingRecyclerViewAdapter<Item>> testAdapter() = adapter as Adapter
 }
