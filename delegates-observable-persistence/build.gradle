@@ -30,7 +30,6 @@ android {
 dependencies {
 
     api project(':delegates-observable')
-    api project(':databinding')
 
     testImplementation project(':common-test')
 
