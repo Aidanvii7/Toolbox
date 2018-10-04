@@ -78,6 +78,26 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
             }
         }
 
+        abstract class WithProperty<ST>(
+            private val beforeChange: (oldValue: ST, newValue: ST) -> Boolean
+        ) : ObservableProperty.Source<ST>() {
+
+            protected lateinit var property: KProperty<*>
+
+            override fun onProvideDelegate(thisRef: Any?, property: KProperty<*>) {
+                super.onProvideDelegate(thisRef, property)
+                provideDelegate(thisRef, property)
+            }
+
+            operator fun provideDelegate(
+                thisRef: Any?,
+                property: KProperty<*>
+            ) = apply { this.property = property }
+
+            override fun beforeChange(property: KProperty<*>, oldValue: ST, newValue: ST) =
+                beforeChange(oldValue, newValue)
+        }
+
         abstract override var sourceValue: ST
 
         private var _afterChangeObservers: MutableSet<AfterChange<ST>>? = null

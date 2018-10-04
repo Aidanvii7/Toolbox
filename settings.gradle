@@ -10,6 +10,7 @@ include ':delegates-coroutines-job'
 
 include ':delegates-observable'
 include ':delegates-observable-databinding'
+include ':delegates-observable-persistence'
 include ':delegates-observable-rxjava'
 
 include ':adapterviews-recyclerpager'
