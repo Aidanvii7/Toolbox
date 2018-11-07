@@ -88,7 +88,7 @@ internal class BindableAdapterDelegateTest {
                     mockContainer1.unattachedBindingOf<ViewDataBinding>(spiedTestItem1.layoutId)
                 }
                 verify(mockBindableAdapter).createWith(spiedTestItem1.bindingId, mockBinding1)
-                verify(mockBindableAdapter).onCreated(viewHolder)
+                verify(mockBindableAdapter).onCreated(mockContainer1, viewHolder)
             }
         }
     }
@@ -104,7 +104,7 @@ internal class BindableAdapterDelegateTest {
                     mockContainer2.unattachedBindingOf<ViewDataBinding>(spiedTestItem2.layoutId)
                 }
                 verify(mockBindableAdapter).createWith(spiedTestItem2.bindingId, mockBinding2)
-                verify(mockBindableAdapter).onCreated(viewHolder)
+                verify(mockBindableAdapter).onCreated(mockContainer2, viewHolder)
             }
         }
     }

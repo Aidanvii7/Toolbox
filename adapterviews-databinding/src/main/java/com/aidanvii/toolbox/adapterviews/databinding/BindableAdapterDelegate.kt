@@ -14,7 +14,7 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
             val layoutResourceId = viewTypeHandler.getLayoutId(viewType)
             val bindingResourceId = viewTypeHandler.getBindingId(layoutResourceId)
             val viewDataBinding = bindingInflater.run { container.unattachedBindingOf<ViewDataBinding>(layoutResourceId) }
-            createWith(bindingResourceId, viewDataBinding).also { onCreated(it) }
+            createWith(bindingResourceId, viewDataBinding).also { onCreated(container, it) }
         }
     }
 

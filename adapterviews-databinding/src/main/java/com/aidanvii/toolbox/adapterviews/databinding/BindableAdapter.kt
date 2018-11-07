@@ -4,6 +4,7 @@ import android.databinding.ViewDataBinding
 import android.support.annotation.LayoutRes
 import android.support.annotation.RestrictTo
 import android.view.View
+import android.view.ViewGroup
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.NotifiableObservable
 
@@ -57,7 +58,7 @@ interface BindableAdapter<Item : BindableAdapterItem, VH : BindableAdapter.ViewH
     /**
      * Called when the [BindableAdapter] has created a [ViewHolder]
      */
-    fun onCreated(viewHolder: VH) {}
+    fun onCreated(adapterView: ViewGroup, viewHolder: VH) {}
 
     /**
      * Called when the [BindableAdapter] is binding a [ViewHolder] for the given [adapterPosition]
