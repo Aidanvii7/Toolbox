@@ -10,12 +10,13 @@ import com.nhaarman.mockito_kotlin.inOrder
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.InOrder
-import java.util.concurrent.atomic.AtomicBoolean
 
+@ExperimentalCoroutinesApi
 class BindingAdaptersTest {
 
     @get:Rule
@@ -50,8 +51,8 @@ class BindingAdaptersTest {
                 }
             },
             layoutManagerFactory = { mockLayoutManager1 },
-            uiContext = Unconfined,
-            workerContext = Unconfined
+            uiDispatcher = Dispatchers.Unconfined,
+            workerDispatcher = Dispatchers.Unconfined
         )
     )
 
@@ -64,8 +65,8 @@ class BindingAdaptersTest {
                 }
             },
             layoutManagerFactory = { mockLayoutManager2 },
-            uiContext = Unconfined,
-            workerContext = Unconfined
+            uiDispatcher = Dispatchers.Unconfined,
+            workerDispatcher = Dispatchers.Unconfined
         )
     )
 

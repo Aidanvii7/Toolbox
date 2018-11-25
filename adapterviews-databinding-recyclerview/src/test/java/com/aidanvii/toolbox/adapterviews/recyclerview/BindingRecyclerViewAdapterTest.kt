@@ -13,7 +13,8 @@ import com.nhaarman.mockito_kotlin.reset
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import kotlinx.coroutines.experimental.Unconfined
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should throw`
@@ -21,6 +22,7 @@ import org.amshove.kluent.mock
 import org.junit.Test
 import java.util.Random
 
+@ExperimentalCoroutinesApi
 internal class BindingRecyclerViewAdapterTest {
 
     companion object {
@@ -63,8 +65,8 @@ internal class BindingRecyclerViewAdapterTest {
                 viewTypeHandler = mockViewTypeHandler,
                 bindingInflater = mockBindingInflater,
                 itemBoundObservers = emptyList(),
-                uiContext = Unconfined,
-                workerContext = Unconfined
+                uiDispatcher = Dispatchers.Unconfined,
+                workerDispatcher = Dispatchers.Unconfined
             )
         )
     ).apply {

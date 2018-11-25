@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.delegates.coroutines.job
 
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.Job
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 

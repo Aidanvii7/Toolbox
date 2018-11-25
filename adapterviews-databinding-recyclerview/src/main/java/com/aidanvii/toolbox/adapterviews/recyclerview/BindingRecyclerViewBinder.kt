@@ -16,9 +16,8 @@ import com.aidanvii.toolbox.adapterviews.databinding.defaultAreItemsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
 import com.aidanvii.toolbox.delegates.weak.weakLazy
 import com.aidanvii.toolbox.unchecked
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlin.coroutines.experimental.CoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Intermediate class used to configure the [BindingRecyclerViewAdapter]
@@ -92,8 +91,8 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
     val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) },
     val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null,
-    private val uiContext: CoroutineContext = UI,
-    private val workerContext: CoroutineContext = CommonPool
+    private val uiDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    private val workerDispatcher: CoroutineDispatcher = Dispatchers.Default
 ) : ListBinder<Item>(
     hasMultipleViewTypes = hasMultipleViewTypes,
     areItemsTheSame = areItemsTheSame,
@@ -111,8 +110,8 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
                 getChangedProperties = getChangedProperties,
                 viewTypeHandler = viewTypeHandler,
                 bindingInflater = BindingInflater,
-                uiContext = uiContext,
-                workerContext = workerContext,
+                uiDispatcher = uiDispatcher,
+                workerDispatcher = workerDispatcher,
                 itemBoundObservers = mutableListOf<ItemBoundObserver<Item>>().apply {
                     if (adapterNotificationEnabled) add(AdapterNotifierItemBoundObserver())
                 }

@@ -15,10 +15,10 @@ import com.aidanvii.toolbox.databinding.NotifiableObservable
 import com.aidanvii.toolbox.delegates.coroutines.job.cancelOnReassign
 import com.aidanvii.toolbox.findIndex
 import com.aidanvii.toolbox.leakingThis
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
-import kotlin.coroutines.experimental.CoroutineContext
-import kotlin.coroutines.experimental.coroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * Implementation of [RecyclerView.Adapter] and [BindableAdapter] that can automatically bind a list of type [BindableAdapterItem].
@@ -40,8 +40,8 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
         internal val bindingInflater: BindingInflater,
         internal val itemBoundObservers: List<ItemBoundObserver<Item>>,
-        internal val uiContext: CoroutineContext,
-        internal val workerContext: CoroutineContext
+        internal val uiDispatcher: CoroutineDispatcher,
+        internal val workerDispatcher: CoroutineDispatcher
     )
 
     private var nextPropertyChangePayload: AdapterNotifier.ChangePayload? = null
@@ -72,8 +72,8 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     }
 
     private fun resolveDiffAsynchronously(newItems: List<Item>) {
-        diffingJob = launch(uiContext) {
-            async(coroutineContext + workerContext) {
+        diffingJob = GlobalScope.launch(uiDispatcher) {
+            async(coroutineContext + workerDispatcher) {
                 createDiffCallback(
                     oldItems = _items,
                     newItems = newItems
@@ -91,8 +91,8 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private val areItemsTheSame = builder.areItemsTheSame
     private val areContentsTheSame = builder.areContentsTheSame
     private val getChangedProperties = builder.getChangedProperties
-    private val uiContext = builder.uiContext
-    private val workerContext = builder.workerContext
+    private val uiDispatcher = builder.uiDispatcher
+    private val workerDispatcher = builder.workerDispatcher
     private val itemBoundObservers = builder.itemBoundObservers
 
     internal var attachedRecyclerView: RecyclerView? = null
