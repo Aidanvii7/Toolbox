@@ -1,7 +1,10 @@
 package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
+import android.content.Context
+import android.content.res.Resources
 import android.databinding.ViewDataBinding
 import android.support.v7.widget.makeNotifyNotCrash
+import android.view.View
 import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
@@ -19,6 +22,7 @@ import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should not throw`
 import org.amshove.kluent.`should throw`
+import org.amshove.kluent.any
 import org.amshove.kluent.mock
 import org.junit.Test
 import java.util.*
@@ -34,21 +38,27 @@ internal class BindingRecyclerPagerAdapterTest {
 
     val mockContainer = mock<ViewGroup>()
 
-    val mockBinding = mock<ViewDataBinding>().apply {
-        whenever(root).thenReturn(mock())
+    val mockResources = mock<Resources>().apply {
+        whenever(getString(any())).thenReturn("hello world")
     }
-
+    val mockContext = mock<Context>().apply {
+        whenever(applicationContext).thenReturn(this)
+        whenever(resources).thenReturn(mockResources)
+    }
+    val mockRootView = mock<View>().apply {
+        whenever(context).thenReturn(mockContext)
+    }
+    val mockBinding = mock<ViewDataBinding>().apply {
+        whenever(root).thenReturn(mockRootView)
+    }
     val mockViewHolder = mock<BindingRecyclerPagerItemViewHolder<*, TestItem>>().apply {
         whenever(viewDataBinding).thenReturn(mockBinding)
     }
-
     val mockViewTypeHandler = mock<BindableAdapter.ViewTypeHandler<TestItem>>().apply {
         whenever(getItemViewType(ADAPTER_POSITION)).thenReturn(VIEW_TYPE)
     }
-
     val mockBindingInflater = mock<BindingInflater>()
     val spyAreItemAndContentsTheSame = spy<(old: TestItem, new: TestItem) -> Boolean>({ old, new -> old == new })
-
     val mockDelegate = mock<BindableAdapterDelegate<TestItem, BindingRecyclerPagerItemViewHolder<*, TestItem>>>().apply {
         whenever(onCreate(mockContainer, VIEW_TYPE)).thenReturn(mockViewHolder)
     }
@@ -76,9 +86,9 @@ internal class BindingRecyclerPagerAdapterTest {
     fun `onCreateViewHolderFor forwards to delegate`() {
         SuperReflect.on(spyTested).call("onCreateViewHolder", VIEW_TYPE, ADAPTER_POSITION, mockContainer)
             .get<BindingRecyclerPagerItemViewHolder<*, TestItem>>().let { viewHolder ->
-            verify(mockDelegate).onCreate(mockContainer, VIEW_TYPE)
-            viewHolder `should equal` mockViewHolder
-        }
+                verify(mockDelegate).onCreate(mockContainer, VIEW_TYPE)
+                viewHolder `should equal` mockViewHolder
+            }
     }
 
     @Test

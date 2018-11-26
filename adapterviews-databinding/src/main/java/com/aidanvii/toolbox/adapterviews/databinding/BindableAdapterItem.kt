@@ -37,8 +37,15 @@ interface BindableAdapterItem {
 
     /**
      * Optional property that provides a page title to [BindingRecyclerPagerAdapter.getItemViewType]
+     * This takes precedence over [itemTitle]
      */
-    val itemTitle: CharSequence? get() = null
+    val itemTitleRes: Int get() = 0
+
+    /**
+     * Optional property that provides a page title to [BindingRecyclerPagerAdapter.getItemViewType]
+     * This is a fallback if [itemTitleRes] is 0
+     */
+    val itemTitle: CharSequence get() = ""
 
     /**
      * Called when the [BindableAdapter] is binding a [ViewHolder] for the given [adapterPosition]

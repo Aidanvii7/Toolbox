@@ -1,5 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
+import android.content.res.Resources
 import android.databinding.ViewDataBinding
 import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
@@ -36,6 +37,7 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
+    lateinit var resources: Resources
 
     override var items = emptyList<Item>()
         set(value) {
@@ -51,29 +53,50 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
 
     final override fun getItemViewType(adapterPosition: Int) = viewTypeHandler.getItemViewType(adapterPosition)
 
-    final override fun onCreateViewHolder(viewType: Int, position: Int, container: ViewGroup): BindingRecyclerPagerItemViewHolder<*, Item> =
+    final override fun onCreateViewHolder(
+        viewType: Int,
+        position: Int,
+        container: ViewGroup
+    ): BindingRecyclerPagerItemViewHolder<*, Item> =
         delegate.onCreate(container, viewType)
 
-    final override fun createWith(bindingResourceId: Int, viewDataBinding: ViewDataBinding): BindingRecyclerPagerItemViewHolder<*, Item> {
+    final override fun createWith(
+        bindingResourceId: Int,
+        viewDataBinding: ViewDataBinding
+    ): BindingRecyclerPagerItemViewHolder<*, Item> {
         return BindingRecyclerPagerItemViewHolder(
             bindingResourceId = bindingResourceId,
-            viewDataBinding = viewDataBinding
+            viewDataBinding = viewDataBinding.apply {
+                if (::resources.isInitialized.not()) {
+                    resources = root.context.applicationContext.resources
+                }
+            }
         )
     }
 
-    final override fun onBindViewHolder(viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>, adapterPosition: Int) {
+    final override fun onBindViewHolder(
+        viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>,
+        adapterPosition: Int
+    ) {
         delegate.onBind(viewHolder, adapterPosition, null)
     }
 
-    final override fun onUnbindViewHolder(viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>, adapterPosition: Int) {
+    final override fun onUnbindViewHolder(
+        viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>,
+        adapterPosition: Int
+    ) {
         delegate.onUnbind(viewHolder, adapterPosition, null)
     }
 
-    final override fun onDestroyViewHolder(viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>, adapterPosition: Int) {
+    final override fun onDestroyViewHolder(
+        viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>,
+        adapterPosition: Int
+    ) {
         delegate.onDestroy(viewHolder, adapterPosition)
     }
 
-    final override fun getPageTitle(position: Int) = items[position].itemTitle
+    final override fun getPageTitle(position: Int): CharSequence =
+        items[position].run { if (itemTitleRes != 0) resources.getString(itemTitleRes) else itemTitle }
 
     final override fun getCount(): Int = items.size
 
