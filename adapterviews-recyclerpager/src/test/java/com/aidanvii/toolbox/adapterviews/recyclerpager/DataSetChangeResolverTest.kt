@@ -28,7 +28,7 @@ internal class DataSetChangeResolverTest(val param: Parameter) {
             oldItems.forEach {
                 val itemIndex = oldItems.indexOf(it)
                 val expectedPosition = param.expectedPositions[itemIndex]
-                val pageItem = PageItem<RecyclerPagerAdapter.ViewHolder>(mockAdapter,  0, itemIndex)
+                val pageItem = PageItem<RecyclerPagerAdapter.ViewHolder>(0, itemIndex)
 
                 val actualPosition = tested.resolvePageItemPosition(pageItem)
 

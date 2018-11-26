@@ -31,8 +31,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
 ) : RecyclerView.Adapter<BindingRecyclerViewItemViewHolder<*, Item>>(),
     BindableAdapter<Item, BindingRecyclerViewItemViewHolder<*, Item>> {
 
-    class Builder<Item : BindableAdapterItem>
-    internal constructor(
+    class Builder<Item : BindableAdapterItem> internal constructor(
         internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerViewItemViewHolder<*, Item>>,
         internal val areItemsTheSame: (old: Item, new: Item) -> Boolean,
         internal val areContentsTheSame: (old: Item, new: Item) -> Boolean,
@@ -78,7 +77,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
                     oldItems = _items,
                     newItems = newItems
                 ).toChangePayload()
-            }.also { deferredChangePayload ->
+            }.let { deferredChangePayload ->
                 deferredChangePayload.await().let { changePayload ->
                     _items = changePayload.allItems
                     changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
@@ -94,16 +93,15 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private val uiDispatcher = builder.uiDispatcher
     private val workerDispatcher = builder.workerDispatcher
     private val itemBoundObservers = builder.itemBoundObservers
+    private var attachedRecyclerView: RecyclerView? = null
 
-    internal var attachedRecyclerView: RecyclerView? = null
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
 
     final override fun getItem(position: Int) = super.getItem(position)
 
-    final override fun getItemViewType(position: Int): Int =
-        viewTypeHandler.getItemViewType(position)
+    final override fun getItemViewType(position: Int): Int = viewTypeHandler.getItemViewType(position)
 
     internal fun getItemPositionFromBindableItem(bindableItem: Any): Int? =
         items.findIndex { it.lazyBindableItem.value === bindableItem }
@@ -111,18 +109,16 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     final override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BindingRecyclerViewItemViewHolder<*, Item> =
-        delegate.onCreate(parent, viewType)
+    ): BindingRecyclerViewItemViewHolder<*, Item> = delegate.onCreate(parent, viewType)
 
     final override fun createWith(
         bindingResourceId: Int,
         viewDataBinding: ViewDataBinding
-    ): BindingRecyclerViewItemViewHolder<*, Item> =
-        BindingRecyclerViewItemViewHolder(
-            bindingResourceId = bindingResourceId,
-            viewDataBinding = viewDataBinding,
-            itemBoundObservers = itemBoundObservers
-        )
+    ) = BindingRecyclerViewItemViewHolder(
+        bindingResourceId = bindingResourceId,
+        viewDataBinding = viewDataBinding,
+        itemBoundObservers = itemBoundObservers
+    )
 
     final override fun onBindViewHolder(
         holder: BindingRecyclerViewItemViewHolder<*, Item>,

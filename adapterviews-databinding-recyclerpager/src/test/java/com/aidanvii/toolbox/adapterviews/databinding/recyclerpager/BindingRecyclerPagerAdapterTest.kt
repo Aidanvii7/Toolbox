@@ -53,12 +53,16 @@ internal class BindingRecyclerPagerAdapterTest {
         whenever(onCreate(mockContainer, VIEW_TYPE)).thenReturn(mockViewHolder)
     }
 
-    val spyTested = spy(BindingRecyclerPagerAdapter(
+    val spyTested = spy(
+        BindingRecyclerPagerAdapter(
             BindingRecyclerPagerAdapter.Builder(
-                    delegate = mockDelegate,
-                    areItemAndContentsTheSame = spyAreItemAndContentsTheSame,
-                    viewTypeHandler = mockViewTypeHandler,
-                    bindingInflater = mockBindingInflater))).apply { makeNotifyNotCrash() }
+                delegate = mockDelegate,
+                areItemAndContentsTheSame = spyAreItemAndContentsTheSame,
+                viewTypeHandler = mockViewTypeHandler,
+                bindingInflater = mockBindingInflater
+            )
+        )
+    ).apply { makeNotifyNotCrash() }
 
     @Test
     fun `getItemViewType is forwarded to ViewTypeHandler`() {
@@ -70,7 +74,8 @@ internal class BindingRecyclerPagerAdapterTest {
 
     @Test
     fun `onCreateViewHolderFor forwards to delegate`() {
-        SuperReflect.on(spyTested).call("onCreateViewHolder", VIEW_TYPE, ADAPTER_POSITION, mockContainer).get<BindingRecyclerPagerItemViewHolder<*, TestItem>>().let { viewHolder ->
+        SuperReflect.on(spyTested).call("onCreateViewHolder", VIEW_TYPE, ADAPTER_POSITION, mockContainer)
+            .get<BindingRecyclerPagerItemViewHolder<*, TestItem>>().let { viewHolder ->
             verify(mockDelegate).onCreate(mockContainer, VIEW_TYPE)
             viewHolder `should equal` mockViewHolder
         }
@@ -101,10 +106,11 @@ internal class BindingRecyclerPagerAdapterTest {
     @Test
     fun `set items with test data 1 notifies adapter correctly`() {
         val newItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 2, bindingId = 20))
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 2, bindingId = 20)
+        )
 
         spyTested.items = newItems
 
@@ -114,19 +120,21 @@ internal class BindingRecyclerPagerAdapterTest {
     @Test
     fun `set items with test data 2 notifies adapter correctly`() {
         val oldItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 2, bindingId = 20)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 2, bindingId = 20)
+        ).also {
             spyTested.items = it
         }
 
         reset(spyTested)
 
         val newItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 2, bindingId = 20)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 2, bindingId = 20)
+        ).also {
             spyTested.items = it
         }
 
@@ -136,22 +144,24 @@ internal class BindingRecyclerPagerAdapterTest {
     @Test
     fun `set items with test data 3 notifies adapter correctly`() {
         val oldItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10)
+        ).also {
             spyTested.items = it
         }
         reset(spyTested)
 
         val newItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 1, bindingId = 10),
-                TestItem(id = 5, viewType = 1, bindingId = 10),
-                TestItem(id = 6, viewType = 1, bindingId = 10)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 1, bindingId = 10),
+            TestItem(id = 5, viewType = 1, bindingId = 10),
+            TestItem(id = 6, viewType = 1, bindingId = 10)
+        ).also {
             spyTested.items = it
         }
 
@@ -161,22 +171,24 @@ internal class BindingRecyclerPagerAdapterTest {
     @Test
     fun `set items with test data 4 notifies adapter correctly`() {
         val oldItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 6, viewType = 1, bindingId = 10)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 6, viewType = 1, bindingId = 10)
+        ).also {
             spyTested.items = it
         }
         reset(spyTested)
 
         val newItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 1, bindingId = 10),
-                TestItem(id = 5, viewType = 1, bindingId = 10),
-                TestItem(id = 6, viewType = 1, bindingId = 10)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 1, bindingId = 10),
+            TestItem(id = 5, viewType = 1, bindingId = 10),
+            TestItem(id = 6, viewType = 1, bindingId = 10)
+        ).also {
             spyTested.items = it
         }
 
@@ -186,19 +198,21 @@ internal class BindingRecyclerPagerAdapterTest {
     @Test
     fun `set items with test data 5 notifies adapter correctly`() {
         val oldItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 2, bindingId = 20)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 2, bindingId = 20)
+        ).also {
             spyTested.items = it
         }
         reset(spyTested)
 
         val newItems = listOf(
-                TestItem(id = 0, viewType = 1, bindingId = 10),
-                TestItem(id = 1, viewType = 1, bindingId = 10),
-                TestItem(id = 2, viewType = 1, bindingId = 10),
-                TestItem(id = 3, viewType = 1, bindingId = 10),
-                TestItem(id = 4, viewType = 2, bindingId = 20)).also {
+            TestItem(id = 0, viewType = 1, bindingId = 10),
+            TestItem(id = 1, viewType = 1, bindingId = 10),
+            TestItem(id = 2, viewType = 1, bindingId = 10),
+            TestItem(id = 3, viewType = 1, bindingId = 10),
+            TestItem(id = 4, viewType = 2, bindingId = 20)
+        ).also {
             spyTested.items = it
         }
 

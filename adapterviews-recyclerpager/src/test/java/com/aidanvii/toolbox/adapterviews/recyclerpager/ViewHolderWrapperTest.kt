@@ -8,7 +8,7 @@ import org.amshove.kluent.mock
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class ViewHolderWrapperTest() {
+internal class ViewHolderWrapperTest {
 
     @Test(expected = IllegalStateException::class)
     fun `constructor does not accept ViewHolders with view that has a parent`() {

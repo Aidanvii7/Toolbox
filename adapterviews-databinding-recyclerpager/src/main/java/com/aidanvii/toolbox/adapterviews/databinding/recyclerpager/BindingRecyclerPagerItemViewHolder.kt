@@ -7,8 +7,8 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.recyclerpager.RecyclerPagerAdapter
 
 class BindingRecyclerPagerItemViewHolder<out Binding : ViewDataBinding, Item : BindableAdapterItem> internal constructor(
-        override val bindingResourceId: Int,
-        override val viewDataBinding: Binding
+    override val bindingResourceId: Int,
+    override val viewDataBinding: Binding
 ) : RecyclerPagerAdapter.ViewHolder, BindableAdapter.ViewHolder<Binding, Item> {
 
     override val view get() = viewDataBinding.root
@@ -17,8 +17,8 @@ class BindingRecyclerPagerItemViewHolder<out Binding : ViewDataBinding, Item : B
     companion object {
         @RestrictTo(RestrictTo.Scope.TESTS)
         fun <Item : BindableAdapterItem> typedTestViewHolder(
-                viewDataBinding: ViewDataBinding,
-                bindingResourceId: Int = 0
+            viewDataBinding: ViewDataBinding,
+            bindingResourceId: Int = 0
         ) = BindingRecyclerPagerItemViewHolder<ViewDataBinding, Item>(bindingResourceId, viewDataBinding)
     }
 }

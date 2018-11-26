@@ -15,20 +15,20 @@ import com.aidanvii.toolbox.databinding.IntBindingConsumer
  * Subclassing this is purely optional, see [BindingRecyclerPagerBinder] for usage with a subclass.
  */
 open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
-        builder: Builder<Item>,
-        itemPoolContainer: ItemPoolContainer<BindingRecyclerPagerItemViewHolder<*, Item>> = itemPoolContainer()
+    builder: Builder<Item>,
+    itemPoolContainer: ItemPoolContainer<BindingRecyclerPagerItemViewHolder<*, Item>> = itemPoolContainer()
 ) : RecyclerPagerAdapter<Item, BindingRecyclerPagerItemViewHolder<*, Item>>(itemPoolContainer),
-        BindableAdapter<Item, BindingRecyclerPagerItemViewHolder<*, Item>> {
+    BindableAdapter<Item, BindingRecyclerPagerItemViewHolder<*, Item>> {
 
     companion object {
         fun <Item : BindableAdapterItem> itemPoolContainer() = ItemPoolContainer<BindingRecyclerPagerItemViewHolder<*, Item>>()
     }
 
     class Builder<Item : BindableAdapterItem> internal constructor(
-            internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerPagerItemViewHolder<*, Item>>,
-            internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
-            internal val bindingInflater: BindingInflater,
-            internal val areItemAndContentsTheSame: ((old: Item, new: Item) -> Boolean)
+        internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerPagerItemViewHolder<*, Item>>,
+        internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
+        internal val bindingInflater: BindingInflater,
+        internal val areItemAndContentsTheSame: ((old: Item, new: Item) -> Boolean)
     )
 
     private val delegate = builder.delegate.also { it.bindableAdapter = this }
@@ -52,12 +52,13 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
     final override fun getItemViewType(adapterPosition: Int) = viewTypeHandler.getItemViewType(adapterPosition)
 
     final override fun onCreateViewHolder(viewType: Int, position: Int, container: ViewGroup): BindingRecyclerPagerItemViewHolder<*, Item> =
-            delegate.onCreate(container, viewType)
+        delegate.onCreate(container, viewType)
 
     final override fun createWith(bindingResourceId: Int, viewDataBinding: ViewDataBinding): BindingRecyclerPagerItemViewHolder<*, Item> {
         return BindingRecyclerPagerItemViewHolder(
-                bindingResourceId = bindingResourceId,
-                viewDataBinding = viewDataBinding)
+            bindingResourceId = bindingResourceId,
+            viewDataBinding = viewDataBinding
+        )
     }
 
     final override fun onBindViewHolder(viewHolder: BindingRecyclerPagerItemViewHolder<*, Item>, adapterPosition: Int) {
@@ -76,12 +77,11 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
 
     final override fun getCount(): Int = items.size
 
-    private fun callBackOf(oldItems: List<Item>, newItems: List<Item>): RecyclerPagerAdapter.OnDataSetChangedCallback<Item> {
-        return object : RecyclerPagerAdapter.OnDataSetChangedCallback<Item> {
+    private fun callBackOf(oldItems: List<Item>, newItems: List<Item>): RecyclerPagerAdapter.OnDataSetChangedCallback<Item> =
+        object : RecyclerPagerAdapter.OnDataSetChangedCallback<Item> {
             override fun getNewAdapterPositionOfItem(item: Item): Int = newItems.indexOf(item)
             override fun getOldItemAt(oldAdapterPosition: Int): Item = oldItems[oldAdapterPosition]
             override fun getNewItemAt(newAdapterPosition: Int): Item = newItems[newAdapterPosition]
             override fun areItemsTheSame(oldItem: Item, newItem: Item) = areItemAndContentsTheSame.invoke(oldItem, newItem)
         }
-    }
 }

@@ -29,7 +29,7 @@ class ItemPool<P : PooledItem> {
     /**
      * A flattened list of all [PooledItem] objects in all typed pools.
      */
-    val scrapItems: List<P> get() = scrapHeapsByType.iterator().flatten()
+    private val scrapItems: List<P> get() = scrapHeapsByType.iterator().flatten()
 
     /**
      * Puts the [pooledItem] in it's respective pool based on it's [PooledItem.itemType].
@@ -42,14 +42,11 @@ class ItemPool<P : PooledItem> {
     fun putItem(pooledItem: P) {
         val itemType = pooledItem.itemType
         val scrapItems = getScrapHeapForType(itemType)
-        if (maxScrapByType.get(itemType) <= scrapItems.size) {
-            pooledItem.destroy()
-        } else {
-            if (scrapItems.contains(pooledItem)) {
-                throw IllegalArgumentException("this scrap item already exists in the scrapHeap")
-            }
-            scrapItems.add(pooledItem)
+        when {
+            maxScrapByType.get(itemType) <= scrapItems.size -> pooledItem.destroy()
+            scrapItems.contains(pooledItem) -> throw IllegalArgumentException("this scrap item already exists in the scrapHeap")
         }
+        scrapItems.add(pooledItem)
     }
 
     /**
@@ -71,7 +68,7 @@ class ItemPool<P : PooledItem> {
      * otherwise [provideDefault] should provide a [PooledItem].
      */
     inline fun popItem(itemType: Int, provideDefault: Provider<P>): P =
-            popItem(itemType) ?: provideDefault()
+        popItem(itemType) ?: provideDefault()
 
     /**
      * Sets the maximum amount of [PooledItem] objects that can be held
@@ -79,10 +76,9 @@ class ItemPool<P : PooledItem> {
      */
     fun setMaxRecycled(itemType: Int, max: Int) {
         maxScrapByType.put(itemType, max)
-        val scrapItems = scrapHeapsByType.getNullable(itemType)
-        if (scrapItems != null) {
-            while (scrapItems.size > max) {
-                scrapItems.removeAt(scrapItems.size - 1)
+        scrapHeapsByType.getNullable(itemType)?.let { scrapItemsByType ->
+            while (scrapItemsByType.size > max) {
+                scrapItemsByType.removeAt(scrapItemsByType.size - 1)
             }
         }
     }
@@ -95,13 +91,12 @@ class ItemPool<P : PooledItem> {
      * if (pooled in itemPool) doAction()
      * ```
      */
-    operator fun contains(pooledItem: P): Boolean {
-        return pooledItem.itemType.let { itemType ->
+    operator fun contains(pooledItem: P): Boolean =
+        pooledItem.itemType.let { itemType ->
             if (itemType < scrapHeapsByType.size()) {
                 scrapHeapsByType.get(itemType).contains(pooledItem)
             } else false
         }
-    }
 
     /**
      * Gets the size of all typed pools for all item types combined.
@@ -125,8 +120,8 @@ class ItemPool<P : PooledItem> {
         scrapHeapsByType.clear()
     }
 
-    private fun getScrapHeapForType(itemType: Int): ScrapHeap<P> {
-        return scrapHeapsByType.getWithDefault(itemType) {
+    private fun getScrapHeapForType(itemType: Int): ScrapHeap<P> =
+        scrapHeapsByType.getWithDefault(itemType) {
             arrayListOfSize<P>(DEFAULT_MAX_SCRAP).also { newScrapHeap ->
                 this.scrapHeapsByType.put(itemType, newScrapHeap)
                 if (maxScrapByType.indexOfKey(itemType) < 0) {
@@ -134,10 +129,7 @@ class ItemPool<P : PooledItem> {
                 }
             }
         }
-    }
 
-    private fun destroyScrapHeap(scrapItem: P) {
-        scrapItem.destroy()
-    }
+    private fun destroyScrapHeap(scrapItem: P) = scrapItem.destroy()
 }
 

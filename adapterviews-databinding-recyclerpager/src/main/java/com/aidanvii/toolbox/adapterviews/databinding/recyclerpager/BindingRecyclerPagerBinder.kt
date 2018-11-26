@@ -69,38 +69,38 @@ import com.aidanvii.toolbox.delegates.weak.weakLazy
  * @param adapterFactory optional factory to provide a custom implementation of [BindingRecyclerPagerAdapter], allowing you to override methods from [BindableAdapter]
  */
 class BindingRecyclerPagerBinder<Item : BindableAdapterItem>(
-        hasMultipleViewTypes: Boolean = true,
-        val areItemAndContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
-        val adapterFactory: (BindingRecyclerPagerAdapter.Builder<Item>) -> BindingRecyclerPagerAdapter<Item> = { BindingRecyclerPagerAdapter(it) }
+    hasMultipleViewTypes: Boolean = true,
+    val areItemAndContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
+    val adapterFactory: (BindingRecyclerPagerAdapter.Builder<Item>) -> BindingRecyclerPagerAdapter<Item> = { BindingRecyclerPagerAdapter(it) }
 ) : ListBinder<Item>(
-        hasMultipleViewTypes = hasMultipleViewTypes,
-        areItemsTheSame = areItemAndContentsTheSame,
-        areContentsTheSame = areItemAndContentsTheSame
+    hasMultipleViewTypes = hasMultipleViewTypes,
+    areItemsTheSame = areItemAndContentsTheSame,
+    areContentsTheSame = areItemAndContentsTheSame
 ) {
 
     internal var viewPagerState: Parcelable? = null
 
     internal val adapter by weakLazy {
         adapterFactory(
-                BindingRecyclerPagerAdapter.Builder(
-                        delegate = BindableAdapterDelegate(),
-                        viewTypeHandler = viewTypeHandler,
-                        bindingInflater = BindingInflater,
-                        areItemAndContentsTheSame = areItemAndContentsTheSame
-                )
+            BindingRecyclerPagerAdapter.Builder(
+                delegate = BindableAdapterDelegate(),
+                viewTypeHandler = viewTypeHandler,
+                bindingInflater = BindingInflater,
+                areItemAndContentsTheSame = areItemAndContentsTheSame
+            )
         )
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     fun testAdapter(
-            viewTypeHandler: BindableAdapter.ViewTypeHandler<Item> = this.viewTypeHandler,
-            bindingInflater: BindingInflater = BindingInflater,
-            areItemAndContentsTheSame: ((old: Item, new: Item) -> Boolean) = this.areItemAndContentsTheSame
+        viewTypeHandler: BindableAdapter.ViewTypeHandler<Item> = this.viewTypeHandler,
+        bindingInflater: BindingInflater = BindingInflater,
+        areItemAndContentsTheSame: ((old: Item, new: Item) -> Boolean) = this.areItemAndContentsTheSame
     ) = BindingRecyclerPagerAdapter.Builder(
-            delegate = BindableAdapterDelegate(),
-            viewTypeHandler = viewTypeHandler,
-            bindingInflater = bindingInflater,
-            areItemAndContentsTheSame = areItemAndContentsTheSame
+        delegate = BindableAdapterDelegate(),
+        viewTypeHandler = viewTypeHandler,
+        bindingInflater = bindingInflater,
+        areItemAndContentsTheSame = areItemAndContentsTheSame
     ).let { builder ->
         adapterFactory(builder)
     }

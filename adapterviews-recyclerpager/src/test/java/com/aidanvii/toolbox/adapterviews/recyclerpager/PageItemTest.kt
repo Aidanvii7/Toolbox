@@ -76,7 +76,7 @@ internal class PageItemTest() {
     }
 
     fun pageItem(viewType: Int = TestViewHolder.VIEW_TYPE_0, adapterPosition: Int = 0): PageItem<TestViewHolder> {
-        return PageItem(mockAdapter, viewType, adapterPosition)
+        return PageItem(viewType, adapterPosition)
     }
 }
 

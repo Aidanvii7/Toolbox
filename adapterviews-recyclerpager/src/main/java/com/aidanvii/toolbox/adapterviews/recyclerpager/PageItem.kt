@@ -6,9 +6,8 @@ import android.view.ViewGroup
  * Represents the item held internally by the [android.support.v4.view.ViewPager]
  */
 internal class PageItem<ViewHolder : RecyclerPagerAdapter.ViewHolder>(
-        val adapter: RecyclerPagerAdapter<*, ViewHolder>,
-        val viewType: Int,
-        val adapterPosition: Int
+    val viewType: Int,
+    val adapterPosition: Int
 ) {
 
     lateinit var viewHolderWrapper: ViewHolderWrapper<ViewHolder>

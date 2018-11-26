@@ -1,6 +1,5 @@
 package com.aidanvii.toolbox.adapterviews.recyclerpager
 
-import android.os.Parcelable
 import android.support.annotation.RestrictTo
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
@@ -217,9 +216,8 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun instantiateItem(container: ViewGroup, adapterPosition: Int): Any {
-        commitChangesOnFinish(true)
-        return PageItem(
-            adapter = this,
+        commitChangesOnFinish = true
+        return PageItem<ViewHolder>(
             viewType = getItemViewType(adapterPosition),
             adapterPosition = adapterPosition
         ).also { pageItem ->
@@ -235,8 +233,8 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
         adapterPosition: Int,
         uncastPageItem: Any
     ) {
-        commitChangesOnFinish(true)
-        val pageItem = asPageItem(uncastPageItem)
+        commitChangesOnFinish = true
+        val pageItem = uncastPageItem.asPageItem()
         val viewHolderWrapper = pageItem.viewHolderWrapper
         if (shouldRecycleViewHolder(viewHolderWrapper.viewHolder, viewHolderWrapper.itemType)) {
             stagedForUnbind.add(pageItem)
@@ -251,20 +249,20 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun isViewFromObject(view: View, uncastPageItem: Any): Boolean =
-        asPageItem(uncastPageItem).viewHolderWrapper.viewHolder.view === view
+        uncastPageItem.asPageItem().viewHolderWrapper.viewHolder.view === view
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun finishUpdate(container: ViewGroup) {
         if (commitChangesOnFinish) {
-            commitChangesOnFinish(false)
+            commitChangesOnFinish = false
             commitChanges(container)
         }
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun getItemPosition(uncastPageItem: Any): Int =
-        dataSetChangeResolver?.run { resolvePageItemPosition(asPageItem(uncastPageItem)) }
-                ?: PagerAdapter.POSITION_NONE
+        dataSetChangeResolver?.run { resolvePageItemPosition(uncastPageItem.asPageItem()) }
+            ?: PagerAdapter.POSITION_NONE
 
     @Suppress(unchecked)
     @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -275,12 +273,11 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     }
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    final override fun saveState(): Parcelable? {
+    final override fun saveState() = null.also {
         if (shouldDestroyViewHoldersOnSaveState()) {
             clearPooledViewHolders()
             clearActiveViewHolders()
         }
-        return null
     }
 
     private val maxAdapterPosition: Int
@@ -291,15 +288,11 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     }
 
     @Suppress(unchecked)
-    private fun asPageItem(uncastPageItem: Any) = uncastPageItem as PageItem<ViewHolder>
+    private fun Any.asPageItem() = this as PageItem<ViewHolder>
 
     private fun clearActiveViewHolders() {
         activeViewHolders.iterator().forEach { it.destroy() }
         activeViewHolders.clear()
-    }
-
-    private fun commitChangesOnFinish(commitChangesOnFinish: Boolean) {
-        this.commitChangesOnFinish = commitChangesOnFinish
     }
 
     private fun commitChanges(container: ViewGroup) {
@@ -367,5 +360,6 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
                 viewHolder = onCreateViewHolder(pageItem.viewType, pageItem.adapterPosition, container),
                 itemType = pageItem.viewType
             )
-        })
+        }
+    )
 }

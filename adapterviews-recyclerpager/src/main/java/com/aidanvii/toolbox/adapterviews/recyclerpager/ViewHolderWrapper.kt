@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import com.aidanvii.toolbox.throwIfTrue
 
 internal class ViewHolderWrapper<out ViewHolder : RecyclerPagerAdapter.ViewHolder>(
-        val viewHolder: ViewHolder,
-        override val itemType: Int
+    val viewHolder: ViewHolder,
+    override val itemType: Int
 ) : PooledItem {
 
     init {
@@ -23,11 +23,10 @@ internal class ViewHolderWrapper<out ViewHolder : RecyclerPagerAdapter.ViewHolde
     }
 
     fun removeViewFromContainer(container: ViewGroup) {
-        if (tempView != null) {
+        if (tempView != null)
             container.removeTempView()
-        } else {
+        else
             container.removeViewHolderView()
-        }
     }
 
     override fun destroy() {
@@ -74,7 +73,6 @@ internal class ViewHolderWrapper<out ViewHolder : RecyclerPagerAdapter.ViewHolde
         tempView = null
     }
 
-    private fun isAttachedToContainer(container: ViewGroup): Boolean {
-        return viewHolder.view.parent != null && viewHolder.view.parent == container
-    }
+    private fun isAttachedToContainer(container: ViewGroup): Boolean =
+        viewHolder.view.parent != null && viewHolder.view.parent == container
 }
