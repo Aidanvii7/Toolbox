@@ -19,6 +19,8 @@ include ':adapterviews-databinding-test'
 include ':adapterviews-databinding-recyclerpager'
 include ':adapterviews-databinding-recyclerview'
 
+include ':databinding-design'
+
 include ':rxjava-test'
 
 include ':rxutils'
