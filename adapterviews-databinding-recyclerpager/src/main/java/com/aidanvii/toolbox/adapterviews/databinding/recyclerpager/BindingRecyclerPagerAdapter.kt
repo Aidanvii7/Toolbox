@@ -1,5 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
+import android.content.Context
 import android.content.res.Resources
 import android.databinding.ViewDataBinding
 import android.view.ViewGroup
@@ -29,7 +30,8 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
         internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerPagerItemViewHolder<*, Item>>,
         internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
         internal val bindingInflater: BindingInflater,
-        internal val areItemAndContentsTheSame: ((old: Item, new: Item) -> Boolean)
+        internal val areItemAndContentsTheSame: ((old: Item, new: Item) -> Boolean),
+        internal val applicationContext: Context
     )
 
     private val delegate = builder.delegate.also { it.bindableAdapter = this }
@@ -37,7 +39,7 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
-    lateinit var resources: Resources
+    private val resources: Resources = builder.applicationContext.resources
 
     override var items = emptyList<Item>()
         set(value) {
@@ -66,11 +68,7 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
     ): BindingRecyclerPagerItemViewHolder<*, Item> {
         return BindingRecyclerPagerItemViewHolder(
             bindingResourceId = bindingResourceId,
-            viewDataBinding = viewDataBinding.apply {
-                if (::resources.isInitialized.not()) {
-                    resources = root.context.applicationContext.resources
-                }
-            }
+            viewDataBinding = viewDataBinding
         )
     }
 

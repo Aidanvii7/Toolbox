@@ -1,5 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
+import android.content.Context
 import android.os.Parcelable
 import android.support.annotation.RestrictTo
 import android.support.v4.view.ViewPager
@@ -80,13 +81,16 @@ class BindingRecyclerPagerBinder<Item : BindableAdapterItem>(
 
     internal var viewPagerState: Parcelable? = null
 
+    internal lateinit var applicationContext: Context
+
     internal val adapter by weakLazy {
         adapterFactory(
             BindingRecyclerPagerAdapter.Builder(
                 delegate = BindableAdapterDelegate(),
                 viewTypeHandler = viewTypeHandler,
                 bindingInflater = BindingInflater,
-                areItemAndContentsTheSame = areItemAndContentsTheSame
+                areItemAndContentsTheSame = areItemAndContentsTheSame,
+                applicationContext = applicationContext
             )
         )
     }
@@ -100,7 +104,8 @@ class BindingRecyclerPagerBinder<Item : BindableAdapterItem>(
         delegate = BindableAdapterDelegate(),
         viewTypeHandler = viewTypeHandler,
         bindingInflater = bindingInflater,
-        areItemAndContentsTheSame = areItemAndContentsTheSame
+        areItemAndContentsTheSame = areItemAndContentsTheSame,
+        applicationContext = applicationContext
     ).let { builder ->
         adapterFactory(builder)
     }

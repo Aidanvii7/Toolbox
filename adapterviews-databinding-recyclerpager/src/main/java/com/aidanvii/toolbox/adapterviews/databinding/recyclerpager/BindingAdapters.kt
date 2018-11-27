@@ -27,6 +27,7 @@ internal fun <Item : BindableAdapterItem> ViewPager._bind(
             adapter = null
         },
         onAttached = { attachedBinder ->
+            attachedBinder.applicationContext = context.applicationContext
             attachedBinder.viewPagerState?.let {
                 onRestoreInstanceState(it)
             }

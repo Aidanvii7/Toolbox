@@ -69,7 +69,8 @@ internal class BindingRecyclerPagerAdapterTest {
                 delegate = mockDelegate,
                 areItemAndContentsTheSame = spyAreItemAndContentsTheSame,
                 viewTypeHandler = mockViewTypeHandler,
-                bindingInflater = mockBindingInflater
+                bindingInflater = mockBindingInflater,
+                applicationContext = mockContext
             )
         )
     ).apply { makeNotifyNotCrash() }
