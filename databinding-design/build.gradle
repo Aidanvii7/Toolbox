@@ -31,8 +31,8 @@ android {
 dependencies {
 
     api project(':databinding')
-    api "${android_import_namespace}.support:support-v4:$android_support_version"
-    api "${android_import_namespace}.support:design:$android_support_version"
+    api "com.android.support:support-v4:27.1.1"
+    api "com.android.support:design:27.1.1"
 
     kapt "com.android.databinding:compiler:$android_gradle_version"
 

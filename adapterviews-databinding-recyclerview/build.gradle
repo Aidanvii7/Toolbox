@@ -35,7 +35,7 @@ dependencies {
     api project(':delegates-weak')
     api project(':delegates-coroutines-job')
 
-    api "${android_import_namespace}.support:recyclerview-v7:$android_support_version"
+    api "com.android.support:recyclerview-v7:27.1.1"
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 

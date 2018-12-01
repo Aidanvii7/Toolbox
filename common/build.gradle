@@ -30,7 +30,7 @@ android {
 dependencies {
 
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api "${android_import_namespace}.support:support-annotations:$android_support_version"
+    api "com.android.support:support-annotations:27.1.1"
 
     testImplementation project(':common-test')
 
