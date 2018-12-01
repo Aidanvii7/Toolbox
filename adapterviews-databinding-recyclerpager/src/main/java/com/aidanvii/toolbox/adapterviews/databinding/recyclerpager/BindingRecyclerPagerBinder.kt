@@ -2,8 +2,8 @@ package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
 import android.content.Context
 import android.os.Parcelable
-import android.support.annotation.RestrictTo
-import android.support.v4.view.ViewPager
+import androidx.annotation.RestrictTo
+import androidx.viewpager.widget.ViewPager
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem

@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.util.SparseIntArray
 
 class MultiViewTypeHandler<Item : BindableAdapterItem> : BindableAdapter.ViewTypeHandler<Item> {

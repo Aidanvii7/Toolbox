@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
-import android.databinding.ViewDataBinding
-import android.support.annotation.RestrictTo
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.RestrictTo
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.recyclerpager.RecyclerPagerAdapter

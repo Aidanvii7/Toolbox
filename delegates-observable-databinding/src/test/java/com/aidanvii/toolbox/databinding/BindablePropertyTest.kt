@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.databinding
 
-import android.databinding.Bindable
+import androidx.databinding.Bindable
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.never

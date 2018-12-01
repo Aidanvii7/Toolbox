@@ -2,7 +2,7 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.spied
@@ -23,14 +23,14 @@ class BindableItemDecorationTest {
     val mockAdapter = mock<BindingRecyclerViewAdapter<BindableAdapterItem>>().apply {
         whenever(items).thenReturn(listOf(mockItem1, mockItem2))
     }
-    val mockLayoutParams = mock<RecyclerView.LayoutParams>()
+    val mockLayoutParams = mock<androidx.recyclerview.widget.RecyclerView.LayoutParams>()
     val mockChild1 = mock<View>().apply {
         whenever(layoutParams).thenReturn(mockLayoutParams)
     }
     val mockChild2 = mock<View>().apply {
         whenever(layoutParams).thenReturn(mockLayoutParams)
     }
-    val mockRecyclerView = mock<RecyclerView>().apply {
+    val mockRecyclerView = mock<androidx.recyclerview.widget.RecyclerView>().apply {
         whenever(adapter).thenReturn(mockAdapter)
         whenever(childCount).thenReturn(2)
         whenever(getChildAdapterPosition(mockChild1)).thenReturn(0)
@@ -40,7 +40,7 @@ class BindableItemDecorationTest {
     }
     val mockCanvas = mock<Canvas>()
     val mockOutRect = mock<Rect>()
-    val mockRecyclerViewState = mock<RecyclerView.State>()
+    val mockRecyclerViewState = mock<androidx.recyclerview.widget.RecyclerView.State>()
 
     @Nested
     inner class `When onDraw called` {
@@ -88,12 +88,12 @@ class BindableItemDecorationTest {
     }
 
     class ExampleBindableItemDecoration : BindableItemDecoration<BindableAdapterItem>() {
-        public override fun onDraw(adapterItem: BindableAdapterItem, canvas: Canvas, state: RecyclerView.State) {}
+        public override fun onDraw(adapterItem: BindableAdapterItem, canvas: Canvas, state: androidx.recyclerview.widget.RecyclerView.State) {}
         public override fun getItemOffsets(
             adapterItem: BindableAdapterItem,
             outRect: Rect,
-            layoutParams: RecyclerView.LayoutParams,
-            state: RecyclerView.State
+            layoutParams: androidx.recyclerview.widget.RecyclerView.LayoutParams,
+            state: androidx.recyclerview.widget.RecyclerView.State
         ) {
         }
     }

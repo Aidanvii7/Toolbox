@@ -2,8 +2,8 @@ package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
 import android.content.Context
 import android.content.res.Resources
-import android.databinding.ViewDataBinding
-import android.support.v7.widget.makeNotifyNotCrash
+import androidx.databinding.ViewDataBinding
+import androidx.appcompat.widget.makeNotifyNotCrash
 import android.view.View
 import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter

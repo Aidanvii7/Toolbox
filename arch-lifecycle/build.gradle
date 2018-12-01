@@ -17,7 +17,7 @@ android {
         targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -29,7 +29,7 @@ android {
 
 dependencies {
 
-    api "android.arch.lifecycle:runtime:$android_arch_viewmodel_version"
+    api 'androidx.lifecycle:lifecycle-runtime:2.0.0'
 
     testImplementation project(':common-test')
 

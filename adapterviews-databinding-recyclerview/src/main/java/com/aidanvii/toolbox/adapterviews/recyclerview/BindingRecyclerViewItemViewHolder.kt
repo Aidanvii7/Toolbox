@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.databinding.ViewDataBinding
-import android.support.v7.widget.RecyclerView
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 
@@ -9,7 +9,7 @@ class BindingRecyclerViewItemViewHolder<out Binding : ViewDataBinding, Item : Bi
     override val bindingResourceId: Int,
     override val viewDataBinding: Binding,
     private val itemBoundObservers: List<ItemBoundObserver<Item>>
-) : RecyclerView.ViewHolder(viewDataBinding.root), BindableAdapter.ViewHolder<Binding, Item> {
+) : androidx.recyclerview.widget.RecyclerView.ViewHolder(viewDataBinding.root), BindableAdapter.ViewHolder<Binding, Item> {
 
     internal var currentAdapter: BindingRecyclerViewAdapter<Item>? = null
 

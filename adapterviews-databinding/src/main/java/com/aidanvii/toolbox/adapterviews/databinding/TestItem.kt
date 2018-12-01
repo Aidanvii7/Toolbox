@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
-import android.support.annotation.RestrictTo
+import androidx.annotation.RestrictTo
 import java.util.concurrent.atomic.AtomicBoolean
 
 @RestrictTo(RestrictTo.Scope.TESTS)

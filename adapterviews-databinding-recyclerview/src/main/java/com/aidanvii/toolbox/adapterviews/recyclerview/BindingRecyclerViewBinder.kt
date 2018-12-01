@@ -2,10 +2,10 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import android.content.Context
 import android.os.Parcelable
-import android.support.annotation.RestrictTo
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RestrictTo
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
@@ -88,7 +88,11 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
     val getChangedProperties: (oldItem: Item, newItem: Item) -> IntArray? = defaultGetChangedProperties,
-    val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
+    val layoutManagerFactory: (context: Context) -> androidx.recyclerview.widget.RecyclerView.LayoutManager = {
+        androidx.recyclerview.widget.LinearLayoutManager(
+            it
+        )
+    },
     val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) },
     val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null,
     private val uiDispatcher: CoroutineDispatcher = Dispatchers.Main,

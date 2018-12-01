@@ -2,7 +2,7 @@ package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
 import android.content.Context
 import android.content.res.Resources
-import android.databinding.ViewDataBinding
+import androidx.databinding.ViewDataBinding
 import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate

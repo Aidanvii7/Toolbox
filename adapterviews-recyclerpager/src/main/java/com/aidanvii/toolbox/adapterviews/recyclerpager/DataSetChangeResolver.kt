@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.adapterviews.recyclerpager
 
-import android.support.v4.view.PagerAdapter.POSITION_NONE
-import android.support.v4.view.PagerAdapter.POSITION_UNCHANGED
+import androidx.viewpager.widget.PagerAdapter.POSITION_NONE
+import androidx.viewpager.widget.PagerAdapter.POSITION_UNCHANGED
 import com.aidanvii.toolbox.checkBelowMax
 
 internal class DataSetChangeResolver<Item, ViewHolder : RecyclerPagerAdapter.ViewHolder>(

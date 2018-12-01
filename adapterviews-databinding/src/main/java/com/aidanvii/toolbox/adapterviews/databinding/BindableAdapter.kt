@@ -1,8 +1,8 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.annotation.RestrictTo
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.LayoutRes
+import androidx.annotation.RestrictTo
 import android.view.View
 import android.view.ViewGroup
 import com.aidanvii.toolbox.databinding.IntBindingConsumer

@@ -1,8 +1,8 @@
 package com.aidanvii.toolbox.adapterviews.recyclerpager
 
-import android.support.annotation.RestrictTo
-import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
+import androidx.annotation.RestrictTo
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -262,7 +262,7 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun getItemPosition(uncastPageItem: Any): Int =
         dataSetChangeResolver?.run { resolvePageItemPosition(uncastPageItem.asPageItem()) }
-            ?: PagerAdapter.POSITION_NONE
+            ?: androidx.viewpager.widget.PagerAdapter.POSITION_NONE
 
     @Suppress(unchecked)
     @RestrictTo(RestrictTo.Scope.LIBRARY)

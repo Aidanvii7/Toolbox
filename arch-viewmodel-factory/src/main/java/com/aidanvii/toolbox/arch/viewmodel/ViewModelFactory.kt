@@ -1,10 +1,10 @@
 package com.aidanvii.toolbox.arch.viewmodel
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.aidanvii.toolbox.unchecked
 
 /**
@@ -55,10 +55,10 @@ inline fun <reified T : ViewModel> ViewModelFactory.Builder.addTypedFactory(fact
     typedFactories[T::class.java] = factory
 }
 
-fun FragmentActivity.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
+fun androidx.fragment.app.FragmentActivity.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
     if (factory != null) ViewModelProviders.of(this, factory) else ViewModelProviders.of(this)
 
-fun Fragment.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
+fun androidx.fragment.app.Fragment.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
     if (factory != null) ViewModelProviders.of(this, factory) else ViewModelProviders.of(this)
 
 inline fun <reified T : ViewModel> ViewModelProvider.get() = get(T::class.java)

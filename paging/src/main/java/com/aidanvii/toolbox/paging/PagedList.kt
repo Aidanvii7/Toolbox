@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.paging
 
-import android.support.annotation.IntRange
+import androidx.annotation.IntRange
 import com.aidanvii.toolbox.Action
 import com.aidanvii.toolbox.Consumer
 import com.aidanvii.toolbox.checkAboveMin

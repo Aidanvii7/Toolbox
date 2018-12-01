@@ -1,8 +1,8 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.databinding.ViewDataBinding
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.makeNotifyNotCrash
+import androidx.databinding.ViewDataBinding
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.makeNotifyNotCrash
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
@@ -32,7 +32,7 @@ internal class BindingRecyclerViewAdapterTest {
         val ADAPTER_POSITION = random.nextInt()
     }
 
-    val mockContainer = mock<RecyclerView>()
+    val mockContainer = mock<androidx.recyclerview.widget.RecyclerView>()
 
     val mockBinding = mock<ViewDataBinding>().apply {
         whenever(root).thenReturn(mock())

@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.delegates.observable.rxjava
 
-import android.support.annotation.CallSuper
-import android.support.annotation.RestrictTo
+import androidx.annotation.CallSuper
+import androidx.annotation.RestrictTo
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable

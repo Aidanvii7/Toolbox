@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.recyclerpager
 
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,8 +38,8 @@ internal class DataSetChangeResolverTest(val param: Parameter) {
     }
 
     companion object {
-        const val UNCHANGED = PagerAdapter.POSITION_UNCHANGED
-        const val NONE = PagerAdapter.POSITION_NONE
+        const val UNCHANGED = androidx.viewpager.widget.PagerAdapter.POSITION_UNCHANGED
+        const val NONE = androidx.viewpager.widget.PagerAdapter.POSITION_NONE
 
         private fun items(vararg ids: Int): List<Item> = ids.map { Item(it) }
 

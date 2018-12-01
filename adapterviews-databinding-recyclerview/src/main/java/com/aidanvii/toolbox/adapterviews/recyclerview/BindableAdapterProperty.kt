@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.aidanvii.toolbox.databinding.NotifiableObservable
 import com.aidanvii.toolbox.databinding.PropertyMapper
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty

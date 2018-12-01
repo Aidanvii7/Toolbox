@@ -2,8 +2,8 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import android.content.Context
 import android.os.Parcelable
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.makeNotifyNotCrash
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.makeNotifyNotCrash
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.nhaarman.mockito_kotlin.inOrder
@@ -30,12 +30,12 @@ class BindingAdaptersTest {
     }
 
     val mockLayoutManagerState1 = mock<Parcelable>()
-    val mockLayoutManager1 = mock<RecyclerView.LayoutManager>().apply {
+    val mockLayoutManager1 = mock<androidx.recyclerview.widget.RecyclerView.LayoutManager>().apply {
         whenever(onSaveInstanceState()).thenReturn(mockLayoutManagerState1)
     }
 
     val mockLayoutManagerState2 = mock<Parcelable>()
-    val mockLayoutManager2 = mock<RecyclerView.LayoutManager>().apply {
+    val mockLayoutManager2 = mock<androidx.recyclerview.widget.RecyclerView.LayoutManager>().apply {
         whenever(onSaveInstanceState()).thenReturn(mockLayoutManagerState2)
     }
 
@@ -71,7 +71,7 @@ class BindingAdaptersTest {
     )
 
     val mockContext = mock<Context>()
-    val mockRecyclerView = mock<RecyclerView>().apply {
+    val mockRecyclerView = mock<androidx.recyclerview.widget.RecyclerView>().apply {
         whenever(context).thenReturn(mockContext)
         whenever(layoutManager).thenReturn(mockLayoutManager1)
     }
@@ -156,7 +156,7 @@ class BindingAdaptersTest {
     private fun InOrder.verifyBound(
         binder: BindingRecyclerViewBinder<TestItem>,
         adapter: BindingRecyclerViewAdapter<TestItem>,
-        layoutManager: RecyclerView.LayoutManager
+        layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager
     ) {
         verify(adapter).itemBoundListener = givenItemBoundListener
         verify(mockRecyclerView).adapter = adapter

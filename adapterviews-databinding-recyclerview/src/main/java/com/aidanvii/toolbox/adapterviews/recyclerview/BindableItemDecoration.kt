@@ -2,20 +2,20 @@ package com.aidanvii.toolbox.adapterviews.recyclerview;
 
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.aidanvii.toolbox.actionStub
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.children
 import com.aidanvii.toolbox.unchecked
 
-abstract class BindableItemDecoration<AdapterItem : BindableAdapterItem> : RecyclerView.ItemDecoration() {
+abstract class BindableItemDecoration<AdapterItem : BindableAdapterItem> : androidx.recyclerview.widget.RecyclerView.ItemDecoration() {
 
-    protected abstract fun getItemOffsets(adapterItem: AdapterItem, outRect: Rect, layoutParams: RecyclerView.LayoutParams, state: RecyclerView.State)
+    protected abstract fun getItemOffsets(adapterItem: AdapterItem, outRect: Rect, layoutParams: androidx.recyclerview.widget.RecyclerView.LayoutParams, state: androidx.recyclerview.widget.RecyclerView.State)
 
-    protected abstract fun onDraw(adapterItem: AdapterItem, canvas: Canvas, state: RecyclerView.State)
+    protected abstract fun onDraw(adapterItem: AdapterItem, canvas: Canvas, state: androidx.recyclerview.widget.RecyclerView.State)
 
-    override fun onDraw(canvas: Canvas, recyclerView: RecyclerView, state: RecyclerView.State) {
+    override fun onDraw(canvas: Canvas, recyclerView: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State) {
         for (childView in recyclerView.children) {
             onAdapter(recyclerView) {
                 onDraw(
@@ -27,12 +27,12 @@ abstract class BindableItemDecoration<AdapterItem : BindableAdapterItem> : Recyc
         }
     }
 
-    override fun getItemOffsets(outRect: Rect, view: View, recyclerView: RecyclerView, state: RecyclerView.State) {
+    override fun getItemOffsets(outRect: Rect, view: View, recyclerView: androidx.recyclerview.widget.RecyclerView, state: androidx.recyclerview.widget.RecyclerView.State) {
         onAdapter(recyclerView) {
             getItemOffsets(
                 adapterItem = items[recyclerView.getChildAdapterPosition(view)],
                 outRect = outRect,
-                layoutParams = view.layoutParams as RecyclerView.LayoutParams,
+                layoutParams = view.layoutParams as androidx.recyclerview.widget.RecyclerView.LayoutParams,
                 state = state
             )
         }
@@ -40,7 +40,7 @@ abstract class BindableItemDecoration<AdapterItem : BindableAdapterItem> : Recyc
 
     @Suppress(unchecked)
     private inline fun onAdapter(
-        recyclerView: RecyclerView,
+        recyclerView: androidx.recyclerview.widget.RecyclerView,
         block: BindingRecyclerViewAdapter<AdapterItem>.() -> Unit
     ) {
         recyclerView.adapter.let { adapter ->
@@ -52,7 +52,7 @@ abstract class BindableItemDecoration<AdapterItem : BindableAdapterItem> : Recyc
         }
     }
 
-    private fun throwWrongAdapterType(unsupportedAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>): Nothing {
+    private fun throwWrongAdapterType(unsupportedAdapter: androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>): Nothing {
         throw UnsupportedOperationException(
             """
             cannot attach ${this::class.java.simpleName} to ${unsupportedAdapter::class.java.simpleName},

@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.databinding
 
-import android.databinding.Bindable
-import android.databinding.Observable
+import androidx.databinding.Bindable
+import androidx.databinding.Observable
 
 internal object AutoBRs : Observable {
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}

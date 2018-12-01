@@ -1,9 +1,9 @@
 package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
-import android.databinding.BindingAdapter
-import android.databinding.InverseBindingAdapter
-import android.databinding.InverseBindingListener
-import android.support.v4.view.ViewPager
+import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
+import androidx.viewpager.widget.ViewPager
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.trackInstance
@@ -12,7 +12,7 @@ import com.aidanvii.toolbox.databinding.trackInstance
     "android:binder",
     "android:items", requireAll = true
 )
-internal fun <Item : BindableAdapterItem> ViewPager._bind(
+internal fun <Item : BindableAdapterItem> androidx.viewpager.widget.ViewPager._bind(
     binder: BindingRecyclerPagerBinder<Item>?,
     items: List<Item>?
 ) {
@@ -39,7 +39,7 @@ internal fun <Item : BindableAdapterItem> ViewPager._bind(
     }
 }
 
-internal var ViewPager._currentItem: Int
+internal var androidx.viewpager.widget.ViewPager._currentItem: Int
     @InverseBindingAdapter(attribute = "android:currentItem", event = "android:currentItemAttrChanged")
     get() = currentItem
     @BindingAdapter(value = ["android:currentItem"])
@@ -52,12 +52,12 @@ internal var ViewPager._currentItem: Int
     "android:onPageSelected",
     "android:currentItemAttrChanged", requireAll = false
 )
-internal fun ViewPager._bind(
+internal fun androidx.viewpager.widget.ViewPager._bind(
     onPageSelected: IntBindingConsumer?,
     currentItemAttrChanged: InverseBindingListener?
 ) {
     val onPageChangedListener = if (onPageSelected != null || currentItemAttrChanged != null) {
-        object : ViewPager.OnPageChangeListener {
+        object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {

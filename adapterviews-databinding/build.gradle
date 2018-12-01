@@ -17,7 +17,7 @@ android {
         targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -34,7 +34,7 @@ dependencies {
     api project(':databinding')
     api project(':delegates-weak')
 
-    kapt "com.android.databinding:compiler:$android_gradle_version"
+    kapt 'androidx.databinding:databinding-compiler:3.4.0-alpha06'
 
     testImplementation project(':adapterviews-databinding-test')
 

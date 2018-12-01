@@ -1,10 +1,10 @@
-package android.support.v7.widget
+package androidx.appcompat.widget
 
 import android.database.DataSetObservable
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import com.nhaarman.mockito_kotlin.mock
 import de.jodamob.reflect.SuperReflect
 
-fun PagerAdapter.makeNotifyNotCrash() {
+fun androidx.viewpager.widget.PagerAdapter.makeNotifyNotCrash() {
     SuperReflect.on(this).set("mObservable", mock<DataSetObservable>())
 }

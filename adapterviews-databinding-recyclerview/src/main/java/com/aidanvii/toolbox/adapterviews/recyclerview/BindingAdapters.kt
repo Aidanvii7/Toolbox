@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.databinding.BindingAdapter
-import android.support.v7.widget.RecyclerView
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.recyclerview.R
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
@@ -12,7 +12,7 @@ import com.aidanvii.toolbox.databinding.trackInstance
     "android:items",
     "android:onItemBoundAt", requireAll = false
 )
-internal fun <Item : BindableAdapterItem> RecyclerView._bind(
+internal fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerView._bind(
     binder: BindingRecyclerViewBinder<Item>?,
     items: List<Item>?,
     itemBoundListener: IntBindingConsumer?
@@ -22,7 +22,7 @@ internal fun <Item : BindableAdapterItem> RecyclerView._bind(
     rebind(binder, itemBoundListener)
 }
 
-private fun <Item : BindableAdapterItem> RecyclerView.rebind(
+private fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerView.rebind(
     binder: BindingRecyclerViewBinder<Item>?,
     itemBoundListener: IntBindingConsumer?
 ) {
@@ -62,7 +62,7 @@ private fun <Item : BindableAdapterItem> setItemsOnAdapter(
 }
 
 @BindingAdapter("android:layoutManager")
-internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
+internal fun androidx.recyclerview.widget.RecyclerView._bind(layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager?) {
     trackInstance(
         newInstance = layoutManager,
         instanceResId = R.id.layout_manager,
@@ -71,7 +71,7 @@ internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
 }
 
 @BindingAdapter("android:bindableItemDecoration")
-internal fun <Item : BindableAdapterItem> RecyclerView._bind(itemDecoration: BindableItemDecoration<Item>?) {
+internal fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerView._bind(itemDecoration: BindableItemDecoration<Item>?) {
     trackInstance(
         newInstance = itemDecoration,
         instanceResId = R.id.item_decoration,
