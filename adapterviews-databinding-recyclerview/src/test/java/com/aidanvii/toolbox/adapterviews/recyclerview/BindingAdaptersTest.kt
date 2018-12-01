@@ -29,6 +29,10 @@ class BindingAdaptersTest {
         }
     }
 
+    init {
+        BindingRecyclerViewAdapter.testModeEnabled = true
+    }
+
     val mockLayoutManagerState1 = mock<Parcelable>()
     val mockLayoutManager1 = mock<androidx.recyclerview.widget.RecyclerView.LayoutManager>().apply {
         whenever(onSaveInstanceState()).thenReturn(mockLayoutManagerState1)

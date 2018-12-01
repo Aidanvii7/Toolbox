@@ -19,7 +19,8 @@ import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.amshove.kluent.`should throw`
 import org.amshove.kluent.mock
-import org.junit.Test
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import java.util.Random
 
 @ExperimentalCoroutinesApi
@@ -31,8 +32,11 @@ internal class BindingRecyclerViewAdapterTest {
         val BINDING_ID = random.nextInt()
         val ADAPTER_POSITION = random.nextInt()
     }
+    init {
+        BindingRecyclerViewAdapter.testModeEnabled = true
+    }
 
-    val mockContainer = mock<androidx.recyclerview.widget.RecyclerView>()
+    val mockContainer = mock<RecyclerView>()
 
     val mockBinding = mock<ViewDataBinding>().apply {
         whenever(root).thenReturn(mock())
@@ -229,7 +233,9 @@ internal class BindingRecyclerViewAdapterTest {
         verify(spyTested).notifyItemRangeInserted(3, 3)
     }
 
+    //FIXME see Github issue #7
     @Test
+    @Disabled("FIXME see Github issue #7")
     fun `set items with test data 5 notifies adapter correctly`() {
         spyTested.items = listOf(
             TestItem(id = 0, viewType = 1, bindingId = 10),

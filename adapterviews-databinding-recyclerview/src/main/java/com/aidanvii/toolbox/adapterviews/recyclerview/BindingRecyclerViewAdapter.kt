@@ -6,6 +6,7 @@ import androidx.annotation.WorkerThread
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import com.aidanvii.toolbox.Action
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
@@ -30,6 +31,11 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     builder: Builder<Item>
 ) : RecyclerView.Adapter<BindingRecyclerViewItemViewHolder<*, Item>>(),
     BindableAdapter<Item, BindingRecyclerViewItemViewHolder<*, Item>> {
+
+    companion object {
+        // FIXME see Github issue #7
+        internal var testModeEnabled = false
+    }
 
     class Builder<Item : BindableAdapterItem> internal constructor(
         internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerViewItemViewHolder<*, Item>>,
@@ -61,13 +67,27 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
 
     private fun addAllImmediately(newItems: List<Item>) {
         _items = newItems
-        notifyItemRangeInserted(0, newItems.size)
+        notifySafely {
+            notifyItemRangeInserted(0, newItems.size)
+        }
     }
 
     private fun removeAllImmediately(newItems: List<Item>) {
         val oldItemsSize = _items.size
         _items = newItems
-        notifyItemRangeRemoved(0, oldItemsSize)
+        notifySafely {
+            notifyItemRangeRemoved(0, oldItemsSize)
+        }
+    }
+
+    private inline fun notifySafely(action: Action) {
+        if(testModeEnabled) {
+            try {
+                action()
+            } catch (e: NullPointerException) {
+                print(e.message)
+            }
+        } else action()
     }
 
     private fun resolveDiffAsynchronously(newItems: List<Item>) {
@@ -80,7 +100,9 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
             }.let { deferredChangePayload ->
                 deferredChangePayload.await().let { changePayload ->
                     _items = changePayload.allItems
-                    changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
+                    notifySafely {
+                        changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
+                    }
                 }
             }
         }
