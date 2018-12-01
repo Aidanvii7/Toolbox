@@ -12,7 +12,7 @@ import com.aidanvii.toolbox.databinding.trackInstance
     "android:items",
     "android:onItemBoundAt", requireAll = false
 )
-internal fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerView._bind(
+internal fun <Item : BindableAdapterItem> RecyclerView._bind(
     binder: BindingRecyclerViewBinder<Item>?,
     items: List<Item>?,
     itemBoundListener: IntBindingConsumer?
@@ -22,7 +22,7 @@ internal fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerV
     rebind(binder, itemBoundListener)
 }
 
-private fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerView.rebind(
+private fun <Item : BindableAdapterItem> RecyclerView.rebind(
     binder: BindingRecyclerViewBinder<Item>?,
     itemBoundListener: IntBindingConsumer?
 ) {
@@ -44,9 +44,7 @@ private fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerVi
                 onRestoreInstanceState(attachedBinder.layoutManagerState)
             }
             attachedBinder.recycledViewPoolWrapper?.invoke()?.let { pool ->
-                if (recycledViewPool !== pool) {
-                    recycledViewPool = pool
-                }
+                if (recycledViewPool !== pool) setRecycledViewPool(pool)
             }
         }
     )
@@ -62,7 +60,7 @@ private fun <Item : BindableAdapterItem> setItemsOnAdapter(
 }
 
 @BindingAdapter("android:layoutManager")
-internal fun androidx.recyclerview.widget.RecyclerView._bind(layoutManager: androidx.recyclerview.widget.RecyclerView.LayoutManager?) {
+internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
     trackInstance(
         newInstance = layoutManager,
         instanceResId = R.id.layout_manager,
@@ -71,7 +69,7 @@ internal fun androidx.recyclerview.widget.RecyclerView._bind(layoutManager: andr
 }
 
 @BindingAdapter("android:bindableItemDecoration")
-internal fun <Item : BindableAdapterItem> androidx.recyclerview.widget.RecyclerView._bind(itemDecoration: BindableItemDecoration<Item>?) {
+internal fun <Item : BindableAdapterItem> RecyclerView._bind(itemDecoration: BindableItemDecoration<Item>?) {
     trackInstance(
         newInstance = itemDecoration,
         instanceResId = R.id.item_decoration,

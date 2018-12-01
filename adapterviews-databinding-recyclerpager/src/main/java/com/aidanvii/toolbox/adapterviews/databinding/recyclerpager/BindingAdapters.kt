@@ -12,7 +12,7 @@ import com.aidanvii.toolbox.databinding.trackInstance
     "android:binder",
     "android:items", requireAll = true
 )
-internal fun <Item : BindableAdapterItem> androidx.viewpager.widget.ViewPager._bind(
+internal fun <Item : BindableAdapterItem> ViewPager._bind(
     binder: BindingRecyclerPagerBinder<Item>?,
     items: List<Item>?
 ) {
@@ -39,7 +39,7 @@ internal fun <Item : BindableAdapterItem> androidx.viewpager.widget.ViewPager._b
     }
 }
 
-internal var androidx.viewpager.widget.ViewPager._currentItem: Int
+internal var ViewPager._currentItem: Int
     @InverseBindingAdapter(attribute = "android:currentItem", event = "android:currentItemAttrChanged")
     get() = currentItem
     @BindingAdapter(value = ["android:currentItem"])
@@ -52,12 +52,12 @@ internal var androidx.viewpager.widget.ViewPager._currentItem: Int
     "android:onPageSelected",
     "android:currentItemAttrChanged", requireAll = false
 )
-internal fun androidx.viewpager.widget.ViewPager._bind(
+internal fun ViewPager._bind(
     onPageSelected: IntBindingConsumer?,
     currentItemAttrChanged: InverseBindingListener?
 ) {
     val onPageChangedListener = if (onPageSelected != null || currentItemAttrChanged != null) {
-        object : androidx.viewpager.widget.ViewPager.OnPageChangeListener {
+        object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
             override fun onPageSelected(position: Int) {

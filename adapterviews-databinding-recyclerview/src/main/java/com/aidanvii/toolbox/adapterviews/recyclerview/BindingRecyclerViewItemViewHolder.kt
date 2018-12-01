@@ -9,7 +9,7 @@ class BindingRecyclerViewItemViewHolder<out Binding : ViewDataBinding, Item : Bi
     override val bindingResourceId: Int,
     override val viewDataBinding: Binding,
     private val itemBoundObservers: List<ItemBoundObserver<Item>>
-) : androidx.recyclerview.widget.RecyclerView.ViewHolder(viewDataBinding.root), BindableAdapter.ViewHolder<Binding, Item> {
+) : RecyclerView.ViewHolder(viewDataBinding.root), BindableAdapter.ViewHolder<Binding, Item> {
 
     internal var currentAdapter: BindingRecyclerViewAdapter<Item>? = null
 

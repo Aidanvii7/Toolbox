@@ -262,7 +262,7 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun getItemPosition(uncastPageItem: Any): Int =
         dataSetChangeResolver?.run { resolvePageItemPosition(uncastPageItem.asPageItem()) }
-            ?: androidx.viewpager.widget.PagerAdapter.POSITION_NONE
+            ?: PagerAdapter.POSITION_NONE
 
     @Suppress(unchecked)
     @RestrictTo(RestrictTo.Scope.LIBRARY)

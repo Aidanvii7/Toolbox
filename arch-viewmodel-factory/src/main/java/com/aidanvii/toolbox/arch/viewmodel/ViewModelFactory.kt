@@ -55,10 +55,10 @@ inline fun <reified T : ViewModel> ViewModelFactory.Builder.addTypedFactory(fact
     typedFactories[T::class.java] = factory
 }
 
-fun androidx.fragment.app.FragmentActivity.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
+fun FragmentActivity.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
     if (factory != null) ViewModelProviders.of(this, factory) else ViewModelProviders.of(this)
 
-fun androidx.fragment.app.Fragment.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
+fun Fragment.viewModelProvider(factory: ViewModelProvider.Factory? = null): ViewModelProvider =
     if (factory != null) ViewModelProviders.of(this, factory) else ViewModelProviders.of(this)
 
 inline fun <reified T : ViewModel> ViewModelProvider.get() = get(T::class.java)

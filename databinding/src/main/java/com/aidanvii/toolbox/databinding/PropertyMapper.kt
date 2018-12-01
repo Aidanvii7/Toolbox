@@ -2,12 +2,12 @@ package com.aidanvii.toolbox.databinding
 
 import android.app.Application
 import kotlin.reflect.KProperty
-import com.android.databinding.library.baseAdapters.BR
+import androidx.databinding.library.baseAdapters.BR
 
 /**
  * Provides a hassle free way of mapping a [KProperty] to an id from a generated `BR` databinding classes.
  *
- * To use, initialise once in your [Application] like so:
+     * To use, initialise once in your [Application] like so:
  * ```
  * override fun onCreate() {
  *   super.onCreate()

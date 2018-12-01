@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 @Suppress(leakingThis)
 open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     builder: Builder<Item>
-) : androidx.recyclerview.widget.RecyclerView.Adapter<BindingRecyclerViewItemViewHolder<*, Item>>(),
+) : RecyclerView.Adapter<BindingRecyclerViewItemViewHolder<*, Item>>(),
     BindableAdapter<Item, BindingRecyclerViewItemViewHolder<*, Item>> {
 
     class Builder<Item : BindableAdapterItem> internal constructor(
@@ -93,7 +93,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     private val uiDispatcher = builder.uiDispatcher
     private val workerDispatcher = builder.workerDispatcher
     private val itemBoundObservers = builder.itemBoundObservers
-    private var attachedRecyclerView: androidx.recyclerview.widget.RecyclerView? = null
+    private var attachedRecyclerView: RecyclerView? = null
 
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
@@ -175,11 +175,11 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     internal fun contains(item: Item): Boolean =
         _items.any { areItemsTheSame(it, item) && areContentsTheSame(it, item) }
 
-    override fun onAttachedToRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         attachedRecyclerView = recyclerView
     }
 
-    override fun onDetachedFromRecyclerView(recyclerView: androidx.recyclerview.widget.RecyclerView) {
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         attachedRecyclerView = null
     }
 

@@ -38,8 +38,6 @@ dependencies {
     // needed now to be able to mock ViewDataBinding....
     api 'androidx.lifecycle:lifecycle-livedata:2.0.0'
 
-    kapt 'androidx.databinding:databinding-compiler:3.4.0-alpha06'
-
     // (Required) Writing and executing Unit Tests on the JUnit Platform.
     testImplementation junit5.unitTests()
 

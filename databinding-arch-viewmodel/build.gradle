@@ -34,8 +34,6 @@ dependencies {
 
     api 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
 
-    kapt 'androidx.databinding:databinding-compiler:3.4.0-alpha06'
-
     testImplementation project(':common-test')
 
     // (Required) Writing and executing Unit Tests on the JUnit Platform.

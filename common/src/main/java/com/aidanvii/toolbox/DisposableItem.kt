@@ -1,7 +1,6 @@
 package com.aidanvii.toolbox
 
 import androidx.annotation.RestrictTo
-import android.util.Log
 import java.util.concurrent.atomic.AtomicBoolean
 
 interface DisposableItem {

@@ -88,11 +88,7 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
     areItemsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreItemsSame,
     areContentsTheSame: ((oldItem: Item, newItem: Item) -> Boolean) = defaultAreContentsSame,
     val getChangedProperties: (oldItem: Item, newItem: Item) -> IntArray? = defaultGetChangedProperties,
-    val layoutManagerFactory: (context: Context) -> androidx.recyclerview.widget.RecyclerView.LayoutManager = {
-        androidx.recyclerview.widget.LinearLayoutManager(
-            it
-        )
-    },
+    val layoutManagerFactory: (context: Context) -> RecyclerView.LayoutManager = { LinearLayoutManager(it) },
     val adapterFactory: (BindingRecyclerViewAdapter.Builder<Item>) -> BindingRecyclerViewAdapter<Item> = { BindingRecyclerViewAdapter(it) },
     val recycledViewPoolWrapper: RecycledViewPoolWrapper? = null,
     private val uiDispatcher: CoroutineDispatcher = Dispatchers.Main,

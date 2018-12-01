@@ -34,8 +34,6 @@ dependencies {
     api "androidx.legacy:legacy-support-v4:1.0.0"
     api "com.google.android.material:material:1.1.0-alpha01"
 
-    kapt 'androidx.databinding:databinding-compiler:3.4.0-alpha06'
-
     testImplementation project(':common-test')
 
     // (Required) Writing and executing Unit Tests on the JUnit Platform.

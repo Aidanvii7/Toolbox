@@ -1,6 +1,5 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
-import androidx.databinding.Observable
 import androidx.databinding.ViewDataBinding
 import android.view.ViewGroup
 import com.aidanvii.toolbox.databinding.NotifiableObservable

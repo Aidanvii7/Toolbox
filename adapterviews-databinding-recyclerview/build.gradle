@@ -39,8 +39,6 @@ dependencies {
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    kapt 'androidx.databinding:databinding-compiler:3.4.0-alpha06'
-
     testImplementation project(':adapterviews-databinding-test')
 
     // (Required) Writing and executing Unit Tests on the JUnit Platform.
