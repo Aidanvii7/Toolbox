@@ -19,7 +19,7 @@ internal fun <Item : BindableAdapterItem> RecyclerView._bind(
     binder: BindingRecyclerViewBinder<Item>?,
     items: List<Item>?,
     itemBoundListener: IntBindingConsumer?,
-    onItemsSet: BindingAction?
+    onItemsSet: BindingAction? = null // TODO tidy this up
 ) {
     val localAdapter = binder?.adapter
     setItemsOnAdapter(localAdapter, items)
