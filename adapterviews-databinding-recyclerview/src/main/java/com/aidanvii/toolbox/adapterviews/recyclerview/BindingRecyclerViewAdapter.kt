@@ -71,7 +71,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         notifySafely {
             notifyItemRangeInserted(0, newItems.size)
         }
-        onItemsSet()
+        onItemsSet?.invoke()
     }
 
     private fun removeAllImmediately(newItems: List<Item>) {
@@ -80,7 +80,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         notifySafely {
             notifyItemRangeRemoved(0, oldItemsSize)
         }
-        onItemsSet()
+        onItemsSet?.invoke()
     }
 
     private inline fun notifySafely(action: Action) {
@@ -106,7 +106,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
                     notifySafely {
                         changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
                     }
-                    onItemsSet()
+                    onItemsSet?.invoke()
                 }
             }
         }

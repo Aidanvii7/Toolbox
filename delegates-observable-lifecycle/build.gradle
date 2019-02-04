@@ -34,13 +34,10 @@ dependencies {
 
     testImplementation project(':common-test')
 
-    // (Required) Writing and executing Unit Tests on the JUnit Platform.
-    testImplementation junit5.unitTests()
-
-    // (Optional) For running tests inside Android Studio 3
-    // Please refer to the "Android Studio Workarounds" section for more insight on this.
-    testCompileOnly junit5.unitTestsRuntime()
-}
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit5_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5_version"}
 
 repositories {
     mavenCentral()
