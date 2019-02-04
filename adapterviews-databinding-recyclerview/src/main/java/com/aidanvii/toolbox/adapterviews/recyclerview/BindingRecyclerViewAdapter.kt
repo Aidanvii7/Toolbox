@@ -11,6 +11,7 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
+import com.aidanvii.toolbox.databinding.BindingAction
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.NotifiableObservable
 import com.aidanvii.toolbox.delegates.coroutines.job.cancelOnReassign
@@ -70,6 +71,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         notifySafely {
             notifyItemRangeInserted(0, newItems.size)
         }
+        onItemsSet()
     }
 
     private fun removeAllImmediately(newItems: List<Item>) {
@@ -78,6 +80,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
         notifySafely {
             notifyItemRangeRemoved(0, oldItemsSize)
         }
+        onItemsSet()
     }
 
     private inline fun notifySafely(action: Action) {
@@ -103,6 +106,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
                     notifySafely {
                         changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
                     }
+                    onItemsSet()
                 }
             }
         }
@@ -120,6 +124,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
+    internal var onItemsSet: BindingAction? = null
 
     final override fun getItem(position: Int) = super.getItem(position)
 
