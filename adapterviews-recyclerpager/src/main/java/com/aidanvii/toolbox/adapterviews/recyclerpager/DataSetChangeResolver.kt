@@ -10,37 +10,43 @@ internal class DataSetChangeResolver<Item, ViewHolder : RecyclerPagerAdapter.Vie
 ) {
 
     fun resolvePageItemPosition(pageItem: PageItem<ViewHolder>): Int {
-        val oldAdapterPosition = pageItem.adapterPosition
-        val oldItem = getOldItemModel(oldAdapterPosition)
-        val newAdapterPosition = getNewAdapterPosition(oldItem)
-        return if (newAdapterPosition < 0) POSITION_NONE
+        val oldPosition = pageItem.adapterPosition
+        val oldItem = getOldItem(oldPosition)
+        val newPosition = getNewAdapterPosition(oldItem)
+        return if (newPosition < 0) POSITION_NONE
         else resolvePosition(
+            pageItem = pageItem,
             itemsDifferent = itemsDifferent(
                 oldItem = oldItem,
-                newItem = getNewItemModel(newAdapterPosition)
+                newItem = getNewItem(newPosition)
             ),
-            positionChanged = oldAdapterPosition != newAdapterPosition,
-            newAdapterPosition = newAdapterPosition
+            positionChanged = oldPosition != newPosition,
+            newAdapterPosition = newPosition
         )
 
     }
 
-    private fun getOldItemModel(oldAdapterPosition: Int): Item =
+    private fun getOldItem(oldAdapterPosition: Int): Item =
         callback.getOldItemAt(oldAdapterPosition)
 
     private fun getNewAdapterPosition(oldItem: Item): Int =
         callback.getNewAdapterPositionOfItem(oldItem).checkBelowMax(maxAdapterPosition)
 
-    private fun getNewItemModel(newAdapterPosition: Int): Item =
+    private fun getNewItem(newAdapterPosition: Int): Item =
         callback.getNewItemAt(newAdapterPosition)
 
     private fun itemsDifferent(oldItem: Item, newItem: Item): Boolean =
         !callback.areItemsTheSame(oldItem, newItem)
 
-    private fun resolvePosition(itemsDifferent: Boolean, positionChanged: Boolean, newAdapterPosition: Int): Int =
+    private fun resolvePosition(
+        pageItem: PageItem<ViewHolder>,
+        itemsDifferent: Boolean,
+        positionChanged: Boolean,
+        newAdapterPosition: Int
+    ): Int =
         when {
             itemsDifferent -> POSITION_NONE
-            positionChanged -> newAdapterPosition
+            positionChanged -> newAdapterPosition.also { pageItem.adapterPosition = newAdapterPosition }
             else -> POSITION_UNCHANGED
         }
 }
