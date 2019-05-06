@@ -10,10 +10,10 @@ import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.trackInstance
 
 @BindingAdapter(
-    "android:binder",
-    "android:items",
-    "android:onItemBoundAt",
-    "android:onItemsSet", requireAll = false
+    "binder",
+    "items",
+    "onItemBoundAt",
+    "onItemsSet", requireAll = false
 )
 internal fun <Item : BindableAdapterItem> RecyclerView._bind(
     binder: BindingRecyclerViewBinder<Item>?,
@@ -44,7 +44,7 @@ private fun <Item : BindableAdapterItem> RecyclerView.rebind(
             if (itemBoundListener != null) {
                 localAdapter.itemBoundListener = itemBoundListener
             }
-            if(onItemsSet != null) {
+            if (onItemsSet != null) {
                 localAdapter.onItemsSet = onItemsSet
             }
             adapter = localAdapter
@@ -67,7 +67,7 @@ private fun <Item : BindableAdapterItem> setItemsOnAdapter(
     }
 }
 
-@BindingAdapter("android:layoutManager")
+@BindingAdapter("layoutManager")
 internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
     trackInstance(
         newInstance = layoutManager,
@@ -76,7 +76,7 @@ internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
         onAttached = { this.layoutManager = it })
 }
 
-@BindingAdapter("android:bindableItemDecoration")
+@BindingAdapter("bindableItemDecoration")
 internal fun <Item : BindableAdapterItem> RecyclerView._bind(itemDecoration: BindableItemDecoration<Item>?) {
     trackInstance(
         newInstance = itemDecoration,
