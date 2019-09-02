@@ -44,7 +44,6 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
      *
      * When decorating, this should be forwarded to the decorated [ObservableProperty]
      */
-    @CallSuper
     fun onProvideDelegate(thisRef: Any?, property: KProperty<*>) {
     }
 
