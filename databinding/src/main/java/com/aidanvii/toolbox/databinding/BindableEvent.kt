@@ -1,8 +1,8 @@
 package com.aidanvii.toolbox.databinding
 
-import android.databinding.BindingConversion
-import android.support.annotation.MainThread
-import android.support.annotation.RestrictTo
+import androidx.databinding.BindingConversion
+import androidx.annotation.MainThread
+import androidx.annotation.RestrictTo
 
 data class BindableEvent<out T> internal constructor(
     val value: T,

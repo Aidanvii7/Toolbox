@@ -17,7 +17,7 @@ android {
         targetSdkVersion target_sdk_version
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -35,20 +35,16 @@ dependencies {
     api project(':delegates-weak')
     api project(':delegates-coroutines-job')
 
-    api "${android_import_namespace}.support:recyclerview-v7:$android_support_version"
+    api "androidx.recyclerview:recyclerview:1.0.0"
 
     api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    kapt "com.android.databinding:compiler:$android_gradle_version"
-
     testImplementation project(':adapterviews-databinding-test')
 
-    // (Required) Writing and executing Unit Tests on the JUnit Platform.
-    testImplementation junit5.unitTests()
-
-    // (Optional) For running tests inside Android Studio 3
-    // Please refer to the "Android Studio Workarounds" section for more insight on this.
-    testCompileOnly junit5.unitTestsRuntime()
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:$junit5_version"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junit5_version"
 }
 
 repositories {

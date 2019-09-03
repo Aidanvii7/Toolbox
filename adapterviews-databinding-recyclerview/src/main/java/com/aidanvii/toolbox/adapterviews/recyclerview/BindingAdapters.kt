@@ -1,30 +1,35 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.databinding.BindingAdapter
-import android.support.v7.widget.RecyclerView
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.aidanvii.toolbox.Action
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.recyclerview.R
+import com.aidanvii.toolbox.databinding.BindingAction
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.trackInstance
 
 @BindingAdapter(
-    "android:binder",
-    "android:items",
-    "android:onItemBoundAt", requireAll = false
+    "binder",
+    "items",
+    "onItemBoundAt",
+    "onItemsSet", requireAll = false
 )
 internal fun <Item : BindableAdapterItem> RecyclerView._bind(
     binder: BindingRecyclerViewBinder<Item>?,
     items: List<Item>?,
-    itemBoundListener: IntBindingConsumer?
+    itemBoundListener: IntBindingConsumer?,
+    onItemsSet: BindingAction? = null // TODO tidy this up
 ) {
     val localAdapter = binder?.adapter
     setItemsOnAdapter(localAdapter, items)
-    rebind(binder, itemBoundListener)
+    rebind(binder, itemBoundListener, onItemsSet)
 }
 
 private fun <Item : BindableAdapterItem> RecyclerView.rebind(
     binder: BindingRecyclerViewBinder<Item>?,
-    itemBoundListener: IntBindingConsumer?
+    itemBoundListener: IntBindingConsumer?,
+    onItemsSet: BindingAction?
 ) {
     trackInstance(
         newInstance = binder,
@@ -39,14 +44,15 @@ private fun <Item : BindableAdapterItem> RecyclerView.rebind(
             if (itemBoundListener != null) {
                 localAdapter.itemBoundListener = itemBoundListener
             }
+            if (onItemsSet != null) {
+                localAdapter.onItemsSet = onItemsSet
+            }
             adapter = localAdapter
             layoutManager = attachedBinder.layoutManagerFactory(context).apply {
                 onRestoreInstanceState(attachedBinder.layoutManagerState)
             }
             attachedBinder.recycledViewPoolWrapper?.invoke()?.let { pool ->
-                if (recycledViewPool !== pool) {
-                    recycledViewPool = pool
-                }
+                if (recycledViewPool !== pool) setRecycledViewPool(pool)
             }
         }
     )
@@ -61,7 +67,7 @@ private fun <Item : BindableAdapterItem> setItemsOnAdapter(
     }
 }
 
-@BindingAdapter("android:layoutManager")
+@BindingAdapter("layoutManager")
 internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
     trackInstance(
         newInstance = layoutManager,
@@ -70,7 +76,7 @@ internal fun RecyclerView._bind(layoutManager: RecyclerView.LayoutManager?) {
         onAttached = { this.layoutManager = it })
 }
 
-@BindingAdapter("android:bindableItemDecoration")
+@BindingAdapter("bindableItemDecoration")
 internal fun <Item : BindableAdapterItem> RecyclerView._bind(itemDecoration: BindableItemDecoration<Item>?) {
     trackInstance(
         newInstance = itemDecoration,

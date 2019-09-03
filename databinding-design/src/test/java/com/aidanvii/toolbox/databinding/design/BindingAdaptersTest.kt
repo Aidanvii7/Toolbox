@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.databinding.design
 
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.ViewPager
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import org.junit.jupiter.api.BeforeEach
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 internal class BindingAdaptersTest {
 
-    val viewPager = mock<ViewPager>()
+    val viewPager = mock<androidx.viewpager.widget.ViewPager>()
     val tabLayout = mock<TabLayout>()
 
     @Nested

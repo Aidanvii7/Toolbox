@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import com.aidanvii.toolbox.delegates.weak.weakLazy
 
 class SingleViewTypeHandler<Item : BindableAdapterItem> : BindableAdapter.ViewTypeHandler<Item> {

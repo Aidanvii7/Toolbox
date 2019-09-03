@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.rxutils
 
-import android.support.annotation.RestrictTo
-import android.support.annotation.VisibleForTesting
+import androidx.annotation.RestrictTo
+import androidx.annotation.VisibleForTesting
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

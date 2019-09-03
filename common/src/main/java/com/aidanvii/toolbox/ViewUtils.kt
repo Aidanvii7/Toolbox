@@ -1,11 +1,10 @@
 package com.aidanvii.toolbox
 
 import android.content.Context
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 
 operator fun ViewGroup.plusAssign(view: View) = addView(view)
 operator fun ViewGroup.minusAssign(view: View) = removeView(view)

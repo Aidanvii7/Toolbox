@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.recyclerpager
 
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

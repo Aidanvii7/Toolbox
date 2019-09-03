@@ -7,7 +7,7 @@ import android.view.ViewGroup
  */
 internal class PageItem<ViewHolder : RecyclerPagerAdapter.ViewHolder>(
     val viewType: Int,
-    val adapterPosition: Int
+    var adapterPosition: Int
 ) {
 
     lateinit var viewHolderWrapper: ViewHolderWrapper<ViewHolder>

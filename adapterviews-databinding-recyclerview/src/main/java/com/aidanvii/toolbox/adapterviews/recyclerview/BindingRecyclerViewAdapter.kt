@@ -1,15 +1,17 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.databinding.ViewDataBinding
-import android.support.annotation.MainThread
-import android.support.annotation.WorkerThread
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.RecyclerView
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import com.aidanvii.toolbox.Action
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
+import com.aidanvii.toolbox.databinding.BindingAction
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.NotifiableObservable
 import com.aidanvii.toolbox.delegates.coroutines.job.cancelOnReassign
@@ -30,6 +32,11 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     builder: Builder<Item>
 ) : RecyclerView.Adapter<BindingRecyclerViewItemViewHolder<*, Item>>(),
     BindableAdapter<Item, BindingRecyclerViewItemViewHolder<*, Item>> {
+
+    companion object {
+        // FIXME see Github issue #7
+        internal var testModeEnabled = false
+    }
 
     class Builder<Item : BindableAdapterItem> internal constructor(
         internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerViewItemViewHolder<*, Item>>,
@@ -61,13 +68,29 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
 
     private fun addAllImmediately(newItems: List<Item>) {
         _items = newItems
-        notifyItemRangeInserted(0, newItems.size)
+        notifySafely {
+            notifyItemRangeInserted(0, newItems.size)
+        }
+        onItemsSet?.invoke()
     }
 
     private fun removeAllImmediately(newItems: List<Item>) {
         val oldItemsSize = _items.size
         _items = newItems
-        notifyItemRangeRemoved(0, oldItemsSize)
+        notifySafely {
+            notifyItemRangeRemoved(0, oldItemsSize)
+        }
+        onItemsSet?.invoke()
+    }
+
+    private inline fun notifySafely(action: Action) {
+        if(testModeEnabled) {
+            try {
+                action()
+            } catch (e: NullPointerException) {
+                print(e.message)
+            }
+        } else action()
     }
 
     private fun resolveDiffAsynchronously(newItems: List<Item>) {
@@ -80,7 +103,10 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
             }.let { deferredChangePayload ->
                 deferredChangePayload.await().let { changePayload ->
                     _items = changePayload.allItems
-                    changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
+                    notifySafely {
+                        changePayload.diffResult.dispatchUpdatesTo(this@BindingRecyclerViewAdapter)
+                    }
+                    onItemsSet?.invoke()
                 }
             }
         }
@@ -98,6 +124,7 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     override val viewTypeHandler = builder.viewTypeHandler.also { it.initBindableAdapter(this) }
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
+    internal var onItemsSet: BindingAction? = null
 
     final override fun getItem(position: Int) = super.getItem(position)
 

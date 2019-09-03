@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.delegates.observable.lifecycle
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty
 import kotlin.reflect.KProperty
 

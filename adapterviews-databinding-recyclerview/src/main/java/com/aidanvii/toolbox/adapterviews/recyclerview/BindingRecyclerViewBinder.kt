@@ -2,10 +2,12 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import android.content.Context
 import android.os.Parcelable
-import android.support.annotation.RestrictTo
-import android.support.v7.util.DiffUtil
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.RestrictTo
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.aidanvii.toolbox.Action
+import com.aidanvii.toolbox.actionStub
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem

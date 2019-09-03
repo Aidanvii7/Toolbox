@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.delegates.observable.rxjava
 
-import android.support.annotation.RestrictTo
+import androidx.annotation.RestrictTo
 import io.reactivex.Observable
 import kotlin.reflect.KProperty
 

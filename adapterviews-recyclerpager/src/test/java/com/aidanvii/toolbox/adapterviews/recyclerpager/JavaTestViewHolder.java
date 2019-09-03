@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.recyclerpager;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
 

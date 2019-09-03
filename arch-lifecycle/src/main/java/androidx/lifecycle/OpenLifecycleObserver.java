@@ -1,6 +1,6 @@
-package android.arch.lifecycle;
+package androidx.lifecycle;
 
-import android.support.annotation.RestrictTo;
+import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 public interface OpenLifecycleObserver extends FullLifecycleObserver {

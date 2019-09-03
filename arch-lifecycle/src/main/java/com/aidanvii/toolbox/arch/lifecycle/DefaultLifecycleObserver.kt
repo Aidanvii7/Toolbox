@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.arch.lifecycle
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.OpenLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OpenLifecycleObserver
 
 interface DefaultLifecycleObserver : OpenLifecycleObserver {
     override fun onCreate(owner: LifecycleOwner) {}

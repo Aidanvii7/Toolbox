@@ -1,8 +1,8 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
-import android.support.annotation.RestrictTo
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.LayoutRes
+import androidx.annotation.RestrictTo
 import android.view.View
 import android.view.ViewGroup
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
@@ -71,7 +71,7 @@ interface BindableAdapter<Item : BindableAdapterItem, VH : BindableAdapter.ViewH
      * The default will call [ViewDataBinding.setVariable] with the
      * [BindableAdapterItem.bindingId] as the variableId and [BindableAdapterItem.bindableItem] as the value.
      */
-        fun onInterceptOnBind(viewHolder: VH, adapterPosition: Int, observable: NotifiableObservable?): Boolean = false
+    fun onInterceptOnBind(viewHolder: VH, adapterPosition: Int, observable: NotifiableObservable?): Boolean = false
 
     /**
      * Called when the [BindableAdapter] is binding a [ViewHolder] for the given [adapterPosition]

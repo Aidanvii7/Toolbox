@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.delegates.observable
 
-import android.support.annotation.CallSuper
+import androidx.annotation.CallSuper
 import com.aidanvii.toolbox.Provider
 import com.aidanvii.toolbox.unchecked
 import kotlin.properties.ReadWriteProperty
@@ -44,7 +44,6 @@ interface ObservableProperty<ST, TT> : ReadWriteProperty<Any?, ST> {
      *
      * When decorating, this should be forwarded to the decorated [ObservableProperty]
      */
-    @CallSuper
     fun onProvideDelegate(thisRef: Any?, property: KProperty<*>) {
     }
 

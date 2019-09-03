@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import com.aidanvii.toolbox.Provider
 
 class RecycledViewPoolWrapper : Provider<RecyclerView.RecycledViewPool> {

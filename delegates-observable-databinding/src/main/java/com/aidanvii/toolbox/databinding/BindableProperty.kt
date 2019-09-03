@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.databinding
 
-import android.databinding.Bindable
+import androidx.databinding.Bindable
 import com.aidanvii.toolbox.delegates.observable.Functions
 import com.aidanvii.toolbox.delegates.observable.ObservableProperty
 import kotlin.reflect.KProperty

@@ -1,16 +1,16 @@
 package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
-import android.databinding.BindingAdapter
-import android.databinding.InverseBindingAdapter
-import android.databinding.InverseBindingListener
-import android.support.v4.view.ViewPager
+import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
+import androidx.viewpager.widget.ViewPager
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.trackInstance
 
 @BindingAdapter(
-    "android:binder",
-    "android:items", requireAll = true
+    "binder",
+    "items", requireAll = true
 )
 internal fun <Item : BindableAdapterItem> ViewPager._bind(
     binder: BindingRecyclerPagerBinder<Item>?,
@@ -40,17 +40,17 @@ internal fun <Item : BindableAdapterItem> ViewPager._bind(
 }
 
 internal var ViewPager._currentItem: Int
-    @InverseBindingAdapter(attribute = "android:currentItem", event = "android:currentItemAttrChanged")
+    @InverseBindingAdapter(attribute = "currentItem", event = "currentItemAttrChanged")
     get() = currentItem
-    @BindingAdapter(value = ["android:currentItem"])
+    @BindingAdapter(value = ["currentItem"])
     set(value) {
         if (currentItem != value)
             currentItem = value
     }
 
 @BindingAdapter(
-    "android:onPageSelected",
-    "android:currentItemAttrChanged", requireAll = false
+    "onPageSelected",
+    "currentItemAttrChanged", requireAll = false
 )
 internal fun ViewPager._bind(
     onPageSelected: IntBindingConsumer?,

@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.adapterviews.recyclerview
 
-import android.support.v7.util.DiffUtil
+import androidx.recyclerview.widget.DiffUtil
 
 inline fun <Item : Any> diffCallback(
     oldItems: List<Item>,

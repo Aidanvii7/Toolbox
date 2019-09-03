@@ -1,10 +1,10 @@
 package com.aidanvii.toolbox.databinding
 
-import android.databinding.BindingAdapter
-import android.support.annotation.IdRes
-import android.support.annotation.RestrictTo
+import androidx.databinding.BindingAdapter
+import androidx.annotation.IdRes
+import androidx.annotation.RestrictTo
 import android.view.View
-import android.databinding.adapters.ListenerUtil as FrameworkListenerUtil
+import androidx.databinding.adapters.ListenerUtil as FrameworkListenerUtil
 
 interface ViewTagTrackerDelegate {
     fun <T> trackInstance(view: View, @IdRes instanceResourceId: Int, instance: T? = null): T?

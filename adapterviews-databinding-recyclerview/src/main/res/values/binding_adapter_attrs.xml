@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="androidx.recyclerview.widget.RecyclerView">
+        <attr name="binder" />
+        <attr name="items" />
+        <attr name="onItemBoundAt" />
+        <attr name="onItemsSet" />
+        <attr name="layoutManager" />
+        <attr name="bindableItemDecoration" />
+    </declare-styleable>
+</resources>

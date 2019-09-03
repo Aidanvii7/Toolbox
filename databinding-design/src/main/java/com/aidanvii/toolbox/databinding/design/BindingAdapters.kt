@@ -1,8 +1,8 @@
 package com.aidanvii.toolbox.databinding.design
 
-import android.databinding.BindingAdapter
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
+import androidx.databinding.BindingAdapter
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.ViewPager
 
-@BindingAdapter("android:viewPager")
+@BindingAdapter("viewPager")
 internal fun TabLayout.bind(viewPager: ViewPager) = setupWithViewPager(viewPager)

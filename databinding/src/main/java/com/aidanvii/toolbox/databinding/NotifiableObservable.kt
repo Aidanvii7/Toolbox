@@ -1,10 +1,10 @@
 package com.aidanvii.toolbox.databinding
 
-import android.databinding.BaseObservable
-import android.databinding.Bindable
-import android.databinding.Observable
-import android.databinding.PropertyChangeRegistry
-import android.support.annotation.RestrictTo
+import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import androidx.databinding.Observable
+import androidx.databinding.PropertyChangeRegistry
+import androidx.annotation.RestrictTo
 import com.aidanvii.toolbox.Provider
 /**
  * An abstraction of [BaseObservable] for composition purposes.

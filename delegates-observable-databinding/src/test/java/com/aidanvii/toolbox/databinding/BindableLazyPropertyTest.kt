@@ -1,6 +1,6 @@
 package com.aidanvii.toolbox.databinding
 
-import android.databinding.Bindable
+import androidx.databinding.Bindable
 import com.aidanvii.toolbox.Provider
 import com.aidanvii.toolbox.spied
 import com.nhaarman.mockito_kotlin.any

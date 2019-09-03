@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.adapterviews.databinding
 
-import android.databinding.ViewDataBinding
-import android.support.annotation.LayoutRes
+import androidx.databinding.ViewDataBinding
+import androidx.annotation.LayoutRes
 import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter.ViewHolder
 

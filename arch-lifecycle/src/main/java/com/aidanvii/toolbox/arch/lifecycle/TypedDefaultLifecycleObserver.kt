@@ -1,7 +1,7 @@
 package com.aidanvii.toolbox.arch.lifecycle
 
-import android.arch.lifecycle.LifecycleOwner
-import android.support.annotation.RestrictTo
+import androidx.lifecycle.LifecycleOwner
+import androidx.annotation.RestrictTo
 
 @Suppress("UNCHECKED_CAST")
 interface TypedDefaultLifecycleObserver<T : LifecycleOwner> :
