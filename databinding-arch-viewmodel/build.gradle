@@ -32,7 +32,7 @@ dependencies {
 
     api project(':databinding')
 
-    api 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
+    api "androidx.lifecycle:lifecycle-viewmodel:$androidx_lifecycle_version"
 
     testImplementation project(':common-test')
 
