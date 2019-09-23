@@ -6,8 +6,6 @@ import androidx.annotation.RestrictTo
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.aidanvii.toolbox.Action
-import com.aidanvii.toolbox.actionStub
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterDelegate
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
@@ -16,7 +14,6 @@ import com.aidanvii.toolbox.adapterviews.databinding.ListBinder
 import com.aidanvii.toolbox.adapterviews.databinding.defaultAreContentsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultAreItemsSame
 import com.aidanvii.toolbox.adapterviews.databinding.defaultGetChangedProperties
-import com.aidanvii.toolbox.delegates.weak.weakLazy
 import com.aidanvii.toolbox.unchecked
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -103,8 +100,8 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
 
     internal var layoutManagerState: Parcelable? = null
 
-    internal val adapter: BindingRecyclerViewAdapter<Item> by weakLazy {
-        adapterFactory(
+    internal val adapter: BindingRecyclerViewAdapter<Item>
+        get() = adapterFactory(
             BindingRecyclerViewAdapter.Builder(
                 delegate = BindableAdapterDelegate(),
                 areItemsTheSame = areItemsTheSame,
@@ -119,7 +116,6 @@ class BindingRecyclerViewBinder<Item : BindableAdapterItem>(
                 }
             )
         )
-    }
 
     @Suppress(unchecked)
     @RestrictTo(RestrictTo.Scope.TESTS)

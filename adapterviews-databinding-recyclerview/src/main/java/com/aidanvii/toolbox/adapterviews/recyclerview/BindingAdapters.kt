@@ -2,12 +2,12 @@ package com.aidanvii.toolbox.adapterviews.recyclerview
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.aidanvii.toolbox.Action
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.recyclerview.R
 import com.aidanvii.toolbox.databinding.BindingAction
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.trackInstance
+import com.aidanvii.toolbox.unchecked
 
 @BindingAdapter(
     "binder",
@@ -21,12 +21,11 @@ internal fun <Item : BindableAdapterItem> RecyclerView._bind(
     itemBoundListener: IntBindingConsumer?,
     onItemsSet: BindingAction? = null // TODO tidy this up
 ) {
-    val localAdapter = binder?.adapter
-    setItemsOnAdapter(localAdapter, items)
-    rebind(binder, itemBoundListener, onItemsSet)
+    tryRebind(binder, itemBoundListener, onItemsSet)
+    setItemsOnExistingAdapter(items)
 }
 
-private fun <Item : BindableAdapterItem> RecyclerView.rebind(
+private fun <Item : BindableAdapterItem> RecyclerView.tryRebind(
     binder: BindingRecyclerViewBinder<Item>?,
     itemBoundListener: IntBindingConsumer?,
     onItemsSet: BindingAction?
@@ -36,18 +35,18 @@ private fun <Item : BindableAdapterItem> RecyclerView.rebind(
         instanceResId = R.id.list_binder,
         onDetached = { detachedBinder ->
             detachedBinder.layoutManagerState = layoutManager?.onSaveInstanceState()
-            detachedBinder.adapter.itemBoundListener = null
+            bindingRecyclerViewAdapter<Item>()?.itemBoundListener = null
             adapter = null
         },
         onAttached = { attachedBinder ->
-            val localAdapter = attachedBinder.adapter
+            val freshAdapter = attachedBinder.adapter
             if (itemBoundListener != null) {
-                localAdapter.itemBoundListener = itemBoundListener
+                freshAdapter.itemBoundListener = itemBoundListener
             }
             if (onItemsSet != null) {
-                localAdapter.onItemsSet = onItemsSet
+                freshAdapter.onItemsSet = onItemsSet
             }
-            adapter = localAdapter
+            adapter = freshAdapter
             layoutManager = attachedBinder.layoutManagerFactory(context).apply {
                 onRestoreInstanceState(attachedBinder.layoutManagerState)
             }
@@ -58,10 +57,11 @@ private fun <Item : BindableAdapterItem> RecyclerView.rebind(
     )
 }
 
-private fun <Item : BindableAdapterItem> setItemsOnAdapter(
-    adapter: BindingRecyclerViewAdapter<Item>?,
-    items: List<Item>?
-) {
+@Suppress(unchecked)
+private fun <Item : BindableAdapterItem> RecyclerView.bindingRecyclerViewAdapter() = adapter as? BindingRecyclerViewAdapter<Item>
+
+private fun <Item : BindableAdapterItem> RecyclerView.setItemsOnExistingAdapter(items: List<Item>?) {
+    val adapter = bindingRecyclerViewAdapter<Item>()
     if (adapter != null && items != null) {
         adapter.items = items
     }

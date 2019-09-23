@@ -2,6 +2,7 @@ package com.aidanvii.toolbox.adapterviews.databinding.recyclerpager
 
 import android.content.Context
 import android.content.res.Resources
+import android.os.Parcelable
 import androidx.databinding.ViewDataBinding
 import android.view.ViewGroup
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapter
@@ -10,6 +11,7 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
 import com.aidanvii.toolbox.adapterviews.recyclerpager.RecyclerPagerAdapter
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Implementation of [RecyclerPagerAdapter] and [BindableAdapter] that can automatically bind a list of type [BindableAdapterItem].
@@ -40,6 +42,7 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
     override val bindingInflater = builder.bindingInflater
     override var itemBoundListener: IntBindingConsumer? = null
     private val resources: Resources = builder.applicationContext.resources
+    internal var pendingSavedState: SavedState? = null
 
     override var items = emptyList<Item>()
         set(value) {
@@ -98,11 +101,23 @@ open class BindingRecyclerPagerAdapter<Item : BindableAdapterItem>(
 
     final override fun getCount(): Int = items.size
 
-    private fun callBackOf(oldItems: List<Item>, newItems: List<Item>): RecyclerPagerAdapter.OnDataSetChangedCallback<Item> =
-        object : RecyclerPagerAdapter.OnDataSetChangedCallback<Item> {
+    private fun callBackOf(oldItems: List<Item>, newItems: List<Item>): OnDataSetChangedCallback<Item> =
+        object : OnDataSetChangedCallback<Item> {
             override fun getNewAdapterPositionOfItem(item: Item): Int = newItems.indexOf(item)
             override fun getOldItemAt(oldAdapterPosition: Int): Item = oldItems[oldAdapterPosition]
             override fun getNewItemAt(newAdapterPosition: Int): Item = newItems[newAdapterPosition]
             override fun areItemsTheSame(oldItem: Item, newItem: Item) = areItemAndContentsTheSame.invoke(oldItem, newItem)
         }
+
+    override fun saveState(): SavedState? {
+        super.saveState()
+        return SavedState(restoredPosition = currentPosition ?: 0)
+    }
+
+    override fun restoreState(state: Parcelable?, loader: ClassLoader?) {
+        pendingSavedState = state as? SavedState
+    }
+
+    @Parcelize
+    data class SavedState(val restoredPosition: Int) : Parcelable
 }

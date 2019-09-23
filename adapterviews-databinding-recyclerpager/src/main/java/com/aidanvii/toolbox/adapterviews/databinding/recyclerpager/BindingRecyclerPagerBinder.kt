@@ -10,7 +10,6 @@ import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.databinding.BindingInflater
 import com.aidanvii.toolbox.adapterviews.databinding.ListBinder
 import com.aidanvii.toolbox.adapterviews.databinding.defaultAreContentsSame
-import com.aidanvii.toolbox.delegates.weak.weakLazy
 
 /**
  * Intermediate class used to configure the [BindingRecyclerPagerAdapter]
@@ -79,12 +78,12 @@ class BindingRecyclerPagerBinder<Item : BindableAdapterItem>(
     areContentsTheSame = areItemAndContentsTheSame
 ) {
 
-    internal var viewPagerState: Parcelable? = null
+    internal var adapterState: BindingRecyclerPagerAdapter.SavedState? = null
 
     internal lateinit var applicationContext: Context
 
-    internal val adapter by weakLazy {
-        adapterFactory(
+    internal val adapter: BindingRecyclerPagerAdapter<Item>
+        get() = adapterFactory(
             BindingRecyclerPagerAdapter.Builder(
                 delegate = BindableAdapterDelegate(),
                 viewTypeHandler = viewTypeHandler,
@@ -93,7 +92,6 @@ class BindingRecyclerPagerBinder<Item : BindableAdapterItem>(
                 applicationContext = applicationContext
             )
         )
-    }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     fun testAdapter(

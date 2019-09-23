@@ -1,11 +1,13 @@
 package com.aidanvii.toolbox.adapterviews.recyclerpager
 
+import android.os.Parcelable
 import androidx.annotation.RestrictTo
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import com.aidanvii.toolbox.adapterviews.recyclerpager.RecyclerPagerAdapter.ViewHolder
 import com.aidanvii.toolbox.iterator
 import com.aidanvii.toolbox.minusAssign
@@ -30,6 +32,8 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     private var commitChangesOnFinish = false
     private var primaryPageItem: PageItem<ViewHolder>? = null
     private var dataSetChangeResolver: DataSetChangeResolver<Item, ViewHolder>? = null
+
+    protected val currentPosition: Int? get() = primaryPageItem?.adapterPosition
 
     class ItemPoolContainer<ViewHolder : RecyclerPagerAdapter.ViewHolder> {
         internal val itemPool = ItemPool<ViewHolderWrapper<ViewHolder>>()
@@ -261,19 +265,19 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun getItemPosition(uncastPageItem: Any): Int =
-        dataSetChangeResolver?.run { resolvePageItemPosition(uncastPageItem.asPageItem()) }
-            ?: PagerAdapter.POSITION_NONE
+        dataSetChangeResolver?.run { resolvePageItemPosition(uncastPageItem.asPageItem()) } ?: POSITION_NONE
 
     @Suppress(unchecked)
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     final override fun setPrimaryItem(container: ViewGroup, position: Int, uncastPageItem: Any) {
+
         (uncastPageItem as? PageItem<ViewHolder>)?.let { pageItem ->
             setPrimaryPageItem(pageItem)
         }
     }
 
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
-    final override fun saveState() = null.also {
+    @CallSuper
+    override fun saveState(): Parcelable? = null.also {
         if (shouldDestroyViewHoldersOnSaveState()) {
             clearPooledViewHolders()
             clearActiveViewHolders()

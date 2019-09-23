@@ -32,7 +32,6 @@ dependencies {
 
     api project(':adapterviews-databinding')
     api project(':delegates-observable-databinding')
-    api project(':delegates-weak')
     api project(':delegates-coroutines-job')
 
     api "androidx.recyclerview:recyclerview:1.0.0"
