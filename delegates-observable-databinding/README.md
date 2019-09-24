@@ -24,7 +24,7 @@ class MyViewModel : ViewModel() {
     //.. _loading mutated somewhere here
 }
 ```
-It takes longer than it should to understand the intent of the code above. It fits the original goal, but it isn't great Kotlin code. It's also based on example code from the Google IO app ([here](https://github.com/google/iosched/blob/89df01ebc19d9a46495baac4690c2ebfa74946dc/mobile/src/main/java/com/google/samples/apps/iosched/ui/info/EventInfoViewModel.kt) and [here](https://github.com/google/iosched/blob/89df01ebc19d9a46495baac4690c2ebfa74946dc/mobile/src/main/java/com/google/samples/apps/iosched/ui/onboarding/OnboardingViewModel.kt])). This is boilerplate that doesn't scale well as view models gain more properties. And while it's [considered acceptable](https://kotlinlang.org/docs/reference/coding-conventions.html#property-names) to use underscores for backing fields, the fact that it's mutability can't be expressed with visibility modifiers doesn't seem very Kotlin friendly. On top of that, it doesn't read particularly great when accessing the boxed values through a `.getValue()` or modifying it with either `setValue(..)` and `postValue(..)`.
+It takes longer than it should to understand the intent of the code above. It fits the original goal, but it isn't great Kotlin code. It's also based on example code from the Google IO app ([here](https://github.com/google/iosched/blob/89df01ebc19d9a46495baac4690c2ebfa74946dc/mobile/src/main/java/com/google/samples/apps/iosched/ui/info/EventInfoViewModel.kt) and [here](https://github.com/google/iosched/blob/89df01ebc19d9a46495baac4690c2ebfa74946dc/mobile/src/main/java/com/google/samples/apps/iosched/ui/onboarding/OnboardingViewModel.kt])). This is boilerplate that doesn't scale well as view models gain more properties. And while it's [considered acceptable](https://kotlinlang.org/docs/reference/coding-conventions.html#property-names) to use underscores for backing fields, the fact that it's mutability can't be expressed with visibility modifiers doesn't seem very Kotlin friendly. On top of that, it doesn't read particularly great when accessing the boxed values as they have to be 'unwrapped' with `_loading.value`.
 
 What we ideally want is something like:
 
@@ -37,7 +37,9 @@ class MyViewModel : ViewModel() {
     //.. loading mutated somewhere here
 }
 ```
-Now `loading` can still be read from the view, but mutated internally. Unfortunitely this isn't enough as mutating `loading` will not trigger databinding to rebind. By following the instructions [here](https://developer.android.com/topic/libraries/data-binding/architecture#observable-viewmodel), you can build your own `ObservableViewModel` that implements [`Observable`](https://developer.android.com/reference/android/databinding/Observable). Then you can do something like this:
+Now `loading` can still be read from the view, but mutated internally. Accessing the value of the property also doesn't require 'unwrapping' it with `.value`. 
+
+Unfortunitely this still isn't enough as mutating `loading` will not trigger databinding to rebind. By following the instructions [here](https://developer.android.com/topic/libraries/data-binding/architecture#observable-viewmodel), you can build your own `ObservableViewModel` that implements [`Observable`](https://developer.android.com/reference/android/databinding/Observable). Then you can do something like this:
 
 ```kotlin
 class MyViewModel : ObservableArchViewModel() {
