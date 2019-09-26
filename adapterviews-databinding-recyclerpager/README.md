@@ -67,6 +67,9 @@ As you can see, it uses the same binding adapter names as the [RecyclerView bind
 
 And that's it!
 
+# ViewPager2
+This library does not integrate with the new [`ViewPager2`](https://developer.android.com/jetpack/androidx/releases/viewpager2) library that's based on [`RecyclerView`](https://developer.android.com/reference/android/support/v7/widget/RecyclerView), expect this to come soon as a seperate library!
+
 # Setup
  Add the JitPack repository to your build file: 
 
