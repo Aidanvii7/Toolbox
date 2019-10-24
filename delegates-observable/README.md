@@ -39,8 +39,8 @@ var nullableString by observable<String?>(null)
         .map { it.length }
         .doOnNext { stringLength -> /* do something with length */ }
         .map { stringLength -> stringLength > 0 }
-        .doOnTrue { /* do something when stringLenth is above 0 }
-        .doOnFalse { /* do something when stringLenth is 0 }
+        .doOnTrue { /* do something when stringLenth is above 0 */ }
+        .doOnFalse { /* do something when stringLenth is 0 */ }
 ```
 
 Here is a list of the current decorators:
