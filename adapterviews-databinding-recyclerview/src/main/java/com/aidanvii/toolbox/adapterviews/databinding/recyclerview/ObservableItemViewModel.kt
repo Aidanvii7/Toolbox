@@ -1,4 +1,4 @@
-package com.aidanvii.toolbox.adapterviews.recyclerview
+package com.aidanvii.toolbox.adapterviews.databinding.recyclerview
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View

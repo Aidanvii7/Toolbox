@@ -1,4 +1,4 @@
-package com.aidanvii.toolbox.adapterviews.recyclerview
+package com.aidanvii.toolbox.adapterviews.databinding.recyclerview
 
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 

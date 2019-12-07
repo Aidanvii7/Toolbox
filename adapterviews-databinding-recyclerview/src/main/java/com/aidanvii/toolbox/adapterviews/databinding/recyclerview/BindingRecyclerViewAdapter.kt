@@ -1,4 +1,4 @@
-package com.aidanvii.toolbox.adapterviews.recyclerview
+package com.aidanvii.toolbox.adapterviews.databinding.recyclerview
 
 import androidx.databinding.ViewDataBinding
 import androidx.annotation.MainThread
@@ -39,15 +39,15 @@ open class BindingRecyclerViewAdapter<Item : BindableAdapterItem>(
     }
 
     class Builder<Item : BindableAdapterItem> internal constructor(
-        internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerViewItemViewHolder<*, Item>>,
-        internal val areItemsTheSame: (old: Item, new: Item) -> Boolean,
-        internal val areContentsTheSame: (old: Item, new: Item) -> Boolean,
-        internal val getChangedProperties: (old: Item, new: Item) -> IntArray?,
-        internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
-        internal val bindingInflater: BindingInflater,
-        internal val itemBoundObservers: List<ItemBoundObserver<Item>>,
-        internal val uiDispatcher: CoroutineDispatcher,
-        internal val workerDispatcher: CoroutineDispatcher
+            internal val delegate: BindableAdapterDelegate<Item, BindingRecyclerViewItemViewHolder<*, Item>>,
+            internal val areItemsTheSame: (old: Item, new: Item) -> Boolean,
+            internal val areContentsTheSame: (old: Item, new: Item) -> Boolean,
+            internal val getChangedProperties: (old: Item, new: Item) -> IntArray?,
+            internal val viewTypeHandler: BindableAdapter.ViewTypeHandler<Item>,
+            internal val bindingInflater: BindingInflater,
+            internal val itemBoundObservers: List<ItemBoundObserver<Item>>,
+            internal val uiDispatcher: CoroutineDispatcher,
+            internal val workerDispatcher: CoroutineDispatcher
     )
 
     private var nextPropertyChangePayload: AdapterNotifier.ChangePayload? = null

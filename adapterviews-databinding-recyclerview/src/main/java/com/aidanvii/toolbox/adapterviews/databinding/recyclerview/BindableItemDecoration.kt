@@ -1,4 +1,4 @@
-package com.aidanvii.toolbox.adapterviews.recyclerview;
+package com.aidanvii.toolbox.adapterviews.databinding.recyclerview;
 
 import android.graphics.Canvas
 import android.graphics.Rect

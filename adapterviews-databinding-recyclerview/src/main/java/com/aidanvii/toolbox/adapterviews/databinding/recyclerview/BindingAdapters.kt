@@ -1,9 +1,8 @@
-package com.aidanvii.toolbox.adapterviews.recyclerview
+package com.aidanvii.toolbox.adapterviews.databinding.recyclerview
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
-import com.aidanvii.toolbox.adapterviews.databinding.recyclerview.R
 import com.aidanvii.toolbox.databinding.BindingAction
 import com.aidanvii.toolbox.databinding.IntBindingConsumer
 import com.aidanvii.toolbox.databinding.trackInstance
