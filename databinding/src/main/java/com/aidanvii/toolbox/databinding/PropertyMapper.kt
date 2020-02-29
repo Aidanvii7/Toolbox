@@ -40,7 +40,8 @@ object PropertyMapper {
 
     fun getBindableResourceId(property: KProperty<*>) = delegate.getBindableResourceId(property)
 
-    val resourceIds: IntArray get() = delegate.resourceIds
+    val resourceIds: IntArray
+        get() = delegate.resourceIds
 
     private interface PropertyMapperDelegate {
         val resourceIds: IntArray
@@ -48,7 +49,8 @@ object PropertyMapper {
     }
 
     object UnitialisedPropertyMapper : PropertyMapperDelegate {
-        override val resourceIds: IntArray get() = throw RuntimeException(ERROR_NOT_INITIALISED)
+        override val resourceIds: IntArray
+            get() = throw RuntimeException(ERROR_NOT_INITIALISED)
 
         override fun getBindableResourceId(property: KProperty<*>): Int {
             throw RuntimeException(ERROR_NOT_INITIALISED)
@@ -62,7 +64,7 @@ object PropertyMapper {
             fields.forEach { field ->
                 try {
                     val key = field.name
-                    val value = getDeclaredField(key).getInt(this)
+                    val value = field.getInt(this)
                     propertyIdMap[key] = value
                 } catch (e: IllegalArgumentException) {
                     // instant run can inject extra garbage into the BR class, only time I've seen this fail
