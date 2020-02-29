@@ -66,8 +66,10 @@ object PropertyMapper {
                     propertyIdMap[key] = value
                 } catch (e: IllegalArgumentException) {
                     // instant run can inject extra garbage into the BR class, only time I've seen this fail
-                    Log.d("PropertyMapper", "No properties could be found in BR class.\nProperties found are: ${declaredFields.map { it.name }}")
                 }
+            }
+            if (propertyIdMap.isEmpty()) {
+                Log.d("PropertyMapper", "No properties could be found in BR class.\nProperties found are: ${declaredFields.map { it.name }}")
             }
             propertyIdMap.values.toSortedSet().toIntArray()
         }
@@ -77,12 +79,17 @@ object PropertyMapper {
         }
 
         private fun onPropertyNotFound(property: KProperty<*>): Nothing {
-            throw PropertyMapperException(property.name, propertyIdMap)
+            throw PropertyMapperException.NoMatchingProperty(property.name, propertyIdMap)
         }
     }
 }
 
-class PropertyMapperException(
-        propertyName: String,
-        propertyIdMap: Map<String, Int>
-) : RuntimeException("Property not found: ${propertyName}.\nExisting mapped properties are: $propertyIdMap")
+sealed class PropertyMapperException(
+        message: String
+) : RuntimeException(message) {
+
+    class NoMatchingProperty(
+            propertyName: String,
+            propertyIdMap: Map<String, Int>
+    ) : PropertyMapperException("Property not found: ${propertyName}.\nExisting mapped properties are: $propertyIdMap")
+}
