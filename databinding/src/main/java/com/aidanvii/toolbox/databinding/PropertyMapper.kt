@@ -71,7 +71,7 @@ object PropertyMapper {
         }
 
         override fun getBindableResourceId(property: KProperty<*>): Int {
-            return propertyIdMap[property.name] ?: throw RuntimeException("Property not found")
+            return propertyIdMap[property.name] ?: throw RuntimeException("Property not found: ${property.name}.")
         }
     }
 }
