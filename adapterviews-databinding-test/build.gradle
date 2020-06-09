@@ -29,6 +29,15 @@ android {
         abortOnError false
     }
     dataBinding.enabled = true
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -36,7 +45,7 @@ dependencies {
     api project(':common-test')
     api project(':adapterviews-databinding')
     // needed now to be able to mock ViewDataBinding....
-    api 'androidx.lifecycle:lifecycle-livedata:2.0.0'
+    api "androidx.lifecycle:lifecycle-livedata:$androidx_livedata_version"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit5_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit5_version"

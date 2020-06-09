@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="androidx.viewpager.widget.ViewPager">
-        <attr name="binder" />
-        <attr name="items" />
-        <attr name="currentItem" />
-        <attr name="onPageSelected" />
-    </declare-styleable>
-</resources>
