@@ -39,7 +39,7 @@ inline fun <reified T> listOfSize(size: Int, noinline elementFor: (index: Int) -
  *
  * Return true from given function to indicate that the current element is better.
  */
-inline fun <T> Iterable<T>.findBest(currentIsBetter: (best: T, current: T) -> Boolean): T? {
+inline fun <T : Any> Iterable<T>.findBest(currentIsBetter: (best: T, current: T) -> Boolean): T? {
     return singleOrNull() ?: firstOrNull()?.let {
         fold(it) { best, current -> if (currentIsBetter(best, current)) current else best }
     }

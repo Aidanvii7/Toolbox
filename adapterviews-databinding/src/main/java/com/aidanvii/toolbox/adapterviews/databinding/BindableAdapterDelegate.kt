@@ -19,7 +19,7 @@ class BindableAdapterDelegate<Item : BindableAdapterItem, VH : BindableAdapter.V
 
     fun onBind(viewHolder: VH, adapterPosition: Int, adapterView: ViewGroup?) {
         bindableAdapter.run {
-            getItem(adapterPosition).let { adapterItem ->
+            getItem(adapterPosition)?.let { adapterItem ->
                 viewHolder.apply {
                     boundAdapterItem = adapterItem
                     val bindableItem = adapterItem.lazyBindableItem.value
