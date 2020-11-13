@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import com.aidanvii.toolbox.adapterviews.recyclerpager.RecyclerPagerAdapter.ViewHolder
-import com.aidanvii.toolbox.iterator
+import com.aidanvii.toolbox.asMutableValueIterable
 import com.aidanvii.toolbox.minusAssign
 import com.aidanvii.toolbox.plusAssign
 import com.aidanvii.toolbox.unchecked
@@ -295,7 +295,7 @@ abstract class RecyclerPagerAdapter<Item, ViewHolder : RecyclerPagerAdapter.View
     private fun Any.asPageItem() = this as PageItem<ViewHolder>
 
     private fun clearActiveViewHolders() {
-        activeViewHolders.iterator().forEach { it.destroy() }
+        activeViewHolders.asMutableValueIterable().forEach { it.destroy() }
         activeViewHolders.clear()
     }
 

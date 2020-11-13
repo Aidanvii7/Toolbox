@@ -6,7 +6,7 @@ import com.aidanvii.toolbox.Provider
 import com.aidanvii.toolbox.arrayListOfSize
 import com.aidanvii.toolbox.getNullable
 import com.aidanvii.toolbox.getWithDefault
-import com.aidanvii.toolbox.iterator
+import com.aidanvii.toolbox.asMutableValueIterable
 import com.aidanvii.toolbox.valueAtNullable
 
 /**
@@ -29,7 +29,7 @@ class ItemPool<P : PooledItem> {
     /**
      * A flattened list of all [PooledItem] objects in all typed pools.
      */
-    private val scrapItems: List<P> get() = scrapHeapsByType.iterator().flatten()
+    private val scrapItems: List<P> get() = scrapHeapsByType.asMutableValueIterable().flatten()
 
     /**
      * Puts the [pooledItem] in it's respective pool based on it's [PooledItem.itemType].
