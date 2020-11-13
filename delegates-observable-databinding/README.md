@@ -39,7 +39,7 @@ class MyViewModel : ViewModel() {
 ```
 Now `loading` can still be read from the view, but mutated internally. Accessing the value of the property also doesn't require 'unwrapping' it with `.value`. 
 
-Unfortunitely this still isn't enough as mutating `loading` will not trigger databinding to rebind. By following the instructions [here](https://developer.android.com/topic/libraries/data-binding/architecture#observable-viewmodel), you can build your own `ObservableViewModel` that implements [`Observable`](https://developer.android.com/reference/android/databinding/Observable). Then you can do something like this:
+Unfortunately this still isn't enough as mutating `loading` will not trigger databinding to rebind. By following the instructions [here](https://developer.android.com/topic/libraries/data-binding/architecture#observable-viewmodel), you can build your own `ObservableViewModel` that implements [`Observable`](https://developer.android.com/reference/android/databinding/Observable). Then you can do something like this:
 
 ```kotlin
 class MyViewModel : ObservableArchViewModel() {
